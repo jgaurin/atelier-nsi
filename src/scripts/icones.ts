@@ -19,6 +19,8 @@ const TRACES = {
   recommencer: `<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/>`,
   chevron: `<path d="m9 6 6 6-6 6"/>`,
   chargement: `<path d="M21 12a9 9 0 1 1-6.2-8.6"/>`,
+  copier: `<rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/>`,
+  inserer: `<path d="M12 3v11"/><path d="m7 9.5 5 5 5-5"/><path d="M4 20h16"/>`,
 } as const;
 
 export type NomIcone = keyof typeof TRACES;

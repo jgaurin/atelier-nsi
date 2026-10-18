@@ -675,6 +675,8 @@ details.question[open] summary::after { content: "Masquer"; }
   margin: .6rem 0 0; padding: .8rem .95rem; border-radius: var(--rayon-petit); border: 1px solid var(--bord);
   background: var(--code-fond); overflow-x: auto; font-family: var(--police-code); font-size: .86rem; line-height: 1.55;
 }
+.ia-code-actions { display: flex; flex-wrap: wrap; gap: .3rem 1rem; margin-top: .45rem; }
+.ia-code-actions [hidden] { display: none; }
 .ia-pied {
   display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .4rem .9rem;
   padding-top: .75rem; border-top: 1px solid var(--bord); font-size: .84rem; color: var(--texte-3);

@@ -251,7 +251,10 @@ function exercicePython(ctx: Contexte) {
   }
 
   lancer.addEventListener("click", executer);
-  boutonRelecture(ctx, { type: "python", reponse: async () => (await pret, editeur!.valeur()), resultats: () => bilanTests, noteParIA: false });
+  boutonRelecture(ctx, {
+    type: "python", reponse: async () => (await pret, editeur!.valeur()), resultats: () => bilanTests, noteParIA: false,
+    editeur: { lire: async () => (await pret, editeur!.valeur()), ecrire: async (code) => { await pret; editeur!.definir(code); } },
+  });
   reinitialiser.addEventListener("click", async () => {
     await pret;
     if (editeur!.valeur() !== depart && !confirm("Effacer ton code et revenir au code de départ ?")) return;
@@ -321,7 +324,10 @@ function exerciceSQL(ctx: Contexte) {
     else ctx.message.textContent = "";
   }
   lancer.addEventListener("click", executer);
-  boutonRelecture(ctx, { type: "sql", reponse: async () => (await pret, editeur!.valeur()), resultats: () => bilanRequete, noteParIA: false });
+  boutonRelecture(ctx, {
+    type: "sql", reponse: async () => (await pret, editeur!.valeur()), resultats: () => bilanRequete, noteParIA: false,
+    editeur: { lire: async () => (await pret, editeur!.valeur()), ecrire: async (code) => { await pret; editeur!.definir(code); } },
+  });
 }
 
 /* Rédaction ------------------------------------------------------------ */
@@ -391,6 +397,8 @@ function boutonRelecture(ctx: Contexte, o: {
   reponse: () => string | Promise<string>;
   resultats?: () => string;
   noteParIA: boolean;
+  /** Exercices de code : pour essayer le code proposé par l'IA dans l'éditeur (et revenir au sien). */
+  editeur?: EditeurRelecture;
 }) {
   if (!synchroConfiguree) return;
   const relire = el("button", { type: "button", class: "bouton-icone-ia", title: "Faire relire par l'IA", "aria-label": "Faire relire par l'IA" }, icone("etincelles"));
@@ -416,7 +424,7 @@ function boutonRelecture(ctx: Contexte, o: {
         resultats: o.resultats?.() ?? "",
         reponse,
       });
-      afficherRelecture(ctx, boite, r, o.noteParIA);
+      afficherRelecture(ctx, boite, r, o.noteParIA, o.editeur);
     } catch (e) {
       boite.hidden = true;
       dire(ctx, (e as Error).message, "moyen");
@@ -438,7 +446,48 @@ function attenteRelecture(boite: HTMLElement) {
 }
 
 /** Résultat de la relecture IA ; pour une rédaction, son verdict note l'exercice (modifiable d'un clic). */
-function afficherRelecture(ctx: Contexte, boite: HTMLElement, r: Relecture, noteParIA: boolean) {
+interface EditeurRelecture { lire: () => Promise<string>; ecrire: (code: string) => Promise<void> }
+
+/** Le code proposé par l'IA, dépliable, avec « Copier » et « Essayer dans l'éditeur » (réversible). */
+function codePropose(ctx: Contexte, code: string, editeur?: EditeurRelecture) {
+  const actions = el("div", { class: "ia-code-actions" });
+  const copier = el("button", { type: "button", class: "bouton-lien" }, icone("copier", 15), "Copier");
+  copier.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(code);
+      copier.replaceChildren(icone("valide", 15), "Copié");
+    } catch {
+      copier.replaceChildren(icone("alerte", 15), "Copie impossible");
+    }
+    window.setTimeout(() => copier.replaceChildren(icone("copier", 15), "Copier"), 2000);
+  });
+  actions.append(copier);
+  if (editeur) {
+    let monCode: string | null = null;
+    const essayer = el("button", { type: "button", class: "bouton-lien" }, icone("inserer", 15), "Essayer dans l'éditeur");
+    const revenir = el("button", { type: "button", class: "bouton-lien", hidden: true }, icone("recommencer", 15), "Revenir à mon code");
+    essayer.addEventListener("click", async () => {
+      monCode = await editeur.lire();
+      await editeur.ecrire(code);
+      essayer.hidden = true;
+      revenir.hidden = false;
+      dire(ctx, "Le code proposé par l'IA est dans l'éditeur : lance les tests pour le vérifier, et compare avec le tien.");
+    });
+    revenir.addEventListener("click", async () => {
+      if (monCode !== null) await editeur.ecrire(monCode);
+      revenir.hidden = true;
+      essayer.hidden = false;
+      dire(ctx, "Ton code est revenu dans l'éditeur.");
+    });
+    actions.append(essayer, revenir);
+  }
+  return el("details", { class: "ia-code" },
+    el("summary", {}, icone("chevron", 16), "Voir une version améliorée de ton code"),
+    el("pre", {}, el("code", {}, code)),
+    actions);
+}
+
+function afficherRelecture(ctx: Contexte, boite: HTMLElement, r: Relecture, noteParIA: boolean, editeur?: EditeurRelecture) {
   const statut: progression.StatutExercice = r.verdict === "juste" ? "reussi" : "a-revoir";
   if (noteParIA) noter(ctx, statut);
   const v = VERDICTS[r.verdict];
@@ -463,11 +512,7 @@ function afficherRelecture(ctx: Contexte, boite: HTMLElement, r: Relecture, note
     listeIA("À revoir", pointsARevoir(r.a_revoir)),
     listeIA("Critères", r.criteres.map((c) => ({ texte: c.texte, detail: c.commentaire, icone: c.atteint ? "valide" : "croix", ton: c.atteint ? "bien" : "faux" }))),
     conseilIA(r.conseil),
-    r.code_ameliore?.trim()
-      ? el("details", { class: "ia-code" },
-          el("summary", {}, icone("chevron", 16), "Voir une version améliorée de ton code"),
-          el("pre", {}, el("code", {}, r.code_ameliore)))
-      : null,
+    r.code_ameliore?.trim() ? codePropose(ctx, r.code_ameliore, editeur) : null,
     pied,
   ].filter(Boolean) as HTMLElement[]);
 }
