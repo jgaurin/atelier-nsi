@@ -1,6 +1,7 @@
 // Dictée au micro : la reconnaissance vocale intégrée au navigateur (Chrome, Edge) écrit ce que tu dis dans une zone
-// de texte. Gratuite, sans IA ni clé. Le bouton n'apparaît que si le navigateur sait le faire.
+// de texte. Gratuite, sans IA ni clé. Le micro n'apparaît que si le navigateur sait le faire.
 import { el } from "./dom";
+import { icone } from "./icones";
 
 type Reconnaissance = {
   lang: string;
@@ -20,19 +21,31 @@ export const dicteeDisponible = () => Boolean(Constructeur);
 
 let enCours: (() => void) | null = null; // une seule dictée à la fois sur la page
 
-/** Bouton « Dicter » pour une zone de texte ; null si le navigateur ne sait pas faire. */
-export function boutonDictee(zone: HTMLTextAreaElement, surMessage?: (texte: string) => void): HTMLButtonElement | null {
+/**
+ * Micro d'une zone de texte : un bouton rond, et l'indication « Écoute… » pendant la dictée.
+ * null si le navigateur ne sait pas faire. surErreur reçoit les messages d'erreur (micro bloqué…).
+ */
+export function micro(zone: HTMLTextAreaElement, surErreur?: (texte: string) => void): HTMLElement | null {
   if (!Constructeur) return null;
-  const b = el("button", { type: "button", class: "bouton bouton-petit bouton-second bouton-micro", "aria-pressed": "false" }, "🎤 Dicter");
+  const b = el("button", { type: "button", class: "bouton-rond micro-bouton", "aria-pressed": "false", "aria-label": "Dicter ta réponse", title: "Dicter ta réponse" }, icone("micro"));
+  const etat = el("span", { class: "micro-etat", "aria-live": "polite" }, el("span", { class: "micro-point" }), "Écoute…");
+  const bloc = el("div", { class: "micro" }, etat, b);
   let reco: Reconnaissance | null = null;
   let actif = false;
+
+  const afficher = () => {
+    bloc.toggleAttribute("data-actif", actif);
+    b.setAttribute("aria-pressed", String(actif));
+    b.setAttribute("aria-label", actif ? "Arrêter la dictée" : "Dicter ta réponse");
+    b.title = actif ? "Arrêter la dictée" : "Dicter ta réponse";
+    b.replaceChildren(icone(actif ? "stop" : "micro"));
+  };
 
   const arreter = () => {
     actif = false;
     reco?.stop();
-    b.setAttribute("aria-pressed", "false");
-    b.textContent = "🎤 Dicter";
     if (enCours === arreter) enCours = null;
+    afficher();
   };
 
   const ecouter = () => {
@@ -54,7 +67,7 @@ export function boutonDictee(zone: HTMLTextAreaElement, surMessage?: (texte: str
     reco.onerror = (e) => {
       if (e.error === "no-speech" || e.error === "aborted") return;
       arreter();
-      surMessage?.(e.error === "not-allowed" || e.error === "service-not-allowed"
+      surErreur?.(e.error === "not-allowed" || e.error === "service-not-allowed"
         ? "Le micro est bloqué : autorise-le pour ce site dans les réglages du navigateur."
         : "La dictée s'est arrêtée (pas de réseau ?). Réessaie.");
     };
@@ -67,10 +80,11 @@ export function boutonDictee(zone: HTMLTextAreaElement, surMessage?: (texte: str
     enCours?.();
     enCours = arreter;
     actif = true;
-    b.setAttribute("aria-pressed", "true");
-    b.textContent = "⏹ Arrêter la dictée";
-    surMessage?.("Parle : le texte s'écrit au fur et à mesure. Clique sur « Arrêter » quand tu as fini.");
+    afficher();
     ecouter();
   });
-  return b;
+  return bloc;
 }
+
+/** Arrête la dictée en cours sur la page (avant d'envoyer une réponse, par exemple). */
+export const arreterDictee = () => enCours?.();

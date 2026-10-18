@@ -4,9 +4,11 @@ import * as progression from "./progression";
 import { executerPython, pythonEstPret, type TestPython } from "./python";
 import { comparer, executerSQL, schemaBase } from "./sql";
 import { correcteurPourRedaction, type Correction } from "./correction";
-import { bouton, differer, el, iconeIA, tableHTML } from "./dom";
+import { bouton, differer, el, tableHTML } from "./dom";
+import { icone, type NomIcone } from "./icones";
+import { conseilIA, enTeteIA, listeIA, pointsARevoir, pointsForts, squelette } from "./ia-ui";
 import { appelIA, type Relecture } from "./ia";
-import { boutonDictee } from "./dictee";
+import { micro } from "./dictee";
 import { synchroConfiguree } from "../data/synchro";
 import type { Editeur } from "./editeur";
 
@@ -335,11 +337,10 @@ function redaction(ctx: Contexte) {
   const ajuster = () => { texte.style.height = "auto"; texte.style.height = `${Math.max(texte.scrollHeight + 4, 120)}px`; };
   const sauver = differer((t: string) => progression.garderBrouillon(ctx.id, t));
   texte.addEventListener("input", () => { ajuster(); sauver(texte.value); });
-  const micro = boutonDictee(texte, (m) => dire(ctx, m));
+  const dictee = micro(texte, (m) => dire(ctx, m, "moyen"));
   zone.append(
-    texte,
-    el("div", { class: "zone-outils" }, micro,
-      el("p", { class: "aide" }, "Ta réponse est enregistrée sur cet appareil. Rédige comme le jour de l'épreuve : phrases complètes, justifications.")),
+    el("div", { class: dictee ? "saisie avec-micro" : "saisie" }, texte, dictee ? el("div", { class: "saisie-outils" }, dictee) : null),
+    el("p", { class: "aide" }, "Ta réponse est enregistrée sur cet appareil. Rédige comme le jour de l'épreuve : phrases complètes, justifications."),
   );
   requestAnimationFrame(ajuster);
   ctx.aEssaye = () => texte.value.trim().length >= 15;
@@ -367,7 +368,11 @@ function redaction(ctx: Contexte) {
   };
 }
 
-const VERDICTS = { juste: "✓ Juste", partiel: "≈ En partie", faux: "✗ À retravailler" } as const;
+const VERDICTS: Record<Relecture["verdict"], { texte: string; icone: NomIcone }> = {
+  juste: { texte: "Juste", icone: "valide" },
+  partiel: { texte: "En partie", icone: "partiel" },
+  faux: { texte: "À retravailler", icone: "croix" },
+};
 
 /** Texte d'un bloc pour l'IA : chaque formule KaTeX remplacée par sa source LaTeX (sinon elle apparaît en double). */
 function texteLisible(noeud: Element | null): string {
@@ -388,7 +393,7 @@ function boutonRelecture(ctx: Contexte, o: {
   noteParIA: boolean;
 }) {
   if (!synchroConfiguree) return;
-  const relire = el("button", { type: "button", class: "bouton-icone-ia", title: "Faire relire par l'IA", "aria-label": "Faire relire par l'IA" }, iconeIA());
+  const relire = el("button", { type: "button", class: "bouton-icone-ia", title: "Faire relire par l'IA", "aria-label": "Faire relire par l'IA" }, icone("etincelles"));
   const boite = el("div", { class: "relecture-ia", hidden: true });
   ctx.message.after(boite);
   relire.addEventListener("click", async () => {
@@ -400,7 +405,8 @@ function boutonRelecture(ctx: Contexte, o: {
     }
     relire.disabled = true;
     relire.setAttribute("aria-busy", "true");
-    dire(ctx, "Relecture par l'IA en cours…");
+    dire(ctx, "");
+    attenteRelecture(boite);
     try {
       const r = await appelIA<Relecture>("relire", {
         type: o.type,
@@ -410,9 +416,9 @@ function boutonRelecture(ctx: Contexte, o: {
         resultats: o.resultats?.() ?? "",
         reponse,
       });
-      dire(ctx, "");
       afficherRelecture(ctx, boite, r, o.noteParIA);
     } catch (e) {
+      boite.hidden = true;
       dire(ctx, (e as Error).message, "moyen");
     }
     relire.disabled = false;
@@ -421,35 +427,48 @@ function boutonRelecture(ctx: Contexte, o: {
   ctx.actions.append(relire);
 }
 
+/** Carte d'attente pendant que l'IA relit. */
+function attenteRelecture(boite: HTMLElement) {
+  boite.hidden = false;
+  boite.setAttribute("aria-busy", "true");
+  boite.replaceChildren(
+    enTeteIA("Relecture par l'IA", el("span", { class: "ia-attente" }, icone("chargement", 16, "tourne"), "L'IA relit ta réponse…")),
+    squelette(),
+  );
+}
+
 /** Résultat de la relecture IA ; pour une rédaction, son verdict note l'exercice (modifiable d'un clic). */
 function afficherRelecture(ctx: Contexte, boite: HTMLElement, r: Relecture, noteParIA: boolean) {
   const statut: progression.StatutExercice = r.verdict === "juste" ? "reussi" : "a-revoir";
   if (noteParIA) noter(ctx, statut);
-  const liste = (titre: string, elements: string[], classe: string) =>
-    elements.length ? el("div", { class: classe }, el("strong", {}, titre), el("ul", {}, ...elements.map((t) => el("li", {}, t)))) : null;
-  const correctif = el("p", { class: "relecture-statut" }, `Exercice noté « ${statut === "reussi" ? "réussi" : "à revoir"} » d'après l'IA. Pas d'accord ? `);
-  const autre = bouton(statut === "reussi" ? "Le marquer à revoir" : "Le marquer réussi", "bouton bouton-petit bouton-discret");
-  autre.addEventListener("click", () => {
-    noter(ctx, statut === "reussi" ? "a-revoir" : "reussi");
-    correctif.textContent = "C'est noté.";
-  });
-  correctif.append(autre);
+  const v = VERDICTS[r.verdict];
+
+  const pied = el("div", { class: "ia-pied" }, el("span", {}, "L'IA peut se tromper : compare aussi avec le corrigé."));
+  if (noteParIA) {
+    const autre = bouton(statut === "reussi" ? "Le marquer à revoir" : "Le marquer réussi", "bouton-lien");
+    const texte = el("span", {}, `Noté « ${statut === "reussi" ? "réussi" : "à revoir"} ». `);
+    autre.addEventListener("click", () => {
+      noter(ctx, statut === "reussi" ? "a-revoir" : "reussi");
+      texte.textContent = "Statut modifié. ";
+      autre.remove();
+    });
+    pied.prepend(el("span", { class: "ia-statut" }, texte, autre));
+  }
+
   boite.hidden = false;
+  boite.removeAttribute("aria-busy");
   boite.replaceChildren(...[
-    el("div", { class: "relecture-tete" }, el("span", { class: "relecture-titre" }, iconeIA(16), "Relecture par l'IA"),
-      el("span", { class: "relecture-verdict", "data-verdict": r.verdict }, VERDICTS[r.verdict])),
-    liste("Ce qui est bien", r.points_forts, "relecture-bien"),
-    liste("À revoir", r.a_revoir, "relecture-revoir"),
-    r.criteres.length
-      ? el("div", { class: "relecture-criteres" }, el("strong", {}, "Critères"),
-          el("ul", {}, ...r.criteres.map((c) => el("li", { "data-atteint": String(c.atteint) }, `${c.atteint ? "✓" : "✗"} ${c.texte}`, c.commentaire ? el("small", {}, c.commentaire) : null))))
-      : null,
-    r.conseil ? el("p", { class: "relecture-conseil" }, el("strong", {}, "Conseil : "), r.conseil) : null,
+    enTeteIA("Relecture par l'IA", el("span", { class: "ia-verdict", "data-verdict": r.verdict }, icone(v.icone, 14), v.texte)),
+    listeIA("Ce qui est bien", pointsForts(r.points_forts)),
+    listeIA("À revoir", pointsARevoir(r.a_revoir)),
+    listeIA("Critères", r.criteres.map((c) => ({ texte: c.texte, detail: c.commentaire, icone: c.atteint ? "valide" : "croix", ton: c.atteint ? "bien" : "faux" }))),
+    conseilIA(r.conseil),
     r.code_ameliore?.trim()
-      ? el("details", { class: "relecture-code" }, el("summary", {}, "Voir une version améliorée de ton code"), el("pre", {}, el("code", {}, r.code_ameliore)))
+      ? el("details", { class: "ia-code" },
+          el("summary", {}, icone("chevron", 16), "Voir une version améliorée de ton code"),
+          el("pre", {}, el("code", {}, r.code_ameliore)))
       : null,
-    noteParIA ? correctif : null,
-    el("p", { class: "aide" }, "L'IA peut se tromper : compare aussi avec le corrigé."),
+    pied,
   ].filter(Boolean) as HTMLElement[]);
 }
 

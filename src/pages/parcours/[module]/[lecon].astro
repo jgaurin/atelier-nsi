@@ -6,6 +6,7 @@ import ListeLecons from "../../../components/ListeLecons.astro";
 import { render } from "astro:content";
 import { chargerParcours, leconsEcrites, voisines } from "../../../lib/parcours";
 import { synchroConfiguree } from "../../../data/synchro";
+import { iconeHTML } from "../../../scripts/icones";
 
 export async function getStaticPaths() {
   const modules = await chargerParcours();
@@ -65,20 +66,32 @@ const parNiveau = [1, 2, 3, 4].map((n) => lecon.exercices.filter((e) => e.niveau
 
       {synchroConfiguree && (
         <section class="carte oral" data-oral={cle}>
-          <h2>{module.partie === "enseigner" ? "Entraîne-toi face au jury" : "Explique-le à l'oral"}</h2>
-          <p>
-            {module.partie === "enseigner"
-              ? "L'IA joue le jury : elle te pose une question sur ce thème, te relance comme en entretien, puis te fait un bilan."
-              : "L'IA te pose une question sur une notion de cette leçon. Explique comme devant une classe : elle te relance, puis te fait un bilan."}
-            {" "}Réponds à voix haute avec 🎤, ou au clavier.
-          </p>
-          <div class="oral-fil" data-oral-fil></div>
-          <div class="boutons">
-            <button type="button" class="bouton bouton-second" data-oral-demarrer>
-              <svg class="icone-ia" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M10 2.5c.4 3.9 2.6 6.1 6.5 6.5-3.9.4-6.1 2.6-6.5 6.5-.4-3.9-2.6-6.1-6.5-6.5 3.9-.4 6.1-2.6 6.5-6.5z"/><path d="M18 13.5c.25 2.1 1.4 3.25 3.5 3.5-2.1.25-3.25 1.4-3.5 3.5-.25-2.1-1.4-3.25-3.5-3.5 2.1-.25 3.25-1.4 3.5-3.5z"/></svg>
+          <div class="ia-tete">
+            <span class="ia-titre oral-titre">
+              <span class="ia-pastille" set:html={iconeHTML("etincelles", 14)} />
+              <span>
+                {module.partie === "enseigner" ? "Entraîne-toi face au jury" : "Explique-le à l'oral"}
+                <small>Entraînement avec l'IA</small>
+              </span>
+            </span>
+          </div>
+          <div class="oral-accueil" data-oral-accueil>
+            <p>
+              {module.partie === "enseigner"
+                ? "L'IA joue le jury : une question sur ce thème, des relances comme en entretien, puis un bilan."
+                : "L'IA te pose une question sur une notion de cette leçon. Explique comme devant une classe : elle te relance, puis te fait un bilan."}
+            </p>
+            <ul class="oral-etapes">
+              <li><span set:html={iconeHTML("micro", 16)} />Réponds à voix haute ou au clavier</li>
+              <li><span set:html={iconeHTML("fleche", 16)} />Une ou deux relances</li>
+              <li><span set:html={iconeHTML("etoile", 16)} />Un bilan noté sur 5</li>
+            </ul>
+            <button type="button" class="bouton" data-oral-demarrer>
+              <span set:html={iconeHTML("etincelles", 16)} />
               Me poser une question
             </button>
           </div>
+          <div class="oral-fil" data-oral-fil></div>
         </section>
       )}
 

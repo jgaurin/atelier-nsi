@@ -16,17 +16,6 @@ export function el<K extends keyof HTMLElementTagNameMap>(
   return noeud;
 }
 
-/** Icône « IA » (étincelles), dessinée en SVG, de la couleur du texte. */
-export function iconeIA(taille = 18): SVGSVGElement {
-  const modele = document.createElement("template");
-  modele.innerHTML =
-    `<svg class="icone-ia" width="${taille}" height="${taille}" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">` +
-    `<path d="M10 2.5c.4 3.9 2.6 6.1 6.5 6.5-3.9.4-6.1 2.6-6.5 6.5-.4-3.9-2.6-6.1-6.5-6.5 3.9-.4 6.1-2.6 6.5-6.5z"/>` +
-    `<path d="M18 13.5c.25 2.1 1.4 3.25 3.5 3.5-2.1.25-3.25 1.4-3.5 3.5-.25-2.1-1.4-3.25-3.5-3.5 2.1-.25 3.25-1.4 3.5-3.5z"/>` +
-    `</svg>`;
-  return modele.content.firstElementChild as SVGSVGElement;
-}
-
 export function bouton(texte: string, classes = "bouton bouton-petit", titre?: string) {
   return el("button", { type: "button", class: classes, title: titre }, texte);
 }
