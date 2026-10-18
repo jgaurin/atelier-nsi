@@ -1,0 +1,8 @@
+.practice-page-header{align-items:flex-end}
+.practice-page-header .flash-limit-label{display:grid;gap:7px;flex:0 0 175px;font-size:10px;letter-spacing:.02em}
+.practice-page-header .plan-select{width:100%;min-height:42px;padding:0 12px;border-radius:10px;font-size:12px}
+.practice-stats .mini-stat{min-width:0;min-height:70px}
+.practice-stats .mini-stat strong{font-size:20px;color:#edf3f8}
+.practice-stats .mini-stat small{line-height:1.4}
+@media(max-width:760px){.practice-stats{grid-template-columns:1fr;margin-bottom:18px}.practice-stats .mini-stat:last-child{display:flex}}
+@media(max-width:480px){.practice-page-header .flash-limit-label{display:grid;width:100%;max-width:240px;margin-top:13px}.practice-stats{grid-template-columns:1fr}.practice-stats .mini-stat{padding:11px 13px}}

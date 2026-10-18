@@ -1,0 +1,46 @@
+---
+// Couverture du programme officiel : pour chaque ligne, les leçons qui la traitent.
+import Base from "../../layouts/Base.astro";
+import { leconsEcrites } from "../../lib/parcours";
+import { PROGRAMME } from "../../data/programme";
+
+const lecons = await leconsEcrites();
+const couverture = (id: string) => lecons.filter((l) => l.entree!.data.programme.includes(id));
+const totalLignes = PROGRAMME.reduce((n, s) => n + s.lignes.length, 0);
+const couvertes = PROGRAMME.flatMap((s) => s.lignes).filter((l) => couverture(l.id).length > 0).length;
+---
+<Base titre="Couverture du programme" rubrique="parcours">
+  <div class="page page-etroite">
+    <nav class="fil-ariane" aria-label="Fil d'Ariane"><a href="/parcours/">Parcours</a><span aria-hidden="true">›</span><span>Programme officiel</span></nav>
+    <h1>Couverture du programme officiel</h1>
+    <p class="chapeau">
+      Le programme du concours = le programme spécifique de la session 2027 + les programmes d'informatique du lycée
+      (SNT, NSI). Voici, ligne par ligne, les leçons qui les traitent : {couvertes} lignes couvertes sur {totalLignes}.
+    </p>
+    <p style="font-size:.9rem;color:var(--texte-3)">
+      Sources : <a href="https://www.devenirenseignant.gouv.fr/media/20677/download" target="_blank" rel="noopener">programme spécifique 2027 (PDF)</a> ·
+      <a href="https://eduscol.education.gouv.fr/" target="_blank" rel="noopener">programmes du lycée sur Éduscol</a>.
+      Vérifie avant les épreuves qu'aucune mise à jour n'a été publiée.
+    </p>
+    {PROGRAMME.map((section) => (
+      <section style="margin-top:2.25rem">
+        <h2 style="font-size:1.2rem;margin-bottom:.2rem">{section.titre}</h2>
+        <p style="color:var(--texte-3);font-size:.85rem;margin-bottom:.6rem">{section.source}</p>
+        <table class="table-programme">
+          <thead><tr><th style="width:55%">Ligne du programme</th><th>Leçons</th></tr></thead>
+          <tbody>
+            {section.lignes.map((ligne) => {
+              const liste = couverture(ligne.id);
+              return (
+                <tr>
+                  <td>{ligne.texte}</td>
+                  <td>{liste.length ? <ul>{liste.map((l) => <li><a href={l.url}>{l.titre}</a></li>)}</ul> : <span class="puce puce-orange">en rédaction</span>}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </section>
+    ))}
+  </div>
+</Base>

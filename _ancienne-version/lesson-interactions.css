@@ -1,0 +1,47 @@
+.topbar{display:none}
+.course-learning-goal{margin:0 0 18px;padding:12px 15px}
+.course-learning-goal>b{font-size:10px;text-transform:uppercase;letter-spacing:.7px}
+.course-learning-goal>p{font-size:12px}
+.course-example-panel>h2{margin-bottom:8px}
+.course-example-panel>.course-muted{max-width:72ch;margin-bottom:15px}
+.example-step-status{display:flex;align-items:center;gap:12px;margin:14px 0 0;color:#9badb8;font:11px 'Cascadia Code',Consolas,monospace}
+.example-step-status strong{color:#87dfc0}
+.example-step-track{height:4px;max-width:180px;flex:1;background:#25343d;border-radius:9px;overflow:hidden}
+.example-step-track i{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,#53c6a3,#9ce7ca);transition:width .2s ease}
+.course-example-panel .course-worked{min-height:76px;max-height:360px;overflow:auto;margin:10px 0 15px;tab-size:4}
+.course-example-panel .course-worked code{font:inherit;color:inherit;white-space:pre-wrap}
+.example-prediction-label{display:block;margin:0 0 7px;color:#b5c6cf;font-size:11px;font-weight:650}
+.example-prediction{display:block;width:100%;min-height:76px;resize:vertical;padding:12px 13px;border:1px solid #2d404c;border-radius:9px;background:#0d151d;color:#e6edf5;font:12px/1.65 'Cascadia Code',Consolas,monospace}
+.example-prediction::placeholder{color:#758696}
+.example-prediction:focus{border-color:#68c9a8;outline:2px solid rgba(104,201,168,.18)}
+.example-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:10px}
+.example-actions .text-button{padding:8px;color:#91a0ad;font-size:10px}
+.example-complete-label{font-size:11px;color:#8fe0c1}
+.example-takeaways{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px;padding:15px;border:1px solid #2d443b;border-radius:11px;background:#111d1a;color:#c1d0c8}
+.example-takeaways>b,.example-takeaways div>b{font-size:11px;color:#8fe0c1}
+.example-takeaways ul{margin:7px 0 0;padding-left:17px;font-size:10px;line-height:1.75}
+.example-takeaways li+li{margin-top:4px}
+.example-takeaways div:nth-child(2) p{font-size:10px;line-height:1.7;margin:7px 0 0}
+.example-self-check{grid-column:1/-1;margin:0;color:#92a49d;font-size:10px;line-height:1.65}
+.example-python-link{grid-column:1/-1;justify-self:start}
+.inline-python-details{margin-top:15px;border:1px solid #30473f;border-radius:11px;background:#101a1b;overflow:hidden}
+.inline-python-details>summary{padding:13px 15px;cursor:pointer;color:#a7e2ca;font-size:11px;font-weight:700;list-style:none}
+.inline-python-details>summary::-webkit-details-marker{display:none}
+.inline-python-details>summary:after{content:"＋";float:right;color:#79d5b6}
+.inline-python-details[open]>summary{border-bottom:1px solid #2a3b38}
+.inline-python-details[open]>summary:after{content:"−"}
+.inline-python-body{padding:13px}
+.inline-python-body .code-task-goal{margin-top:0}
+.inline-python-body .python-editor{min-height:210px}
+.inline-python-body .test-preview{margin-bottom:5px}
+.inline-python-body .python-runtime-note{font-size:9px}
+@media(max-width:760px){
+  .topbar{display:flex;height:52px;padding:0 12px;justify-content:flex-start;border-bottom:1px solid #212d39;background:rgba(11,16,22,.94)}
+  .topbar .mobile-menu{display:grid}
+  .example-takeaways{grid-template-columns:1fr;padding:13px}
+  .example-self-check,.example-python-link{grid-column:auto}
+  .example-actions>*{max-width:100%}
+  .course-side-column{grid-row:auto}
+  .inline-python-body{padding:10px}
+  .inline-python-body .python-editor{min-height:190px}
+}

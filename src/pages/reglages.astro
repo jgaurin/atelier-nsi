@@ -1,0 +1,60 @@
+---
+import Base from "../layouts/Base.astro";
+---
+<Base titre="Sauvegarde et réglages">
+  <div class="page page-etroite">
+    <div class="surtitre">Réglages</div>
+    <h1>Ta progression</h1>
+    <p class="chapeau">
+      Ta progression (leçons validées, exercices, brouillons, révisions) est enregistrée dans ce navigateur, sur cet appareil.
+      Exporte-la de temps en temps : c'est ta sauvegarde, et c'est ainsi que tu la transfères sur un autre ordinateur.
+    </p>
+    <section class="carte" style="display:grid;gap:1rem;margin-top:1.5rem">
+      <div>
+        <h2 style="margin:0 0 .3rem;font-size:1.1rem">Sauvegarder</h2>
+        <p style="margin:0 0 .6rem;color:var(--texte-2)">Télécharge un fichier <code>.json</code> avec toute ta progression.</p>
+        <button type="button" class="bouton" data-exporter>Exporter ma progression</button>
+      </div>
+      <div>
+        <h2 style="margin:0 0 .3rem;font-size:1.1rem">Restaurer</h2>
+        <p style="margin:0 0 .6rem;color:var(--texte-2)">Remplace la progression de ce navigateur par celle d'un fichier exporté.</p>
+        <input type="file" accept="application/json,.json" data-importer />
+      </div>
+      <div>
+        <h2 style="margin:0 0 .3rem;font-size:1.1rem">Tout effacer</h2>
+        <p style="margin:0 0 .6rem;color:var(--texte-2)">Repartir de zéro sur cet appareil (pense à exporter avant).</p>
+        <button type="button" class="bouton bouton-second" data-effacer>Effacer ma progression</button>
+      </div>
+    </section>
+    <p style="margin-top:1.5rem;font-size:.88rem;color:var(--texte-3)">
+      Note : la version précédente de l'Atelier enregistrait sa progression dans un autre format ; elle n'est pas reprise ici.
+    </p>
+  </div>
+  <script>
+    import * as progression from "../scripts/progression";
+    import { annoncer } from "../scripts/dom";
+
+    document.querySelector("[data-exporter]")?.addEventListener("click", () => {
+      const lien = document.createElement("a");
+      lien.href = URL.createObjectURL(new Blob([progression.exporter()], { type: "application/json" }));
+      lien.download = `atelier-nsi-progression-${new Date().toISOString().slice(0, 10)}.json`;
+      lien.click();
+      URL.revokeObjectURL(lien.href);
+    });
+    document.querySelector<HTMLInputElement>("[data-importer]")?.addEventListener("change", async (e) => {
+      const fichier = (e.target as HTMLInputElement).files?.[0];
+      if (!fichier) return;
+      try {
+        progression.importer(await fichier.text());
+        annoncer("Progression restaurée.");
+      } catch (erreur) {
+        annoncer(`Import impossible : ${(erreur as Error).message}`);
+      }
+    });
+    document.querySelector("[data-effacer]")?.addEventListener("click", () => {
+      if (!confirm("Effacer toute ta progression sur cet appareil ? Cette action est définitive.")) return;
+      progression.toutEffacer();
+      annoncer("Progression effacée.");
+    });
+  </script>
+</Base>

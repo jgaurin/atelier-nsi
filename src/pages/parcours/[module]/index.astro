@@ -1,0 +1,60 @@
+---
+import Base from "../../../layouts/Base.astro";
+import { chargerParcours } from "../../../lib/parcours";
+import { PARTIES } from "../../../data/modules";
+import { TOUTES_LES_LIGNES } from "../../../data/programme";
+
+export async function getStaticPaths() {
+  const modules = await chargerParcours();
+  return modules.map((m) => ({ params: { module: m.id }, props: { id: m.id } }));
+}
+
+const { id } = Astro.props;
+const module = (await chargerParcours()).find((m) => m.id === id)!;
+const partie = PARTIES.find((p) => p.id === module.partie);
+const duree = module.ecrites.reduce((n, l) => n + l.duree, 0);
+const lignes = [...new Set(module.ecrites.flatMap((l) => l.entree!.data.programme))]
+  .map((idLigne) => TOUTES_LES_LIGNES.find((l) => l.id === idLigne))
+  .filter((l) => l !== undefined);
+---
+<Base titre={module.titre} description={module.description} rubrique="parcours">
+  <div class="page page-etroite" style={`--teinte: ${module.teinte}`}>
+    <nav class="fil-ariane" aria-label="Fil d'Ariane"><a href="/parcours/">Parcours</a><span aria-hidden="true">›</span><span>{partie?.titre}</span></nav>
+    <header class="module-entete" data-progres={JSON.stringify(module.ecrites.map((l) => l.cle))}>
+      <div class="surtitre">Module</div>
+      <h1>{module.titre}</h1>
+      <p class="chapeau">{module.description}</p>
+      <p style="color:var(--texte-3);font-size:.9rem">
+        {module.ecrites.length} leçon{module.ecrites.length > 1 ? "s" : ""}{duree > 0 && ` · environ ${Math.round(duree / 60 * 10) / 10} h de travail`} · <span data-progres-texte></span>
+      </p>
+      <div class="barre" aria-hidden="true"><span></span></div>
+    </header>
+
+    <ol class="lecons-module">
+      {module.lecons.map((l) => (
+        <li>
+          {l.ecrite ? (
+            <a class="carte carte-lien lecon-ligne" href={l.url}>
+              <span class="statut" data-statut-lecon={l.cle}><span class="numero">{l.numero}</span></span>
+              <span><h3>{l.titre}</h3><p>{l.resume}</p></span>
+              <span class="meta">{l.duree} min<br />{l.exercices.length} exercices</span>
+            </a>
+          ) : (
+            <div class="carte lecon-ligne a-venir">
+              <span class="statut"><span class="numero">{l.numero}</span></span>
+              <span><h3>{l.titre}</h3><p>Leçon en cours de rédaction.</p></span>
+              <span class="meta"></span>
+            </div>
+          )}
+        </li>
+      ))}
+    </ol>
+
+    {lignes.length > 0 && (
+      <section style="margin-top:2.5rem">
+        <h2 style="font-size:1.15rem">Ce que ce module couvre dans le programme officiel</h2>
+        <ul style="color:var(--texte-2)">{lignes.map((l) => <li>{l!.texte}</li>)}</ul>
+      </section>
+    )}
+  </div>
+</Base>

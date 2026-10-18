@@ -1,0 +1,108 @@
+---
+// Page principale : le parcours de l'objectif choisi (contractuel : étapes ordonnées ; CAPES : tous les modules),
+// précédé d'une ligne de statistiques et du lien « reprendre ».
+import Base from "../../layouts/Base.astro";
+import CarteModule from "../../components/CarteModule.astro";
+import { parties, leconsEcrites } from "../../lib/parcours";
+import { CALENDRIER } from "../../data/concours";
+import { OBJECTIFS, OBJECTIF_PAR_DEFAUT } from "../../data/objectifs";
+
+const lesParties = await parties();
+const lecons = await leconsEcrites();
+const parCle = new Map(lecons.map((l) => [l.cle, l]));
+const titresModules = Object.fromEntries(lesParties.flatMap((p) => p.modules).map((m) => [m.id, m.titre]));
+const modulesEnseigner = new Set(lesParties.filter((p) => p.id === "enseigner").flatMap((p) => p.modules.map((m) => m.id)));
+
+const objectifs = OBJECTIFS.map((o) => {
+  const cles = o.etapes.length ? o.etapes.flatMap((e) => e.lecons) : lecons.map((l) => l.cle);
+  const ordre = cles.map((c) => parCle.get(c)).filter((l) => l !== undefined)
+    .map((l) => ({ cle: l.cle, titre: l.titre, url: l.url, module: titresModules[l.module] }));
+  // Exercices comptés : ceux du niveau visé, et tous ceux des modules sur l'enseignement.
+  const idsExercices = cles.flatMap((c) => {
+    const l = parCle.get(c);
+    if (!l) return [];
+    return l.exercices.filter((e) => modulesEnseigner.has(l.module) || e.niveau <= o.niveauMax).map((e) => e.id);
+  });
+  return { ...o, cles, ordre, idsExercices };
+});
+---
+<Base titre="Parcours" rubrique="parcours">
+  <div class="page">
+    <div class="parcours-tete">
+      <h1>Mon parcours</h1>
+      <div class="choix-objectif" role="radiogroup" aria-label="Objectif de préparation">
+        {OBJECTIFS.map((o) => (
+          <button type="button" role="radio" data-choisir-objectif={o.id} aria-checked={String(o.id === OBJECTIF_PAR_DEFAUT)}>{o.titre}</button>
+        ))}
+      </div>
+    </div>
+
+    {objectifs.map((o) => (
+      <section data-objectif={o.id} hidden={o.id !== OBJECTIF_PAR_DEFAUT}>
+        <div class="bandeau-stats">
+          <a class="bandeau-reprendre" href={o.ordre[0]?.url} data-reprendre={JSON.stringify(o.ordre)}>
+            <span class="bandeau-etiquette" data-reprendre-surtitre>Commencer</span>
+            <strong data-reprendre-titre>{o.ordre[0]?.titre}</strong>
+          </a>
+          <span class="bandeau-chiffre"><strong data-progres-global={JSON.stringify(o.cles)}>0</strong> / {o.cles.length} leçons validées</span>
+          <span class="bandeau-chiffre"><strong data-exercices-total={JSON.stringify(o.idsExercices)}>0</strong> / {o.idsExercices.length} exercices réussis</span>
+          <a class="bandeau-chiffre" href="/revisions/"><strong data-cartes-dues>0</strong> cartes à réviser</a>
+          {o.id === "capes" && (
+            <span class="bandeau-chiffre" data-calendrier={CALENDRIER.debutEcrits}><strong data-jours>—</strong> jours avant les écrits</span>
+          )}
+        </div>
+        <p class="parcours-intro">{o.description} {o.conseil}</p>
+
+        {o.etapes.length > 0 ? (
+          <div class="etapes">
+            {o.etapes.map((e, i) => (
+              <section class="carte etape" data-progres={JSON.stringify(e.lecons)}>
+                <div class="etape-tete">
+                  <span class="etape-numero">{i + 1}</span>
+                  <div>
+                    <h2>{e.titre}</h2>
+                    <p>{e.description}</p>
+                  </div>
+                  <span class="etape-compte" data-progres-texte></span>
+                </div>
+                <div class="barre" aria-hidden="true"><span></span></div>
+                <ol class="liste-lecons etape-lecons">
+                  {e.lecons.map((c, j) => {
+                    const l = parCle.get(c)!;
+                    return (
+                      <li>
+                        <a href={l.url}>
+                          <span class="statut" data-statut-lecon={l.cle}><span class="numero">{j + 1}</span></span>
+                          <span class="etape-titre">{l.titre}<small>{titresModules[l.module]}</small></span>
+                        </a>
+                      </li>
+                    );
+                  })}
+                </ol>
+              </section>
+            ))}
+            <p style="color:var(--texte-3);font-size:.9rem">
+              Les autres modules (mathématiques discrètes, automates, Java, méthode des épreuves du CAPES…) restent accessibles en choisissant l'objectif « CAPES NSI 2027 ».
+            </p>
+          </div>
+        ) : (
+          <>
+            <p><a href="/parcours/programme/">Voir comment chaque ligne du programme officiel est couverte →</a></p>
+            {lesParties.map((partie) => (
+              <section class="partie">
+                <div class="partie-tete"><h2>{partie.titre}</h2><p>{partie.description}</p></div>
+                <div class="grille grille-3">
+                  {partie.modules.map((m) => <CarteModule module={m} />)}
+                </div>
+              </section>
+            ))}
+          </>
+        )}
+      </section>
+    ))}
+  </div>
+
+  <script>
+    import "../../scripts/tableau";
+  </script>
+</Base>

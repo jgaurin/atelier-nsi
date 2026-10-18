@@ -1,0 +1,59 @@
+---
+import Base from "../../layouts/Base.astro";
+import { getCollection } from "astro:content";
+import { EPREUVES, CALENDRIER } from "../../data/concours";
+import { leconsEcrites } from "../../lib/parcours";
+
+const sujets = (await getCollection("sujets")).sort((a, b) => a.data.ordre - b.data.ordre);
+const lecons = await leconsEcrites();
+const leconExiste = (url?: string) => url && lecons.some((l) => l.url === url);
+---
+<Base titre="Épreuves" rubrique="epreuves">
+  <div class="page page-etroite">
+    <div class="surtitre">Épreuves du concours</div>
+    <h1>Les quatre épreuves du CAPES NSI bac+3</h1>
+    <p class="chapeau">
+      Deux écrits de 4 heures pour être admissible, puis deux oraux. Écrits {CALENDRIER.libelleEcrits} ;
+      inscriptions {CALENDRIER.libelleInscriptions}. Chaque épreuve est notée sur 20 ; certaines notes sont éliminatoires.
+    </p>
+
+    {EPREUVES.map((e) => {
+      const liste = sujets.filter((s) => s.data.epreuve === e.id);
+      return (
+        <section class="carte epreuve" id={e.id} style="margin:1.5rem 0;scroll-margin-top:5rem">
+          <div class="puces"><span class="puce puce-accent">Coefficient {e.coefficient}</span><span class="puce">{e.duree}</span></div>
+          <h2 style="margin:.3rem 0 0">{e.court}</h2>
+          <p style="font-weight:600;color:var(--texte)">{e.resume}</p>
+          <details>
+            <summary style="cursor:pointer;color:var(--texte-2);font-size:.92rem">Texte officiel de l'épreuve</summary>
+            <p style="margin-top:.6rem">{e.officiel}</p>
+          </details>
+          <ul style="margin:.4rem 0;color:var(--texte-2);font-size:.95rem">{e.conseils.map((c) => <li>{c}</li>)}</ul>
+          <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.5rem">
+            {leconExiste(e.methode) && <a class="bouton bouton-petit" href={e.methode}>La méthode pas à pas →</a>}
+            {e.sujetZero && <a class="bouton bouton-petit bouton-second" href={e.sujetZero} target="_blank" rel="noopener">Sujet zéro officiel (PDF) ↗</a>}
+          </div>
+          {liste.length > 0 && (
+            <div style="margin-top:1rem">
+              <h3 style="font-size:1rem;margin:0 0 .5rem">Sujets d'entraînement (originaux, corrigés)</h3>
+              <div class="grille grille-2">
+                {liste.map((s) => (
+                  <a class="carte carte-lien" href={`/epreuves/${s.id}/`} style="padding:1rem">
+                    <strong>{s.data.titre}</strong>
+                    <p style="margin:.3rem 0 0;font-size:.9rem">{s.data.resume}</p>
+                    <p style="margin:.4rem 0 0;font-size:.8rem;color:var(--texte-3)">{Math.floor(s.data.duree / 60)} h{s.data.duree % 60 ? String(s.data.duree % 60).padStart(2, "0") : ""} · {s.data.themes.join(" · ")}</p>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+        </section>
+      );
+    })}
+
+    <p style="font-size:.88rem;color:var(--texte-3)">
+      Les sujets d'entraînement de l'Atelier sont originaux : ils imitent le format des sujets zéro mais ne sont pas des sujets officiels.
+      Source des formats : <a href="https://www.devenirenseignant.gouv.fr/les-epreuves-du-capes-externe-bac3-section-numerique-et-sciences-informatiques-1459" target="_blank" rel="noopener">devenirenseignant.gouv.fr</a>.
+    </p>
+  </div>
+</Base>

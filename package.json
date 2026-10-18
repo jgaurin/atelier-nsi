@@ -1,0 +1,40 @@
+{
+  "name": "atelier-nsi",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "description": "Préparation à l'enseignement de la NSI et de la SNT (entretien de professeur contractuel, CAPES externe NSI) : cours, exercices corrigés, révisions et épreuves blanches.",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "node scripts/verifier.mjs"
+  },
+  "dependencies": {
+    "@codemirror/commands": "6.11.1",
+    "@codemirror/lang-javascript": "6.2.5",
+    "@codemirror/lang-python": "6.2.1",
+    "@codemirror/lang-sql": "6.10.0",
+    "@codemirror/language": "6.13.1",
+    "@codemirror/state": "6.7.6",
+    "@codemirror/view": "6.43.14",
+    "@lezer/highlight": "1.2.5",
+    "astro": "5.18.2",
+    "codemirror": "6.0.2",
+    "katex": "0.16.47",
+    "mdast-util-to-string": "4.0.0",
+    "mermaid": "11.17.2",
+    "rehype-katex": "7.0.1",
+    "remark-directive": "3.0.1",
+    "remark-gfm": "4.0.1",
+    "remark-math": "6.0.0",
+    "remark-parse": "11.0.0",
+    "sql.js": "1.15.0",
+    "unified": "11.0.5",
+    "unist-util-visit": "5.1.0",
+    "yaml": "2.9.1"
+  }
+}

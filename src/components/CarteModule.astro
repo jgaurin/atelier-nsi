@@ -1,0 +1,21 @@
+---
+// Carte d'un module : titre, description, nombre de leçons et progression (remplie côté navigateur).
+import type { InfoModule } from "../lib/parcours";
+
+interface Props { module: InfoModule }
+const { module } = Astro.props;
+const nbExercices = module.ecrites.reduce((n, l) => n + l.exercices.length, 0);
+---
+<a class="carte carte-lien carte-module" href={module.url} style={`--teinte: ${module.teinte}`} data-progres={JSON.stringify(module.ecrites.map((l) => l.cle))}>
+  <h3>{module.titre}</h3>
+  <p>{module.description}</p>
+  <div class="barre" aria-hidden="true"><span></span></div>
+  <div class="pied-carte">
+    <span>
+      {module.ecrites.length} leçon{module.ecrites.length > 1 ? "s" : ""}
+      {module.ecrites.length < module.lecons.length && ` (+ ${module.lecons.length - module.ecrites.length} en rédaction)`}
+      {nbExercices > 0 && ` · ${nbExercices} exercices`}
+    </span>
+    <span data-progres-texte></span>
+  </div>
+</a>

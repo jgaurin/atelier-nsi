@@ -1,0 +1,3 @@
+# Fins de ligne : LF dans le dépôt, CRLF pour le lanceur Windows (sinon il ne marche pas une fois cloné).
+* text=auto
+*.bat text eol=crlf

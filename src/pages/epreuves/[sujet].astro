@@ -1,0 +1,40 @@
+---
+// Un sujet d'entraînement : énoncé complet, chronomètre, et un corrigé par question.
+import Base from "../../layouts/Base.astro";
+import { getCollection, render } from "astro:content";
+import { EPREUVES } from "../../data/concours";
+
+export async function getStaticPaths() {
+  const sujets = await getCollection("sujets");
+  return sujets.map((s) => ({ params: { sujet: s.id }, props: { sujet: s } }));
+}
+
+const { sujet } = Astro.props;
+const { Content } = await render(sujet);
+const epreuve = EPREUVES.find((e) => e.id === sujet.data.epreuve)!;
+---
+<Base titre={sujet.data.titre} description={sujet.data.resume} rubrique="epreuves">
+  <div class="page page-etroite" data-lecon={`sujet/${sujet.id}`}>
+    <nav class="fil-ariane" aria-label="Fil d'Ariane"><a href="/epreuves/">Épreuves</a><span aria-hidden="true">›</span><a href={`/epreuves/#${epreuve.id}`}>{epreuve.court}</a></nav>
+    <div class="surtitre">Sujet d'entraînement · {epreuve.court}</div>
+    <h1>{sujet.data.titre}</h1>
+    <p class="chapeau">{sujet.data.resume}</p>
+    <div class="carte chrono" data-chrono={sujet.id} data-duree={sujet.data.duree * 60}>
+      <div><div class="temps" data-temps>0:00:00</div><small style="color:var(--texte-3)" data-reste>Durée de l'épreuve : {Math.floor(sujet.data.duree / 60)} h{sujet.data.duree % 60 ? String(sujet.data.duree % 60).padStart(2, "0") : ""}</small></div>
+      <div style="display:flex;gap:.4rem">
+        <button type="button" class="bouton bouton-petit" data-chrono-action="basculer">Démarrer</button>
+        <button type="button" class="bouton bouton-petit bouton-discret" data-chrono-action="remettre">Remettre à zéro</button>
+      </div>
+    </div>
+    <p style="font-size:.9rem;color:var(--texte-3)">
+      Conditions réelles : rédige tes réponses sans regarder les corrigés, puis corrige-toi question par question.
+      Tes réponses restent enregistrées sur cet appareil.
+    </p>
+    <div class="contenu">
+      <Content />
+    </div>
+  </div>
+  <script>
+    import "../../scripts/sujet";
+  </script>
+</Base>

@@ -1,0 +1,76 @@
+---
+// Squelette commun à toutes les pages : en-tête, navigation (barre du bas sur téléphone), pied de page.
+import "katex/dist/katex.min.css";
+import "../styles/global.css";
+
+interface Props {
+  titre: string;
+  description?: string;
+  /** Rubrique active dans la navigation. */
+  rubrique?: "parcours" | "epreuves" | "revisions" | "labo" | "";
+}
+
+const { titre, description = "Préparation au CAPES externe NSI bac+3 : cours complets, exercices corrigés, révisions et épreuves blanches.", rubrique = "" } = Astro.props;
+const courant = (r: string) => (rubrique === r ? "page" : undefined);
+---
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#4a3dce" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <title>{titre === "Atelier NSI" ? titre : `${titre} · Atelier NSI`}</title>
+    <script is:inline>
+      (function () {
+        var choix = null;
+        try { choix = localStorage.getItem("atelier-nsi:theme"); } catch (e) {}
+        var sombre = choix ? choix === "sombre" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+        document.documentElement.dataset.theme = sombre ? "sombre" : "clair";
+      })();
+    </script>
+  </head>
+  <body>
+    <a class="visuellement-cache" href="#contenu">Aller au contenu</a>
+    <header class="entete">
+      <a class="marque" href="/parcours/" aria-label="Atelier NSI, mon parcours">
+        <span class="marque-logo" aria-hidden="true">&gt;_</span>
+        <span>Atelier NSI<small>Enseigner NSI et SNT</small></span>
+      </a>
+      <nav class="nav-principale" aria-label="Navigation principale">
+        <a href="/parcours/" aria-current={courant("parcours")}>Parcours</a>
+        <a href="/epreuves/" aria-current={courant("epreuves")}>Épreuves</a>
+        <a href="/revisions/" aria-current={courant("revisions")}>Révisions <span class="pastille-compte" data-compte-revisions></span></a>
+      </nav>
+      <div class="nav-outils">
+        <a href="/labo/" aria-current={courant("labo")} title="Labo : tester du Python ou du SQL librement">▶ <span class="texte-bouton">Labo</span></a>
+        <button type="button" data-basculer-theme title="Mode clair / sombre" aria-label="Basculer entre mode clair et mode sombre">◐</button>
+        <a href="/reglages/" title="Sauvegarde et réglages" aria-label="Sauvegarde et réglages">⚙</a>
+      </div>
+    </header>
+
+    <main id="contenu">
+      <slot />
+    </main>
+
+    <footer class="pied">
+      <span>Atelier NSI — se préparer à enseigner NSI et SNT : entretien de professeur contractuel et CAPES externe NSI (session 2027).</span>
+      <span>
+        <a href="/parcours/programme/">Couverture du programme officiel</a> ·
+        <a href="https://www.devenirenseignant.gouv.fr/les-epreuves-du-capes-externe-bac3-section-numerique-et-sciences-informatiques-1459" rel="noopener" target="_blank">Épreuves (site officiel)</a>
+      </span>
+    </footer>
+
+    <nav class="nav-mobile" aria-label="Navigation">
+            <a href="/parcours/" aria-current={courant("parcours")}><span class="icone" aria-hidden="true">▦</span>Parcours</a>
+      <a href="/epreuves/" aria-current={courant("epreuves")}><span class="icone" aria-hidden="true">◷</span>Épreuves</a>
+      <a href="/revisions/" aria-current={courant("revisions")}><span class="icone" aria-hidden="true">↻</span>Révisions<span class="pastille-compte" data-compte-revisions></span></a>
+      <a href="/labo/" aria-current={courant("labo")}><span class="icone" aria-hidden="true">▶</span>Labo</a>
+    </nav>
+
+    <script>
+      import "../scripts/site";
+    </script>
+  </body>
+</html>

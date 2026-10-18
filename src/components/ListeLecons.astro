@@ -1,0 +1,27 @@
+---
+// Liste numérotée des leçons d'un module, avec leur statut (rempli côté navigateur).
+import type { InfoModule } from "../lib/parcours";
+
+interface Props {
+  module: InfoModule;
+  courante?: string;
+}
+const { module, courante } = Astro.props;
+---
+<ol class="liste-lecons">
+  {module.lecons.map((l) => (
+    <li>
+      {l.ecrite ? (
+        <a href={l.url} aria-current={l.cle === courante ? "page" : undefined}>
+          <span class="statut" data-statut-lecon={l.cle}><span class="numero">{l.numero}</span></span>
+          <span>{l.titre}</span>
+        </a>
+      ) : (
+        <span class="a-venir" title="Leçon en cours de rédaction">
+          <span class="statut"><span class="numero">{l.numero}</span></span>
+          <span>{l.titre}</span>
+        </span>
+      )}
+    </li>
+  ))}
+</ol>

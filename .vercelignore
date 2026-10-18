@@ -1,0 +1,10 @@
+# Fichiers à ne pas envoyer à Vercel lors d'un déploiement en ligne de commande (npx vercel).
+# Vercel reconstruit le site lui-même (npm install puis npm run build).
+node_modules
+dist
+.astro
+.vercel
+.env
+.env.*
+_ancienne-version
+.claude

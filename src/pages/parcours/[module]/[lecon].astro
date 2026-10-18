@@ -1,0 +1,96 @@
+---
+// Page d'une leçon. L'ordre est toujours le même :
+// objectifs → cours (schémas, code) → exemple guidé → l'essentiel → exercices → validation.
+import Base from "../../../layouts/Base.astro";
+import ListeLecons from "../../../components/ListeLecons.astro";
+import { render } from "astro:content";
+import { chargerParcours, leconsEcrites, voisines } from "../../../lib/parcours";
+
+export async function getStaticPaths() {
+  const modules = await chargerParcours();
+  return modules.flatMap((m) => m.ecrites.map((l) => ({ params: { module: m.id, lecon: l.slug }, props: { cle: l.cle } })));
+}
+
+const { cle } = Astro.props;
+const modules = await chargerParcours();
+const module = modules.find((m) => m.id === cle.split("/")[0])!;
+const lecon = module.ecrites.find((l) => l.cle === cle)!;
+const entree = lecon.entree!;
+const { Content, headings } = await render(entree);
+const { precedente, suivante } = await voisines(cle);
+const toutes = await leconsEcrites();
+const prerequis = entree.data.prerequis.map((c) => toutes.find((l) => l.cle === c)).filter((l) => l !== undefined);
+const sommaire = headings.filter((h) => h.depth === 2);
+const idsExercices = lecon.exercices.map((e) => e.id);
+const parNiveau = [1, 2, 3, 4].map((n) => lecon.exercices.filter((e) => e.niveau === n).length);
+---
+<Base titre={lecon.titre} description={lecon.resume} rubrique="parcours">
+  <div class="lecon-grille" style={`--teinte: ${module.teinte}`}>
+    <aside class="lecon-module" aria-label={`Leçons du module ${module.titre}`}>
+      <a class="module-titre" href={module.url}><span class="pastille-module"></span>{module.titre}</a>
+      <ListeLecons module={module} courante={cle} />
+    </aside>
+
+    <article class="lecon-corps" data-lecon={cle} data-partie={module.partie}>
+      <header class="lecon-tete">
+        <nav class="fil-ariane" aria-label="Fil d'Ariane">
+          <a href="/parcours/">Parcours</a><span aria-hidden="true">›</span><a href={module.url}>{module.titre}</a>
+        </nav>
+        <div class="surtitre">Leçon {lecon.numero} sur {module.lecons.length}</div>
+        <h1>{lecon.titre}</h1>
+        <p class="chapeau">{lecon.resume}</p>
+        <div class="puces">
+          <span class="puce">⏱ {lecon.duree} min</span>
+          {lecon.exercices.length > 0 && <span class="puce">{lecon.exercices.length} exercices corrigés</span>}
+          {parNiveau[3] > 0 && <span class="puce puce-accent">{parNiveau[3]} de type concours</span>}
+          <span class="puce statut-texte" data-statut-lecon={cle}></span>
+        </div>
+        <section class="objectifs">
+          <h2>À la fin de cette leçon, tu sauras</h2>
+          <ul>{entree.data.objectifs.map((o) => <li set:html={o.replace(/`([^`]+)`/g, "<code>$1</code>")} />)}</ul>
+          {prerequis.length > 0 && (
+            <p class="prerequis">Avant de commencer : {prerequis.map((p, i) => <>{i > 0 && " · "}<a href={p!.url}>{p!.titre}</a></>)}</p>
+          )}
+        </section>
+        <details class="sommaire-mobile">
+          <summary>Les leçons de « {module.titre} »</summary>
+          <ListeLecons module={module} courante={cle} />
+        </details>
+      </header>
+
+      <div class="contenu">
+        <Content />
+      </div>
+
+      <section class="validation" data-validation={cle}>
+        <h2 data-validation-titre>As-tu bien compris cette leçon ?</h2>
+        <p>
+          {idsExercices.length > 0 && <>Exercices réussis : <strong data-exercices-reussis={JSON.stringify(idsExercices)}>0 / {idsExercices.length}</strong>. </>}
+          Valide la leçon quand tu sais refaire les exercices sans regarder le corrigé. Ses cartes de révision rejoindront alors tes révisions espacées.
+        </p>
+        <div class="boutons">
+          <button type="button" class="bouton bouton-vert" data-valider>Je valide cette leçon</button>
+          {suivante && <a class="bouton bouton-second" href={suivante.url}>Leçon suivante →</a>}
+        </div>
+      </section>
+
+      <nav class="suite" aria-label="Leçons précédente et suivante">
+        {precedente && <a class="carte carte-lien" href={precedente.url}><small>← Précédente</small>{precedente.titre}</a>}
+        {suivante && <a class="carte carte-lien suivante" href={suivante.url}><small>Suivante →</small>{suivante.titre}</a>}
+      </nav>
+    </article>
+
+    <aside class="lecon-sommaire" aria-label="Sur cette page">
+      <div class="sommaire-titre">Sur cette page</div>
+      <ol class="sommaire-liste">
+        {sommaire.map((h) => (
+          <li class={h.slug === "exercices" ? "sommaire-exercices" : undefined}><a href={`#${h.slug}`} data-cible={h.slug}>{h.text}</a></li>
+        ))}
+      </ol>
+    </aside>
+  </div>
+
+  <script>
+    import "../../../scripts/lecon";
+  </script>
+</Base>

@@ -1,0 +1,273 @@
+// La carte du parcours : parties → modules → leçons prévues.
+// Une leçon prévue existe dès que le fichier src/content/lecons/<module>/<NN>-<slug>.md est écrit ;
+// tant qu'il n'existe pas, elle s'affiche « en rédaction » dans le parcours.
+
+export interface Partie {
+  id: string;
+  titre: string;
+  description: string;
+}
+
+export interface Module {
+  id: string;
+  partie: string;
+  titre: string;
+  description: string;
+  /** Teinte (0-360) utilisée pour la couleur du module. */
+  teinte: number;
+  /** Leçons prévues, dans l'ordre : [slug, titre]. */
+  plan: [string, string][];
+}
+
+export const PARTIES: Partie[] = [
+  { id: "programmer", titre: "Programmer", description: "Python de zéro, puis l'objet, UML et Java." },
+  { id: "algorithmique", titre: "Algorithmique et structures de données", description: "Concevoir, prouver et mesurer un algorithme ; choisir la bonne structure." },
+  { id: "donnees", titre: "Information et données", description: "Coder l'information, interroger une base de données, comprendre le Web." },
+  { id: "machines", titre: "Architecture, systèmes et réseaux", description: "Du transistor au réseau : circuits, processeur, système d'exploitation, Internet." },
+  { id: "maths", titre: "Mathématiques pour l'informatique", description: "Logique, preuves, dénombrement, probabilités, graphes, automates et langages." },
+  { id: "enseigner", titre: "Lycée et épreuves", description: "Les programmes SNT et NSI, et la préparation aux quatre épreuves du concours." },
+];
+
+export const MODULES: Module[] = [
+  {
+    id: "python",
+    partie: "programmer",
+    titre: "Programmer en Python",
+    description: "Les bases de la programmation impérative, depuis la première variable jusqu'aux fichiers et aux tests.",
+    teinte: 220,
+    plan: [
+      ["premiers-pas", "Variables, types et expressions"],
+      ["conditions", "Booléens et instructions conditionnelles"],
+      ["boucles", "Boucles et traces d'exécution"],
+      ["fonctions", "Fonctions, portée et spécification"],
+      ["listes", "Listes et tableaux"],
+      ["chaines", "Chaînes de caractères"],
+      ["tuples-dictionnaires", "Tuples et dictionnaires"],
+      ["references", "Références, mutabilité et copies"],
+      ["tests-erreurs", "Tests, assertions et exceptions"],
+      ["modules-fichiers", "Modules, fichiers et bonnes pratiques"],
+    ],
+  },
+  {
+    id: "objet",
+    partie: "programmer",
+    titre: "Programmation objet, UML et Java",
+    description: "Classes, encapsulation, composition, héritage et interfaces ; lire et écrire des diagrammes UML ; les bases de Java.",
+    teinte: 265,
+    plan: [
+      ["classes-objets", "Classes, objets et méthodes"],
+      ["encapsulation", "Encapsulation et interface d'une classe"],
+      ["associations", "Association, agrégation et composition"],
+      ["heritage", "Héritage, polymorphisme et interfaces"],
+      ["uml", "Diagrammes UML : classes et cas d'utilisation"],
+      ["java-bases", "Java : les bases du langage"],
+      ["java-objet", "Java : classes, interfaces et collections"],
+    ],
+  },
+  {
+    id: "algo",
+    partie: "algorithmique",
+    titre: "Méthodes algorithmiques",
+    description: "Mesurer le coût, prouver la correction, puis les grandes méthodes : recherche, tris, récursivité, diviser pour régner, glouton, programmation dynamique.",
+    teinte: 160,
+    plan: [
+      ["complexite", "Coût d'un algorithme"],
+      ["preuve", "Prouver un algorithme : invariant et variant"],
+      ["recherche", "Recherche séquentielle et dichotomique"],
+      ["tris-simples", "Tris par sélection et par insertion"],
+      ["recursivite", "Récursivité"],
+      ["diviser-pour-regner", "Diviser pour régner"],
+      ["gloutons", "Algorithmes gloutons"],
+      ["programmation-dynamique", "Programmation dynamique"],
+      ["recherche-textuelle", "Recherche textuelle"],
+      ["k-plus-proches-voisins", "Les k plus proches voisins"],
+    ],
+  },
+  {
+    id: "structures",
+    partie: "algorithmique",
+    titre: "Structures de données",
+    description: "Types abstraits et implémentations : listes chaînées, piles, files, tas, arbres, arbres binaires de recherche, graphes et dictionnaires.",
+    teinte: 135,
+    plan: [
+      ["types-abstraits", "Type abstrait et implémentation"],
+      ["listes-chainees", "Tableaux et listes chaînées"],
+      ["piles-files", "Piles et files"],
+      ["tas", "Files de priorité et tas"],
+      ["arbres-binaires", "Arbres et arbres binaires"],
+      ["abr", "Arbres binaires de recherche"],
+      ["graphes", "Graphes : définitions et représentations"],
+      ["parcours-graphes", "Parcours de graphes"],
+      ["plus-courts-chemins", "Plus courts chemins : Dijkstra"],
+      ["dictionnaires", "Dictionnaires et tables de hachage"],
+    ],
+  },
+  {
+    id: "representation",
+    partie: "donnees",
+    titre: "Représentation de l'information",
+    description: "Comment une machine code nombres, textes, images et structures : bases, complément à deux, flottants, Unicode, mémoire.",
+    teinte: 30,
+    plan: [
+      ["bases", "Bases de numération"],
+      ["entiers", "Entiers et complément à deux"],
+      ["flottants", "Nombres flottants"],
+      ["texte", "Booléens, caractères et texte"],
+      ["memoire", "Les données en mémoire"],
+    ],
+  },
+  {
+    id: "bdd",
+    partie: "donnees",
+    titre: "Bases de données et SQL",
+    description: "Des données en table au modèle relationnel, puis SQL pour interroger, agréger et modifier une base.",
+    teinte: 195,
+    plan: [
+      ["tables", "Données en table"],
+      ["modele-relationnel", "Le modèle relationnel"],
+      ["sql-selection", "SQL : interroger une table"],
+      ["sql-jointures", "SQL : jointures et agrégats"],
+      ["sql-modification", "SQL : créer et modifier"],
+      ["sgbd", "SGBD, transactions et accès depuis Python"],
+    ],
+  },
+  {
+    id: "web",
+    partie: "donnees",
+    titre: "Le Web",
+    description: "URL, HTTP et modèle client-serveur ; HTML, CSS, XML ; JavaScript côté client.",
+    teinte: 345,
+    plan: [
+      ["http", "Le Web : URL, HTTP et client-serveur"],
+      ["html-css", "HTML et CSS"],
+      ["javascript", "JavaScript côté client"],
+      ["xml-json", "Formats de données : XML et JSON"],
+    ],
+  },
+  {
+    id: "architecture",
+    partie: "machines",
+    titre: "Architecture des ordinateurs",
+    description: "Logique booléenne et circuits, architecture de von Neumann, programmation en assembleur.",
+    teinte: 10,
+    plan: [
+      ["circuits", "Logique booléenne et circuits"],
+      ["von-neumann", "L'architecture de von Neumann"],
+      ["assembleur", "Programmer en assembleur"],
+    ],
+  },
+  {
+    id: "systemes",
+    partie: "machines",
+    titre: "Systèmes d'exploitation",
+    description: "Le rôle du système, les processus et leur ordonnancement, les fichiers, le shell, les utilisateurs et les droits.",
+    teinte: 45,
+    plan: [
+      ["systeme", "Rôle et architecture d'un système d'exploitation"],
+      ["processus", "Processus et ordonnancement"],
+      ["fichiers-shell", "Fichiers et commandes shell"],
+      ["utilisateurs-droits", "Utilisateurs, droits et ressources"],
+    ],
+  },
+  {
+    id: "reseaux",
+    partie: "machines",
+    titre: "Réseaux",
+    description: "Le modèle en couches, du câble au routage IP, puis TCP/UDP et la sécurisation des communications.",
+    teinte: 290,
+    plan: [
+      ["couches", "Le modèle en couches"],
+      ["physique-liaison", "Couches physique et liaison"],
+      ["ip-routage", "Adressage IP et routage"],
+      ["transport", "La couche transport : TCP et UDP"],
+      ["securite", "Sécuriser les communications"],
+    ],
+  },
+  {
+    id: "maths",
+    partie: "maths",
+    titre: "Mathématiques discrètes",
+    description: "Logique des propositions, raisonnements et preuves, ensembles et relations, dénombrement, probabilités, théorie des graphes.",
+    teinte: 240,
+    plan: [
+      ["logique", "Logique des propositions"],
+      ["raisonnements", "Raisonnements et preuves"],
+      ["ensembles", "Ensembles, relations et fonctions"],
+      ["denombrement", "Dénombrement"],
+      ["probabilites", "Probabilités discrètes"],
+      ["graphes", "Graphes : vocabulaire et propriétés"],
+    ],
+  },
+  {
+    id: "langages",
+    partie: "maths",
+    titre: "Automates et langages",
+    description: "Automates finis déterministes ou non, expressions rationnelles, et ce qu'un programme ne peut pas calculer.",
+    teinte: 310,
+    plan: [
+      ["automates", "Automates finis déterministes"],
+      ["automates-non-deterministes", "Automates non déterministes et déterminisation"],
+      ["expressions-rationnelles", "Langages et expressions rationnelles"],
+      ["calculabilite", "Calculabilité et décidabilité"],
+    ],
+  },
+  {
+    id: "contractuel",
+    partie: "enseigner",
+    titre: "Devenir professeur contractuel",
+    description: "Le recrutement et l'entretien des contractuels, la gestion de classe, les premiers cours et les questions qu'on te posera.",
+    teinte: 175,
+    plan: [
+      ["recrutement", "Le recrutement et l'entretien des contractuels"],
+      ["gerer-une-classe", "Gérer une classe"],
+      ["premiers-cours", "Préparer ses premiers cours"],
+      ["questions-entretien", "S'entraîner aux questions de l'entretien"],
+    ],
+  },
+  {
+    id: "lycee",
+    partie: "enseigner",
+    titre: "Les programmes du lycée",
+    description: "Ce qu'on enseigne en SNT et en NSI, les thèmes propres à SNT, et comment construire une activité.",
+    teinte: 95,
+    plan: [
+      ["programmes", "Les programmes de SNT et de NSI"],
+      ["snt-internet-reseaux-sociaux", "SNT : Internet, Web et réseaux sociaux"],
+      ["snt-donnees-localisation", "SNT : données structurées, localisation et cartographie"],
+      ["snt-photo-objets", "SNT : photographie numérique et objets connectés"],
+      ["didactique", "Concevoir une activité pour des élèves"],
+    ],
+  },
+  {
+    id: "epreuves",
+    partie: "enseigner",
+    titre: "Méthode des épreuves",
+    description: "Comment aborder les deux écrits de 4 heures et l'oral disciplinaire avec réalisation informatique.",
+    teinte: 0,
+    plan: [
+      ["ecrit-1", "Écrit 1 : résoudre un problème"],
+      ["ecrit-2", "Écrit 2 : analyser et faire évoluer une solution"],
+      ["oral-1", "Oral 1 : réalisation informatique et exposé"],
+    ],
+  },
+  {
+    id: "entretien",
+    partie: "enseigner",
+    titre: "L'entretien avec le jury",
+    description: "La présentation de 5 minutes, les valeurs de la République, la posture du fonctionnaire et les mises en situation.",
+    teinte: 50,
+    plan: [
+      ["presentation", "Se présenter en 5 minutes"],
+      ["valeurs-laicite", "Valeurs de la République et laïcité"],
+      ["fonctionnaire", "Droits et obligations du fonctionnaire"],
+      ["egalite", "Égalité, discriminations et stéréotypes"],
+      ["transition-ecologique", "Transition écologique et numérique responsable"],
+      ["epanouissement", "L'épanouissement de l'élève"],
+      ["mises-en-situation", "S'entraîner aux mises en situation"],
+    ],
+  },
+];
+
+export function moduleParId(id: string): Module | undefined {
+  return MODULES.find((m) => m.id === id);
+}

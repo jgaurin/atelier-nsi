@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1016">
+  <meta name="description" content="Ta préparation guidée au CAPES externe NSI bac+3 : cours, exercices, révisions et entraînements aux épreuves.">
+  <title>Atelier NSI — Préparation CAPES</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="theme.css">
+  <link rel="stylesheet" href="flashcards.css">
+  <link rel="stylesheet" href="practice.css">
+  <link rel="stylesheet" href="curriculum.css">
+  <link rel="stylesheet" href="lesson-interactions.css">
+  <link rel="stylesheet" href="page-rhythm.css">
+  <link rel="stylesheet" href="lesson-media.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#" data-nav="curriculum" aria-label="Atelier NSI, parcours de cours">
+        <span><strong>atelier<span class="brand-accent">nsi</span></strong><small>CAPES · session 2027</small></span>
+      </a>
+      <div class="side-label">TON ESPACE</div>
+      <nav class="main-nav" aria-label="Navigation principale">
+        <button class="nav-item active" data-nav="curriculum"><span class="nav-icon">▦</span>Parcours de cours<span class="nav-count" id="course-count">0/64</span></button>
+        <button class="nav-item" data-nav="review"><span class="nav-icon">↻</span>Révisions espacées<span class="nav-count" id="review-count">0</span></button>
+        <button class="nav-item" data-nav="exams"><span class="nav-icon">◷</span>Épreuves du concours</button>
+      </nav>
+      <div class="side-label side-label-lower">TON OBJECTIF</div>
+      <div class="goal-card">
+        <div class="goal-head"><span class="goal-dot"></span><span>Écrits du CAPES</span></div>
+        <div class="goal-date">9–19 mars 2027</div>
+        <div class="goal-track" role="progressbar" aria-label="Avancement des jours de préparation jusqu’au 9 mars 2027" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="goal-track"></span></div>
+        <div class="goal-foot"><span id="days-left">—</span><span>jours</span></div>
+      </div>
+      <div class="sidebar-bottom">
+        <div class="mini-avatar">N</div>
+        <div class="profile-copy"><strong>Mon espace</strong><small id="profile-status">Sauvegarde locale</small></div>
+        <button class="icon-button" id="settings-button" aria-label="Réglages" title="Réglages">⚙</button>
+      </div>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar">
+        <button class="mobile-menu icon-button" id="mobile-menu" aria-label="Ouvrir le menu">☰</button>
+      </header>
+      <div id="app" class="content-area" tabindex="-1"></div>
+      <footer class="app-footer"><span>ATELIER NSI</span><span>Un pas à la fois, une notion à la fois.</span><button data-action="sources">Sources officielles ↗</button></footer>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <div class="modal-backdrop" id="modal-backdrop" hidden>
+    <section class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"></section>
+  </div>
+  <script src="config.js"></script>
+  <script src="code-exercises.js"></script>
+  <script src="flashcards.js"></script>
+  <script src="practice-bank.js"></script>
+  <script src="curriculum.js"></script>
+  <script src="curriculum-depth.js"></script>
+  <script src="curriculum-deepening.js"></script>
+  <script src="theme-sheets.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
