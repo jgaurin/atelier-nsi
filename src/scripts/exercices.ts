@@ -4,7 +4,7 @@ import * as progression from "./progression";
 import { executerPython, pythonEstPret, type TestPython } from "./python";
 import { comparer, executerSQL, schemaBase } from "./sql";
 import { correcteurPourRedaction, type Correction } from "./correction";
-import { bouton, differer, el, tableHTML } from "./dom";
+import { bouton, differer, el, iconeIA, tableHTML } from "./dom";
 import { appelIA, type Relecture } from "./ia";
 import { boutonDictee } from "./dictee";
 import { synchroConfiguree } from "../data/synchro";
@@ -388,7 +388,7 @@ function boutonRelecture(ctx: Contexte, o: {
   noteParIA: boolean;
 }) {
   if (!synchroConfiguree) return;
-  const relire = bouton("Faire relire par l'IA", "bouton bouton-petit bouton-ia");
+  const relire = el("button", { type: "button", class: "bouton-icone-ia", title: "Faire relire par l'IA", "aria-label": "Faire relire par l'IA" }, iconeIA());
   const boite = el("div", { class: "relecture-ia", hidden: true });
   ctx.message.after(boite);
   relire.addEventListener("click", async () => {
@@ -399,8 +399,8 @@ function boutonRelecture(ctx: Contexte, o: {
         : "Écris d'abord ton code : l'IA le comparera au corrigé.");
     }
     relire.disabled = true;
-    relire.textContent = "Relecture en cours…";
-    dire(ctx, "");
+    relire.setAttribute("aria-busy", "true");
+    dire(ctx, "Relecture par l'IA en cours…");
     try {
       const r = await appelIA<Relecture>("relire", {
         type: o.type,
@@ -410,12 +410,13 @@ function boutonRelecture(ctx: Contexte, o: {
         resultats: o.resultats?.() ?? "",
         reponse,
       });
+      dire(ctx, "");
       afficherRelecture(ctx, boite, r, o.noteParIA);
     } catch (e) {
       dire(ctx, (e as Error).message, "moyen");
     }
     relire.disabled = false;
-    relire.textContent = "Faire relire par l'IA";
+    relire.removeAttribute("aria-busy");
   });
   ctx.actions.append(relire);
 }
@@ -435,7 +436,7 @@ function afficherRelecture(ctx: Contexte, boite: HTMLElement, r: Relecture, note
   correctif.append(autre);
   boite.hidden = false;
   boite.replaceChildren(...[
-    el("div", { class: "relecture-tete" }, el("span", { class: "relecture-titre" }, "Relecture par l'IA"),
+    el("div", { class: "relecture-tete" }, el("span", { class: "relecture-titre" }, iconeIA(16), "Relecture par l'IA"),
       el("span", { class: "relecture-verdict", "data-verdict": r.verdict }, VERDICTS[r.verdict])),
     liste("Ce qui est bien", r.points_forts, "relecture-bien"),
     liste("À revoir", r.a_revoir, "relecture-revoir"),
