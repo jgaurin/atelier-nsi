@@ -3,6 +3,7 @@
 import * as progression from "./progression";
 import "./objectif";
 import "./synchro";
+import "./installation";
 
 function basculerTheme() {
   const racine = document.documentElement;

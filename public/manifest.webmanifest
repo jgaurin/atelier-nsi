@@ -1,0 +1,23 @@
+{
+  "id": "/",
+  "name": "Atelier NSI",
+  "short_name": "Atelier NSI",
+  "description": "Préparer l'enseignement de la NSI et de la SNT : cours, exercices corrigés, révisions et entretien de professeur contractuel.",
+  "lang": "fr",
+  "start_url": "/parcours/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#4a3dce",
+  "background_color": "#f6f5f1",
+  "categories": ["education"],
+  "icons": [
+    { "src": "/icones/icone-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icones/icone-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icones/icone-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Révisions", "url": "/revisions/", "icons": [{ "src": "/icones/icone-192.png", "sizes": "192x192" }] },
+    { "name": "Labo", "url": "/labo/", "icons": [{ "src": "/icones/icone-192.png", "sizes": "192x192" }] }
+  ]
+}

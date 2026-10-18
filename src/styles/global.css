@@ -581,3 +581,4 @@ details.question[open] summary::after { content: "Masquer"; }
 .synchro-statut:empty { display: none; }
 .synchro-statut[data-etat="a-jour"] { color: var(--vert) !important; }
 .synchro-statut[data-etat="erreur"] { color: var(--rouge) !important; }
+.installation-aide { margin: 0; padding-left: 1.2rem; display: grid; gap: .35rem; color: var(--texte-2); }
