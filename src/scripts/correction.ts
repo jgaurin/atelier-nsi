@@ -5,10 +5,8 @@
 //   - une rédaction (preuve, trace, analyse…) est auto-évaluée : on montre le corrigé
 //     et les critères de réussite, et l'apprenant se positionne.
 //
-// Plus tard (voir docs/correction-ia.md) : une rédaction pourra être envoyée à un correcteur IA
-// côté serveur (Claude Haiku), qui reçoit l'énoncé, la réponse, le corrigé et les critères.
-// Il suffira d'activer PUBLIC_CORRECTION_IA et d'ajouter la route /api/corriger : l'interface
-// ci-dessous ne changera pas.
+// La relecture par l'IA (Claude Haiku) est un bouton à part, « Faire relire par l'IA » (exercices.ts → /api/relire) :
+// elle ne remplace jamais cette auto-évaluation sans qu'on le demande.
 
 export interface DemandeCorrection {
   exercice: string;
@@ -50,24 +48,6 @@ export const autoEvaluation: Correcteur = {
   },
 };
 
-/**
- * Correcteur IA — désactivé tant que la route serveur n'existe pas.
- * La clé d'API ne doit JAMAIS être dans le navigateur : elle reste côté serveur.
- */
-export const correcteurIA: Correcteur = {
-  nom: "Correction détaillée (IA)",
-  disponible: () => import.meta.env.PUBLIC_CORRECTION_IA === "1",
-  async corriger(demande) {
-    const reponse = await fetch("/api/corriger", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify(demande),
-    });
-    if (!reponse.ok) throw new Error(`La correction IA a échoué (${reponse.status}).`);
-    return (await reponse.json()) as Correction;
-  },
-};
-
 export function correcteurPourRedaction(): Correcteur {
-  return correcteurIA.disponible() ? correcteurIA : autoEvaluation;
+  return autoEvaluation;
 }

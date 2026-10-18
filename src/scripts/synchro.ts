@@ -34,6 +34,14 @@ let minuteur: number | undefined;
 export const etatSynchro = () => etat;
 export const connecte = () => Boolean(session);
 
+/** Jeton de connexion à joindre aux appels à l'IA (rafraîchi si besoin), ou null si l'on n'est pas connecté. */
+export async function jetonAcces(): Promise<string | null> {
+  if (!synchroConfiguree || (!session && !sessionMemorisee())) return null;
+  const c = await obtenirClient();
+  const { data } = await c.auth.getSession();
+  return data.session?.access_token ?? null;
+}
+
 function publier(maj: Partial<EtatSynchro>) {
   etat = { ...etat, ...maj };
   document.dispatchEvent(new CustomEvent<EtatSynchro>("atelier:synchro", { detail: etat }));

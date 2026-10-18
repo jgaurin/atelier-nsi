@@ -120,10 +120,12 @@ Supabase n'est chargée que sur un appareil connecté.
    personne d'autre ne puisse créer de compte. Ouvrir le lien dans le navigateur où l'on utilise le site (sinon, copier le lien
    dans sa barre d'adresse).
 
-## Correction par intelligence artificielle (prévue)
+## Intelligence artificielle (Claude Haiku)
 
-Les rédactions sont aujourd'hui auto-évaluées avec le corrigé et les critères. Une correction détaillée par Claude Haiku, appelée
-depuis une fonction serveur (la clé d'API ne va jamais dans le navigateur), est prévue : voir **[docs/correction-ia.md](docs/correction-ia.md)**.
+Toujours à la demande, réservée au compte connecté : **Faire relire par l'IA** sur les exercices de rédaction, **Explique-le à
+l'oral** en fin de leçon (entraînement face au jury pour les leçons sur le métier), et la **dictée au micro**. La clé de l'API reste
+sur le serveur (fonctions Vercel `src/pages/api/`). Configuration (deux variables sur Vercel), coûts et architecture :
+**[docs/correction-ia.md](docs/correction-ia.md)**.
 
 ## Sources officielles
 

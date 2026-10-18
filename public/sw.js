@@ -1,6 +1,6 @@
 // Service worker de l'appli : rend le site installable et garde de quoi travailler hors connexion.
 // Règles volontairement étroites :
-// - seulement les requêtes GET ; Supabase et les autres sites passent sans être touchés ;
+// - seulement les requêtes GET ; Supabase, les autres sites et les fonctions /api/ passent sans être touchés ;
 // - pages et fichiers non versionnés : réseau d'abord (toujours la dernière version), copie gardée pour le hors ligne ;
 // - fichiers versionnés (/_astro/…, Pyodide v0.28.3) : cache d'abord, ils ne changent jamais.
 // Changer VERSION vide les anciennes copies au prochain chargement.
@@ -62,7 +62,7 @@ self.addEventListener("fetch", (evenement) => {
     evenement.respondWith(cacheDAbord(requete));
     return;
   }
-  if (url.origin !== self.location.origin || requete.headers.has("range")) return;
+  if (url.origin !== self.location.origin || url.pathname.startsWith("/api/") || requete.headers.has("range")) return;
   if (url.pathname.startsWith("/_astro/")) {
     evenement.respondWith(cacheDAbord(requete));
     return;

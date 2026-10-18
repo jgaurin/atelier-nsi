@@ -4,10 +4,14 @@ import remarkDirective from "remark-directive";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import remarkAtelier from "./src/plugins/remark-atelier.mjs";
+import vercel from "@astrojs/vercel";
 
 export default defineConfig({
   // Pas de page d'accueil : le site s'ouvre sur le Parcours (choix de l'objectif, statistiques, leçons).
   redirects: { "/": "/parcours/" },
+  // Le site reste statique ; seules les routes /api/… (export const prerender = false) deviennent des fonctions
+  // serveur Vercel : l'IA (src/pages/api/), qui a besoin de la clé gardée côté serveur.
+  adapter: vercel({ maxDuration: 60 }),
   trailingSlash: "ignore",
   devToolbar: { enabled: false },
   markdown: {

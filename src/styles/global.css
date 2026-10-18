@@ -582,3 +582,42 @@ details.question[open] summary::after { content: "Masquer"; }
 .synchro-statut[data-etat="a-jour"] { color: var(--vert) !important; }
 .synchro-statut[data-etat="erreur"] { color: var(--rouge) !important; }
 .installation-aide { margin: 0; padding-left: 1.2rem; display: grid; gap: .35rem; color: var(--texte-2); }
+
+/* IA : relecture des rédactions, dictée, entraînement à l'oral */
+.bouton-ia { background: var(--violet, #6d4bd8); color: #fff; }
+.bouton-ia:hover { filter: brightness(1.08); color: #fff; }
+.bouton-micro[aria-pressed="true"] { background: var(--rouge-doux); border-color: var(--rouge); color: var(--rouge); }
+.zone-outils { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem .8rem; margin-top: .4rem; }
+.zone-outils .aide { margin: 0; flex: 1 1 14rem; }
+.relecture-ia { margin-top: .8rem; padding: .9rem 1rem; border: 1px solid var(--bord); border-left: 4px solid var(--accent); border-radius: 10px; background: var(--surface-2); display: grid; gap: .55rem; }
+.relecture-ia ul, .oral-bilan ul { margin: .25rem 0 0; padding-left: 1.2rem; }
+.relecture-ia p, .oral-bilan p { margin: 0; }
+.relecture-tete, .oral-bilan-tete { display: flex; justify-content: space-between; align-items: center; gap: .6rem; flex-wrap: wrap; }
+.relecture-titre { font-weight: 700; }
+.relecture-verdict { font-weight: 700; font-size: .9rem; padding: .15rem .6rem; border-radius: 99px; background: var(--surface); border: 1px solid var(--bord); }
+.relecture-verdict[data-verdict="juste"] { color: var(--vert); border-color: var(--vert); }
+.relecture-verdict[data-verdict="faux"] { color: var(--rouge); border-color: var(--rouge); }
+.relecture-bien strong { color: var(--vert); }
+.relecture-revoir strong { color: var(--rouge); }
+.relecture-criteres li small { display: block; color: var(--texte-2); }
+.relecture-criteres li[data-atteint="false"] { color: var(--rouge); }
+.relecture-statut { font-size: .9rem; color: var(--texte-2); }
+.oral { margin-top: 2rem; display: grid; gap: .8rem; }
+.oral h2 { margin: 0; }
+.oral > p { margin: 0; color: var(--texte-2); }
+.oral-fil { display: grid; gap: .7rem; }
+.oral-fil:empty { display: none; }
+.oral-bulle { padding: .75rem .95rem; border-radius: 14px; max-width: 92%; display: grid; gap: .3rem; justify-items: start; }
+.oral-bulle p { margin: 0; white-space: pre-wrap; }
+.oral-ia { background: var(--surface-2); border: 1px solid var(--bord); border-bottom-left-radius: 4px; }
+.oral-moi { background: var(--accent); color: var(--accent-texte); justify-self: end; border-bottom-right-radius: 4px; }
+.oral-zone { display: grid; gap: .5rem; }
+.oral-zone textarea { width: 100%; min-height: 6.5rem; resize: vertical; padding: .75rem .9rem; border: 1.5px solid var(--bord); border-radius: 10px; background: var(--fond); line-height: 1.55; }
+.oral-zone textarea:focus { outline: none; border-color: var(--accent); background: var(--surface); }
+.oral-zone .aide { margin: 0; }
+.oral-attente { margin: 0; color: var(--texte-2); font-style: italic; }
+.oral-erreur { padding: .7rem .9rem; border-radius: 10px; background: var(--rouge-doux); color: var(--rouge); display: grid; gap: .4rem; justify-items: start; }
+.oral-erreur p { margin: 0; }
+.oral-bilan { padding: 1rem 1.1rem; border-radius: 12px; border: 1px solid var(--bord); border-left: 4px solid var(--vert); background: var(--surface-2); display: grid; gap: .6rem; }
+.oral-note { color: #d99a00; font-size: 1.15rem; letter-spacing: .1em; }
+.oral-modele { padding: .7rem .85rem; border-radius: 10px; background: var(--surface); border: 1px dashed var(--bord-fort); display: grid; gap: .3rem; justify-items: start; }

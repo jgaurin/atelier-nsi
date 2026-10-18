@@ -1,10 +1,13 @@
 // Rend les exercices interactifs : QCM, Python (tests automatiques), SQL (comparaison de résultats)
-// et rédaction (corrigé + critères, puis auto-évaluation — ou correction IA plus tard).
+// et rédaction (corrigé + critères, puis auto-évaluation ; relecture par l'IA si on la demande).
 import * as progression from "./progression";
 import { executerPython, pythonEstPret, type TestPython } from "./python";
 import { comparer, executerSQL, schemaBase } from "./sql";
 import { correcteurPourRedaction, type Correction } from "./correction";
 import { bouton, differer, el, tableHTML } from "./dom";
+import { appelIA, type Relecture } from "./ia";
+import { boutonDictee } from "./dictee";
+import { synchroConfiguree } from "../data/synchro";
 import type { Editeur } from "./editeur";
 
 interface Contexte {
@@ -320,9 +323,41 @@ function redaction(ctx: Contexte) {
   const ajuster = () => { texte.style.height = "auto"; texte.style.height = `${Math.max(texte.scrollHeight + 4, 120)}px`; };
   const sauver = differer((t: string) => progression.garderBrouillon(ctx.id, t));
   texte.addEventListener("input", () => { ajuster(); sauver(texte.value); });
-  zone.append(texte, el("p", { class: "aide" }, "Ta réponse est enregistrée sur cet appareil. Rédige comme le jour de l'épreuve : phrases complètes, justifications."));
+  const micro = boutonDictee(texte, (m) => dire(ctx, m));
+  zone.append(
+    texte,
+    el("div", { class: "zone-outils" }, micro,
+      el("p", { class: "aide" }, "Ta réponse est enregistrée sur cet appareil. Rédige comme le jour de l'épreuve : phrases complètes, justifications.")),
+  );
   requestAnimationFrame(ajuster);
   ctx.aEssaye = () => texte.value.trim().length >= 15;
+
+  // Relecture par l'IA : seulement si on la demande.
+  if (synchroConfiguree) {
+    const relire = bouton("Faire relire par l'IA", "bouton bouton-petit bouton-ia");
+    const resultat = el("div", { class: "relecture-ia", hidden: true });
+    ctx.message.after(resultat);
+    relire.addEventListener("click", async () => {
+      if (texte.value.trim().length < 15) return dire(ctx, "Écris d'abord ta réponse (quelques phrases) : l'IA la comparera au corrigé.");
+      relire.disabled = true;
+      relire.textContent = "Relecture en cours…";
+      dire(ctx, "");
+      try {
+        const r = await appelIA<Relecture>("relire", {
+          enonce: ctx.section.querySelector(".exercice-enonce")?.textContent?.trim() ?? "",
+          corrige: ctx.corrige?.textContent?.trim() ?? "",
+          criteres: [...(ctx.criteres?.querySelectorAll("li") ?? [])].map((li) => li.textContent?.trim() ?? ""),
+          reponse: texte.value,
+        });
+        afficherRelecture(ctx, resultat, r);
+      } catch (e) {
+        dire(ctx, (e as Error).message, "moyen");
+      }
+      relire.disabled = false;
+      relire.textContent = "Faire relire par l'IA";
+    });
+    ctx.actions.append(relire);
+  }
 
   const boite = el("div", { class: "auto-evaluation", hidden: true });
   ctx.section.append(boite);
@@ -343,6 +378,37 @@ function redaction(ctx: Contexte) {
     }
     afficherCorrection(ctx, boite, correction);
   };
+}
+
+const VERDICTS = { juste: "✓ Juste", partiel: "≈ En partie", faux: "✗ À retravailler" } as const;
+
+/** Résultat de la relecture IA ; son verdict note l'exercice, que l'on peut corriger d'un clic. */
+function afficherRelecture(ctx: Contexte, boite: HTMLElement, r: Relecture) {
+  const statut: progression.StatutExercice = r.verdict === "juste" ? "reussi" : "a-revoir";
+  noter(ctx, statut);
+  const liste = (titre: string, elements: string[], classe: string) =>
+    elements.length ? el("div", { class: classe }, el("strong", {}, titre), el("ul", {}, ...elements.map((t) => el("li", {}, t)))) : null;
+  const correctif = el("p", { class: "relecture-statut" }, `Exercice noté « ${statut === "reussi" ? "réussi" : "à revoir"} » d'après l'IA. Pas d'accord ? `);
+  const autre = bouton(statut === "reussi" ? "Le marquer à revoir" : "Le marquer réussi", "bouton bouton-petit bouton-discret");
+  autre.addEventListener("click", () => {
+    noter(ctx, statut === "reussi" ? "a-revoir" : "reussi");
+    correctif.textContent = "C'est noté.";
+  });
+  correctif.append(autre);
+  boite.hidden = false;
+  boite.replaceChildren(...[
+    el("div", { class: "relecture-tete" }, el("span", { class: "relecture-titre" }, "Relecture par l'IA"),
+      el("span", { class: "relecture-verdict", "data-verdict": r.verdict }, VERDICTS[r.verdict])),
+    liste("Ce qui est bien", r.points_forts, "relecture-bien"),
+    liste("À revoir", r.a_revoir, "relecture-revoir"),
+    r.criteres.length
+      ? el("div", { class: "relecture-criteres" }, el("strong", {}, "Critères"),
+          el("ul", {}, ...r.criteres.map((c) => el("li", { "data-atteint": String(c.atteint) }, `${c.atteint ? "✓" : "✗"} ${c.texte}`, c.commentaire ? el("small", {}, c.commentaire) : null))))
+      : null,
+    r.conseil ? el("p", { class: "relecture-conseil" }, el("strong", {}, "Conseil : "), r.conseil) : null,
+    correctif,
+    el("p", { class: "aide" }, "L'IA peut se tromper : compare aussi avec le corrigé."),
+  ].filter(Boolean) as HTMLElement[]);
 }
 
 function afficherCorrection(ctx: Contexte, boite: HTMLElement, correction: Correction) {

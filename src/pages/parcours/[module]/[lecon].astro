@@ -5,6 +5,7 @@ import Base from "../../../layouts/Base.astro";
 import ListeLecons from "../../../components/ListeLecons.astro";
 import { render } from "astro:content";
 import { chargerParcours, leconsEcrites, voisines } from "../../../lib/parcours";
+import { synchroConfiguree } from "../../../data/synchro";
 
 export async function getStaticPaths() {
   const modules = await chargerParcours();
@@ -62,6 +63,20 @@ const parNiveau = [1, 2, 3, 4].map((n) => lecon.exercices.filter((e) => e.niveau
         <Content />
       </div>
 
+      {synchroConfiguree && (
+        <section class="carte oral" data-oral={cle}>
+          <h2>{module.partie === "enseigner" ? "Entraîne-toi face au jury" : "Explique-le à l'oral"}</h2>
+          <p>
+            {module.partie === "enseigner"
+              ? "L'IA joue le jury : elle te pose une question sur ce thème, te relance comme en entretien, puis te fait un bilan."
+              : "L'IA te pose une question sur une notion de cette leçon. Explique comme devant une classe : elle te relance, puis te fait un bilan."}
+            {" "}Réponds à voix haute avec 🎤, ou au clavier.
+          </p>
+          <div class="oral-fil" data-oral-fil></div>
+          <div class="boutons"><button type="button" class="bouton bouton-ia" data-oral-demarrer>Me poser une question</button></div>
+        </section>
+      )}
+
       <section class="validation" data-validation={cle}>
         <h2 data-validation-titre>As-tu bien compris cette leçon ?</h2>
         <p>
@@ -92,5 +107,6 @@ const parNiveau = [1, 2, 3, 4].map((n) => lecon.exercices.filter((e) => e.niveau
 
   <script>
     import "../../../scripts/lecon";
+    import "../../../scripts/oral";
   </script>
 </Base>
