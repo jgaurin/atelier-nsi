@@ -26,6 +26,7 @@ export default defineConfig({
       include: [
         "mermaid", "sql.js", "codemirror", "@codemirror/view", "@codemirror/state", "@codemirror/commands",
         "@codemirror/language", "@codemirror/lang-python", "@codemirror/lang-javascript", "@codemirror/lang-sql", "@lezer/highlight",
+        "@supabase/supabase-js",
       ],
     },
     // Sous Windows, un enregistrement produit souvent deux événements « modifié » rapprochés : le serveur réécrivait

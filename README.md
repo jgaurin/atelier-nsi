@@ -27,8 +27,9 @@ réviser, lien « reprendre ») et leçons de l'objectif, étape par étape.
 - Un **Labo** (bac à sable Python et SQL), un thème sombre, une mise en page adaptée au téléphone.
 
 Python tourne dans le navigateur grâce à **Pyodide** (dans un Web Worker), SQL grâce à **sql.js** (SQLite), JavaScript dans un bac à
-sable isolé. La progression est enregistrée **dans le navigateur** (localStorage) ; la page Réglages permet de l'exporter et de
-l'importer (par exemple pour passer d'un ordinateur à un autre, ou du site local au site en ligne).
+sable isolé. La progression est enregistrée **dans le navigateur** (localStorage). Une fois Supabase configuré (voir plus bas), on se
+connecte par un lien reçu par e-mail et elle est **synchronisée entre tous ses appareils** ; la page Réglages permet aussi de
+l'exporter et de l'importer dans un fichier.
 
 Les sujets et exercices sont **originaux** : ils imitent le format des sujets zéro officiels mais ne sont pas des sujets officiels.
 Vérifier les textes officiels (programmes, modalités, calendrier) sur devenirenseignant.gouv.fr et Éduscol avant les épreuves.
@@ -69,6 +70,7 @@ src/
   data/programme.ts                       les lignes du programme officiel (pour la couverture)
   data/concours.ts                        les épreuves et le calendrier
   data/objectifs.ts                       les objectifs (contractuel, CAPES) : étapes, leçons et niveau visé
+  data/synchro.ts                         l'adresse et la clé publique du projet Supabase (synchronisation)
   plugins/                                le plugin Markdown (encadrés, exercices, schémas, code exécutable)
   pages/                                  les pages du site (Astro)
   scripts/                                le code du navigateur (exercices, Python, SQL, révisions, progression…)
@@ -77,6 +79,7 @@ public/
   python-worker.mjs                       Python (Pyodide) dans un Web Worker
   bases/*.sql                             les bases de données des exercices SQL
 scripts/verifier.mjs                      le vérificateur de contenu (npm run check)
+supabase/schema.sql                       la table de la synchronisation et ses règles d'accès
 docs/                                     guide de rédaction et plan de la correction par IA
 _ancienne-version/                        l'ancienne version du site, conservée telle quelle
 ```
@@ -92,8 +95,30 @@ Le site est **statique** : Vercel le détecte automatiquement (framework Astro).
    `dist`. Déployer.
 3. Chaque modification poussée sur GitHub est publiée automatiquement.
 
-**Progression** : elle est propre à chaque adresse. Pour retrouver sa progression locale sur le site en ligne : Réglages → *Exporter
-ma progression* sur l'un, puis *Importer* sur l'autre. La progression de l'ancienne version (format différent) n'est pas reprise.
+**Progression** : sans synchronisation, elle est propre à chaque adresse (Réglages → *Exporter* sur l'une, *Importer* sur l'autre).
+La progression de l'ancienne version (format différent) n'est pas reprise.
+
+## Synchronisation entre appareils (Supabase)
+
+On se connecte avec son adresse e-mail (lien de connexion, pas de mot de passe) sur chaque appareil : la progression est fusionnée
+et la même partout. La fusion (`src/scripts/fusion.ts`) ne perd rien : pour chaque leçon, exercice, carte ou chronomètre, la
+modification la plus récente l'emporte ; « Tout effacer » en étant connecté remet à zéro tous les appareils. La bibliothèque
+Supabase n'est chargée que sur un appareil connecté.
+
+1. Créer un projet gratuit sur supabase.com, **avec la même adresse e-mail que celle qui servira à se connecter** : sans serveur
+   d'envoi personnalisé, Supabase n'envoie ses e-mails qu'aux membres du projet, et seulement quelques-uns par heure.
+2. *SQL Editor* : coller le contenu de `supabase/schema.sql` et cliquer sur *Run* (table `progression` ; chaque compte ne voit
+   que sa ligne).
+3. *Authentication → URL Configuration* (les noms de menus de Supabase changent parfois : chercher « URL Configuration ») :
+   *Site URL* = l'adresse Vercel ; dans *Redirect URLs*, ajouter
+   `https://<adresse-vercel>/**` et `http://localhost:4321/**`.
+4. Bouton *Connect* en haut du projet, ou *Project Settings → API Keys* : recopier la *Project URL* et la **publishable key** (`sb_publishable_…`) dans
+   `src/data/synchro.ts`, puis pousser sur GitHub. Ces deux valeurs sont publiques par conception ; **jamais** la clé secrète
+   ni la clé `service_role`.
+5. Sur chaque appareil : Réglages → *Synchroniser entre appareils* → recevoir le lien et cliquer dessus. Facultatif, une fois
+   connecté : dans les réglages d'authentification (*Sign In / Providers*), désactiver *Allow new users to sign up*, pour que
+   personne d'autre ne puisse créer de compte. Ouvrir le lien dans le navigateur où l'on utilise le site (sinon, copier le lien
+   dans sa barre d'adresse).
 
 ## Correction par intelligence artificielle (prévue)
 

@@ -1,6 +1,6 @@
 // Progression de l'apprenant, enregistrée dans le navigateur (localStorage).
-// Tout passe par ce module : le jour où une synchronisation en ligne sera ajoutée,
-// c'est le seul endroit à modifier.
+// Tout passe par ce module. La synchronisation en ligne (synchro.ts) s'abonne aux changements et fusionne
+// cet état avec celui du compte (fusion.ts) : chaque changement porte donc sa date (« maj »).
 
 export type StatutExercice = "reussi" | "a-revoir" | "tente";
 
@@ -15,15 +15,19 @@ export interface EtatCarte {
   intervalle: number; // en jours
   facilite: number;
   repetitions: number;
+  maj?: string; // dernière révision
 }
 
 export interface Etat {
   version: 2;
-  lecons: Record<string, { vue?: string; validee?: string }>;
+  /** maj : date de la dernière validation (ou annulation) ; une simple visite ne la change pas. */
+  lecons: Record<string, { vue?: string; validee?: string; maj?: string }>;
   exercices: Record<string, EtatExercice>;
   cartes: Record<string, EtatCarte>;
   derniere?: { lecon: string; quand: string };
-  chronos: Record<string, { debut: number; ecoule: number; enCours: boolean }>;
+  chronos: Record<string, { debut: number; ecoule: number; enCours: boolean; maj?: string }>;
+  /** Date de la dernière remise à zéro faite en étant connecté : tout ce qui est plus ancien est oublié partout. */
+  efface?: string;
 }
 
 const CLE = "atelier-nsi:v2";
@@ -75,6 +79,7 @@ export function validerLecon(cle: string, valider = true) {
   etat.lecons[cle] ??= {};
   if (valider) etat.lecons[cle].validee = maintenant();
   else delete etat.lecons[cle].validee;
+  etat.lecons[cle].maj = maintenant();
   enregistrer();
 }
 
@@ -112,7 +117,7 @@ export function etatCarte(id: string): EtatCarte | undefined {
 }
 
 export function noterCarte(id: string, carte: EtatCarte) {
-  lire().cartes[id] = carte;
+  lire().cartes[id] = { ...carte, maj: maintenant() };
   enregistrer();
 }
 
@@ -122,7 +127,7 @@ export function chrono(id: string) {
 }
 
 export function majChrono(id: string, valeur: Etat["chronos"][string]) {
-  lire().chronos[id] = valeur;
+  lire().chronos[id] = { ...valeur, maj: maintenant() };
   enregistrer();
 }
 
@@ -138,7 +143,14 @@ export function importer(texte: string) {
   enregistrer();
 }
 
-export function toutEffacer() {
-  memoire = vide();
+/** Remet à zéro cet appareil ; avec propager, la remise à zéro s'applique aussi au compte en ligne. */
+export function toutEffacer(propager = false) {
+  memoire = propager ? { ...vide(), efface: maintenant() } : vide();
+  enregistrer();
+}
+
+/** Remplace l'état (après une fusion avec le compte en ligne) et prévient les pages ouvertes. */
+export function remplacer(etat: Etat) {
+  memoire = etat;
   enregistrer();
 }

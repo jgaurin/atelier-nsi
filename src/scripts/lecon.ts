@@ -65,6 +65,7 @@ if (article) {
     majValidation();
   });
   majValidation();
+  progression.surChangement(majValidation); // la synchronisation peut valider la leçon depuis un autre appareil
 
   // Sommaire : met en évidence la section en cours de lecture.
   const liens = new Map<string, HTMLElement>();

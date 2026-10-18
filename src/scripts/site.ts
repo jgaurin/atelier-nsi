@@ -2,6 +2,7 @@
 // statuts des leçons et barres de progression des modules.
 import * as progression from "./progression";
 import "./objectif";
+import "./synchro";
 
 function basculerTheme() {
   const racine = document.documentElement;

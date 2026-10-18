@@ -7,8 +7,36 @@ import Base from "../layouts/Base.astro";
     <h1>Ta progression</h1>
     <p class="chapeau">
       Ta progression (leçons validées, exercices, brouillons, révisions) est enregistrée dans ce navigateur, sur cet appareil.
-      Exporte-la de temps en temps : c'est ta sauvegarde, et c'est ainsi que tu la transfères sur un autre ordinateur.
+      Connecte-toi pour la retrouver sur tous tes appareils ; tu peux aussi l'exporter dans un fichier.
     </p>
+
+    <section class="carte synchro" data-synchro>
+      <h2>Synchroniser entre appareils</h2>
+      <p data-synchro-vue="non-configuree">
+        La synchronisation n'est pas encore configurée sur ce site (voir « Synchronisation entre appareils » dans le README).
+        En attendant, utilise l'export et l'import ci-dessous.
+      </p>
+      <form data-synchro-vue="deconnecte" data-synchro-connexion hidden>
+        <p>
+          Connecte-toi avec la même adresse sur chaque appareil (ordinateur, téléphone) : ta progression sera la même partout.
+          Pas de mot de passe : tu reçois un lien de connexion par e-mail.
+        </p>
+        <label for="synchro-email">Adresse e-mail</label>
+        <div class="synchro-ligne">
+          <input id="synchro-email" type="email" required autocomplete="email" placeholder="toi@exemple.fr" />
+          <button type="submit" class="bouton">Recevoir le lien</button>
+        </div>
+      </form>
+      <div data-synchro-vue="connecte" hidden>
+        <p>Connecté avec <strong data-synchro-email></strong>.</p>
+        <div class="synchro-ligne">
+          <button type="button" class="bouton" data-synchro-maintenant>Synchroniser maintenant</button>
+          <button type="button" class="bouton bouton-second" data-synchro-deconnexion>Se déconnecter de cet appareil</button>
+        </div>
+      </div>
+      <p class="synchro-statut" data-synchro-statut role="status" aria-live="polite"></p>
+    </section>
+
     <section class="carte" style="display:grid;gap:1rem;margin-top:1.5rem">
       <div>
         <h2 style="margin:0 0 .3rem;font-size:1.1rem">Sauvegarder</h2>
@@ -22,7 +50,7 @@ import Base from "../layouts/Base.astro";
       </div>
       <div>
         <h2 style="margin:0 0 .3rem;font-size:1.1rem">Tout effacer</h2>
-        <p style="margin:0 0 .6rem;color:var(--texte-2)">Repartir de zéro sur cet appareil (pense à exporter avant).</p>
+        <p style="margin:0 0 .6rem;color:var(--texte-2)" data-effacer-texte>Repartir de zéro sur cet appareil (pense à exporter avant).</p>
         <button type="button" class="bouton bouton-second" data-effacer>Effacer ma progression</button>
       </div>
     </section>
@@ -32,7 +60,58 @@ import Base from "../layouts/Base.astro";
   </div>
   <script>
     import * as progression from "../scripts/progression";
+    import * as synchro from "../scripts/synchro";
     import { annoncer } from "../scripts/dom";
+
+    /* Synchronisation ----------------------------------------------------- */
+    const bloc = document.querySelector<HTMLElement>("[data-synchro]")!;
+    const statut = bloc.querySelector<HTMLElement>("[data-synchro-statut]")!;
+    const formulaire = bloc.querySelector<HTMLFormElement>("[data-synchro-connexion]")!;
+    const heure = (iso: string) => new Date(iso).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+    let message = ""; // message propre à la page (lien envoyé…), effacé au prochain changement d'état
+
+    function afficher() {
+      const e = synchro.etatSynchro();
+      const vue = e.statut === "non-configuree" ? "non-configuree" : e.email ? "connecte" : "deconnecte";
+      bloc.querySelectorAll<HTMLElement>("[data-synchro-vue]").forEach((n) => (n.hidden = n.dataset.synchroVue !== vue));
+      bloc.querySelector("[data-synchro-email]")!.textContent = e.email ?? "";
+      statut.dataset.etat = e.statut;
+      statut.textContent =
+        e.statut === "erreur" ? `⚠ ${e.erreur}`
+        : message ? message
+        : !e.email ? ""
+        : e.statut === "en-cours" ? "Synchronisation…"
+        : e.derniere ? `✓ Progression à jour (synchronisée à ${heure(e.derniere)}).`
+        : "";
+      document.querySelector("[data-effacer-texte]")!.textContent = e.email
+        ? "Repartir de zéro sur cet appareil ET sur ton compte, donc sur tous tes appareils (pense à exporter avant)."
+        : "Repartir de zéro sur cet appareil (pense à exporter avant).";
+    }
+    document.addEventListener("atelier:synchro", () => {
+      message = "";
+      afficher();
+    });
+    afficher();
+
+    formulaire.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const champ = formulaire.querySelector<HTMLInputElement>("input[type=email]")!;
+      const bouton = formulaire.querySelector<HTMLButtonElement>("button")!;
+      bouton.disabled = true;
+      try {
+        await synchro.recevoirLien(champ.value.trim());
+        message = `Lien envoyé à ${champ.value.trim()}. Ouvre l'e-mail et clique sur le lien : il te connecte dans le navigateur où il s'ouvre. Pas reçu ? Regarde dans les indésirables.`;
+      } catch (erreur) {
+        message = `⚠ ${(erreur as Error).message}`;
+      }
+      bouton.disabled = false;
+      afficher();
+    });
+    bloc.querySelector("[data-synchro-maintenant]")!.addEventListener("click", () => void synchro.synchroniser());
+    bloc.querySelector("[data-synchro-deconnexion]")!.addEventListener("click", async () => {
+      await synchro.seDeconnecter();
+      annoncer("Déconnecté de cet appareil. Ta progression reste enregistrée ici.");
+    });
 
     document.querySelector("[data-exporter]")?.addEventListener("click", () => {
       const lien = document.createElement("a");
@@ -52,8 +131,12 @@ import Base from "../layouts/Base.astro";
       }
     });
     document.querySelector("[data-effacer]")?.addEventListener("click", () => {
-      if (!confirm("Effacer toute ta progression sur cet appareil ? Cette action est définitive.")) return;
-      progression.toutEffacer();
+      const partout = synchro.connecte();
+      const question = partout
+        ? "Effacer toute ta progression, sur cet appareil ET sur ton compte (donc sur tous tes appareils) ? Cette action est définitive."
+        : "Effacer toute ta progression sur cet appareil ? Cette action est définitive.";
+      if (!confirm(question)) return;
+      progression.toutEffacer(partout);
       annoncer("Progression effacée.");
     });
   </script>

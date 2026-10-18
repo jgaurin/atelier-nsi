@@ -568,3 +568,16 @@ details.question[open] summary::after { content: "Masquer"; }
   .lecon-grille { display: block; }
   .exercice-corrige, .exercice-indice, .exercice-criteres { display: block !important; }
 }
+
+/* Réglages : synchronisation entre appareils */
+.synchro { margin-top: 1.5rem; display: grid; gap: .7rem; }
+.synchro h2 { margin: 0; font-size: 1.1rem; }
+.synchro p { margin: 0; color: var(--texte-2); }
+.synchro form { display: grid; gap: .6rem; }
+.synchro label { font-weight: 650; font-size: .92rem; }
+.synchro-ligne { display: flex; flex-wrap: wrap; gap: .6rem; }
+.synchro-ligne input { flex: 1 1 14rem; min-width: 0; padding: .6rem .8rem; border: 1.5px solid var(--bord); border-radius: 10px; background: var(--fond); }
+.synchro-ligne input:focus { outline: none; border-color: var(--accent); background: var(--surface); }
+.synchro-statut:empty { display: none; }
+.synchro-statut[data-etat="a-jour"] { color: var(--vert) !important; }
+.synchro-statut[data-etat="erreur"] { color: var(--rouge) !important; }
