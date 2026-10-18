@@ -740,6 +740,37 @@ details.question[open] summary::after { content: "Masquer"; }
 .oral-modele-tete { display: flex; justify-content: space-between; align-items: center; gap: .5rem; }
 .oral-modele h4 { margin: 0; }
 .oral-modele p { margin: 0; line-height: 1.6; }
+/* Exercices supplémentaires créés par l'IA */
+.exos-ia { margin-top: 2rem; display: grid; gap: .9rem; }
+.exos-ia-intro { margin: 0; color: var(--texte-2); }
+.exos-ia-commande { display: flex; flex-wrap: wrap; align-items: center; gap: .7rem 1rem; }
+.choix-niveau { display: inline-flex; flex-wrap: wrap; gap: .25rem; padding: .25rem; border-radius: 12px; background: var(--surface-2); }
+.choix-niveau button {
+  padding: .4rem .75rem; border: 0; border-radius: 9px; background: none; color: var(--texte-2);
+  font: inherit; font-size: .88rem; font-weight: 600; cursor: pointer;
+}
+.choix-niveau button:hover { color: var(--texte); }
+.choix-niveau button[aria-checked="true"] { background: var(--surface); color: var(--accent); box-shadow: var(--ombre); }
+.choix-niveau button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.exos-ia-commande .bouton span { display: inline-flex; }
+.exos-ia-etat { margin: 0; display: flex; align-items: center; gap: .45rem; font-size: .9rem; color: var(--texte-2); }
+.exos-ia-etat:empty { display: none; }
+.exos-ia-etat[data-ton="erreur"] { color: var(--rouge); }
+.exos-ia-liste { border-top: 1px solid var(--bord); padding-top: .8rem; }
+.exos-ia-liste > summary {
+  display: inline-flex; align-items: center; gap: .4rem; cursor: pointer; list-style: none;
+  font-weight: 700; color: var(--texte);
+}
+.exos-ia-liste > summary::-webkit-details-marker { display: none; }
+.exos-ia-liste > summary span:first-child { display: inline-flex; color: var(--accent); transition: transform .15s ease; }
+.exos-ia-liste[open] > summary span:first-child { transform: rotate(90deg); }
+.exos-ia-nombre { min-width: 1.5rem; padding: .05rem .5rem; border-radius: 99px; background: var(--accent-doux); color: var(--accent); font-size: .8rem; text-align: center; }
+.exos-ia-exercices { display: grid; gap: 1.2rem; margin-top: 1rem; }
+.exercice-genere .exercice-tete { flex-wrap: wrap; }
+.exercice-ia { display: inline-flex; align-items: center; gap: .25rem; padding: .1rem .5rem; border-radius: 99px; background: var(--accent-doux); color: var(--accent); font-size: .75rem; font-weight: 700; }
+.exercice-supprimer { order: 99; margin-left: auto; width: 1.9rem; height: 1.9rem; }
+.exercice-supprimer:hover { color: var(--rouge); border-color: var(--rouge); }
+.code-genere { margin: .5rem 0; padding: .8rem .95rem; border-radius: var(--rayon-petit); border: 1px solid var(--bord); background: var(--code-fond); overflow-x: auto; font-family: var(--police-code); font-size: .88rem; line-height: 1.55; }
 @media (prefers-reduced-motion: reduce) {
   .tourne, .bouton-icone-ia[aria-busy="true"] .icone, .micro-point, .ia-squelette span, .oral-frappe span { animation: none; }
 }

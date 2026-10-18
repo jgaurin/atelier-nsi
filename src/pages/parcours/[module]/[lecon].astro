@@ -64,6 +64,38 @@ const parNiveau = [1, 2, 3, 4].map((n) => lecon.exercices.filter((e) => e.niveau
         <Content />
       </div>
 
+      {synchroConfiguree && module.partie !== "enseigner" && (
+        <section class="carte exos-ia" data-exos-ia={cle}>
+          <div class="ia-tete">
+            <span class="ia-titre oral-titre">
+              <span class="ia-pastille" set:html={iconeHTML("etincelles", 14)} />
+              <span>Exercices supplémentaires<small>Créés par l'IA sur cette leçon</small></span>
+            </span>
+          </div>
+          <p class="exos-ia-intro">
+            Choisis un niveau : l'IA crée un exercice Python avec ses tests, des indices et un corrigé. Avant de te le montrer,
+            l'Atelier vérifie que son corrigé passe bien ses tests. Les exercices créés sont gardés ci-dessous.
+          </p>
+          <div class="exos-ia-commande">
+            <div class="choix-niveau" role="radiogroup" aria-label="Niveau de l'exercice">
+              <button type="button" role="radio" data-niveau="1" aria-checked="false">Découverte</button>
+              <button type="button" role="radio" data-niveau="2" aria-checked="true">Entraînement</button>
+              <button type="button" role="radio" data-niveau="3" aria-checked="false">Approfondissement</button>
+              <button type="button" role="radio" data-niveau="4" aria-checked="false">Type concours</button>
+            </div>
+            <button type="button" class="bouton" data-exos-ia-generer>
+              <span set:html={iconeHTML("etincelles", 16)} />
+              Créer un exercice
+            </button>
+          </div>
+          <p class="exos-ia-etat" data-exos-ia-etat role="status" aria-live="polite"></p>
+          <details class="exos-ia-liste" data-exos-ia-liste hidden>
+            <summary><span set:html={iconeHTML("chevron", 16)} />Exercices générés <span class="exos-ia-nombre" data-exos-ia-nombre>0</span></summary>
+            <div class="exos-ia-exercices" data-exos-ia-exercices></div>
+          </details>
+        </section>
+      )}
+
       {synchroConfiguree && (
         <section class="carte oral" data-oral={cle}>
           <div class="ia-tete">
@@ -126,5 +158,6 @@ const parNiveau = [1, 2, 3, 4].map((n) => lecon.exercices.filter((e) => e.niveau
   <script>
     import "../../../scripts/lecon";
     import "../../../scripts/oral";
+    import "../../../scripts/exos-ia";
   </script>
 </Base>

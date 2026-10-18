@@ -1,12 +1,13 @@
 # L'IA dans l'Atelier (Claude Haiku)
 
-Trois aides, toujours **à la demande** (rien n'est envoyé à l'IA sans un clic) :
+Quatre aides, toujours **à la demande** (rien n'est envoyé à l'IA sans un clic) :
 
 | Aide | Où | Comment |
 |---|---|---|
 | **Faire relire par l'IA** | exercices de rédaction, Python et SQL | `POST /api/relire` : la réponse (ou le code, avec le résultat des tests) est comparée au corrigé ; verdict, points forts, points à revoir, conseil ; critère par critère pour une rédaction, version améliorée de son propre code pour Python et SQL. Pour une rédaction, le verdict note l'exercice (modifiable d'un clic) ; pour du code, ce sont toujours les tests qui notent. |
 | **Explique-le à l'oral** / **Entraîne-toi face au jury** | fin de chaque leçon | `POST /api/oral` : une question sur UNE notion de la leçon (ou une question de jury pour les leçons sur le métier), une ou deux relances, puis un bilan noté sur 5 avec une explication modèle. Au plus 3 réponses par séance. |
-| **🎤 Dicter**, **🔊 Écouter** | zones de réponse, questions de l'IA | reconnaissance et synthèse vocales du navigateur (Chrome, Edge) : gratuites, sans IA. |
+| **Exercices supplémentaires** | fin de chaque leçon (sauf leçons sur le métier) | `POST /api/exercice` : un exercice Python au niveau choisi (énoncé, code de départ, tests, indices, corrigé). Le navigateur exécute le corrigé contre les tests (Pyodide) avant de l'afficher ; s'il échoue, l'exercice est redemandé avec l'erreur (3 essais au plus). Les exercices sont gardés dans la progression (`generes`, synchronisée ; une suppression se propage) et s'affichent comme ceux des leçons. |
+| **Dicter**, **Écouter** | zones de réponse, questions de l'IA | reconnaissance et synthèse vocales du navigateur (Chrome, Edge) : gratuites, sans IA. |
 
 ## Architecture
 

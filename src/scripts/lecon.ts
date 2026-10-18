@@ -18,7 +18,7 @@ if (article) {
   // Objectif « contractuel » : dans les modules disciplinaires, les exercices au-delà du niveau visé
   // (approfondissement, type concours) sont repliés, et affichables en un clic.
   const filtrerExercices = () => {
-    const exercices = [...article.querySelectorAll<HTMLElement>("section.exercice")];
+    const exercices = [...article.querySelectorAll<HTMLElement>("section.exercice:not([data-genere])")];
     article.querySelector(".objectif-exercices")?.remove();
     for (const e of exercices) if (e.dataset.horsObjectif) { e.hidden = false; delete e.dataset.horsObjectif; }
     const objectif = objectifParId(objectifCourant());

@@ -18,6 +18,23 @@ export interface EtatCarte {
   maj?: string; // dernière révision
 }
 
+/** Exercice Python créé par l'IA sur une leçon ; supprimé = il ne reste que la date (pour que la suppression se propage). */
+export interface ExerciceGenere {
+  lecon: string;
+  niveau: number;
+  cree: string;
+  supprime?: string;
+  contenu?: {
+    titre: string;
+    enonce: string;
+    depart: string;
+    tests: { label: string; code: string }[];
+    indices: string[];
+    corrige: string;
+    explication: string;
+  };
+}
+
 export interface Etat {
   version: 2;
   /** maj : date de la dernière validation (ou annulation) ; une simple visite ne la change pas. */
@@ -26,12 +43,14 @@ export interface Etat {
   cartes: Record<string, EtatCarte>;
   derniere?: { lecon: string; quand: string };
   chronos: Record<string, { debut: number; ecoule: number; enCours: boolean; maj?: string }>;
+  /** Exercices créés par l'IA, par identifiant (« ia-… »). */
+  generes: Record<string, ExerciceGenere>;
   /** Date de la dernière remise à zéro faite en étant connecté : tout ce qui est plus ancien est oublié partout. */
   efface?: string;
 }
 
 const CLE = "atelier-nsi:v2";
-const vide = (): Etat => ({ version: 2, lecons: {}, exercices: {}, cartes: {}, chronos: {} });
+const vide = (): Etat => ({ version: 2, lecons: {}, exercices: {}, cartes: {}, chronos: {}, generes: {} });
 
 let memoire: Etat | null = null;
 const abonnes = new Set<(etat: Etat) => void>();
@@ -128,6 +147,27 @@ export function chrono(id: string) {
 
 export function majChrono(id: string, valeur: Etat["chronos"][string]) {
   lire().chronos[id] = { ...valeur, maj: maintenant() };
+  enregistrer();
+}
+
+/* Exercices générés par l'IA ----------------------------------------- */
+/** Exercices générés d'une leçon (non supprimés), du plus ancien au plus récent. */
+export function exercicesGeneres(lecon: string): [string, ExerciceGenere][] {
+  return Object.entries(lire().generes)
+    .filter(([, e]) => e.lecon === lecon && !e.supprime && e.contenu)
+    .sort(([, a], [, b]) => a.cree.localeCompare(b.cree));
+}
+
+export function ajouterExerciceGenere(id: string, exercice: ExerciceGenere) {
+  lire().generes[id] = exercice;
+  enregistrer();
+}
+
+export function supprimerExerciceGenere(id: string) {
+  const e = lire().generes[id];
+  if (!e) return;
+  lire().generes[id] = { lecon: e.lecon, niveau: e.niveau, cree: e.cree, supprime: maintenant() };
+  delete lire().exercices[id];
   enregistrer();
 }
 

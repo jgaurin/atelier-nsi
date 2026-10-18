@@ -2,10 +2,9 @@
 // Claude Haiku pose UNE question sur une notion de la leçon, relance une ou deux fois, puis fait un bilan.
 // Le serveur ne garde rien : le navigateur renvoie à chaque tour tout l'échange (questions et réponses).
 import type { APIRoute } from "astro";
-import { getCollection } from "astro:content";
 import { z } from "zod/v4";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
-import { moduleParId } from "../../data/modules";
+import { contexteLecon } from "../../lib/lecon-ia";
 import { champ, claude, erreur, erreurAPI, LIMITES, MODELE, reponseIncomplete, verifierAcces } from "../../lib/ia";
 
 export const prerender = false;
@@ -45,29 +44,6 @@ const ROLE_NOTION: Record<string, string> = {
   contractuel: `Cette leçon porte sur une notion enseignée au lycée. Demande-lui de l'expliquer comme en classe, au niveau des élèves (seconde SNT, première ou terminale NSI) : rigueur, mots simples, exemple concret. Tu peux jouer un élève qui n'a pas compris.`,
   capes: `Cette leçon porte sur une notion du programme du CAPES de NSI. Interroge-le comme un jury de concours : exactitude, vocabulaire précis, justification, et capacité à l'expliquer à des élèves.`,
 };
-
-/** Contexte de la leçon : titre, objectifs, points clés et cours, sans les exercices. */
-async function contexteLecon(cle: string) {
-  const [module, slug] = cle.split("/");
-  const entree = (await getCollection("lecons")).find((e) => {
-    const [m, fichier] = e.id.split("/");
-    return m === module && fichier.replace(/^\d+-/, "") === slug;
-  });
-  if (!entree) return null;
-  const cours = (entree.body ?? "")
-    .replace(/^::::exercice[\s\S]*?^::::\s*$/gm, "")
-    .replace(/<!--[\s\S]*?-->/g, "")
-    .replace(/\n{3,}/g, "\n\n")
-    .slice(0, 30_000);
-  const d = entree.data;
-  return {
-    partie: moduleParId(module)?.partie ?? "",
-    texte:
-      `LEÇON : ${d.titre}\n${d.resume}\n\nOBJECTIFS :\n${d.objectifs.map((o) => `- ${o}`).join("\n")}\n\n` +
-      (d.cartes.length ? `POINTS CLÉS :\n${d.cartes.map((c) => `- ${c.q} → ${c.r}`).join("\n")}\n\n` : "") +
-      `COURS :\n${cours}`,
-  };
-}
 
 export const POST: APIRoute = async ({ request }) => {
   const refus = await verifierAcces(request);

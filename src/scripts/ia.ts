@@ -26,7 +26,7 @@ export interface TourOral {
   explication_modele: string;
 }
 
-export async function appelIA<T>(chemin: "relire" | "oral", corps: unknown): Promise<T> {
+export async function appelIA<T>(chemin: "relire" | "oral" | "exercice", corps: unknown): Promise<T> {
   const jeton = await jetonAcces().catch(() => null);
   if (!jeton) throw new Error("Connecte-toi d'abord dans Réglages (« Synchroniser entre appareils ») : l'IA est réservée à ton compte.");
   const minuterie = new AbortController();

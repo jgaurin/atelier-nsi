@@ -2,7 +2,7 @@
 // d'un côté ne se perd. Pour chaque leçon, exercice, carte ou chronomètre, la modification la plus récente
 // l'emporte ; une remise à zéro (champ « efface ») oublie tout ce qui lui est antérieur, sur tous les appareils.
 // Module pur (sans navigateur) : il est testé directement avec Node.
-import type { Etat, EtatCarte, EtatExercice } from "./progression";
+import type { Etat, EtatCarte, EtatExercice, ExerciceGenere } from "./progression";
 
 type Lecon = Etat["lecons"][string];
 type Chrono = Etat["chronos"][string];
@@ -36,6 +36,7 @@ export function normaliser(x: unknown): Etat {
     exercices: table(e.exercices),
     cartes: table(e.cartes),
     chronos: table(e.chronos),
+    generes: table(e.generes),
     derniere: texte(derniere.lecon) && texte(derniere.quand) ? { lecon: derniere.lecon, quand: derniere.quand } : undefined,
     efface: texte(e.efface),
   });
@@ -78,6 +79,10 @@ function fusionCarte(a: EtatCarte, b: EtatCarte): EtatCarte {
 
 const fusionChrono = (a: Chrono, b: Chrono): Chrono => ((b.maj ?? "") > (a.maj ?? "") ? b : a);
 
+/** Un exercice généré ne change pas ; seule sa suppression compte, et elle l'emporte. */
+const fusionGenere = (a: ExerciceGenere, b: ExerciceGenere): ExerciceGenere => (a.supprime ? a : b.supprime ? b : a);
+const quandGenere = (e: ExerciceGenere) => e.supprime ?? e.cree ?? "";
+
 function fusionTable<T>(a: Record<string, T>, b: Record<string, T>, fusion: (x: T, y: T) => T, quand: (x: T) => string, efface?: string) {
   const resultat: Record<string, T> = {};
   for (const cle of new Set([...Object.keys(a), ...Object.keys(b)])) {
@@ -100,6 +105,7 @@ export function fusionner(local: unknown, distant: unknown): Etat {
     exercices: fusionTable(a.exercices, b.exercices, fusionExercice, (e) => e.maj ?? "", efface),
     cartes: fusionTable(a.cartes, b.cartes, fusionCarte, revisionCarte, efface),
     chronos: fusionTable(a.chronos, b.chronos, fusionChrono, (c) => c.maj ?? "", efface),
+    generes: fusionTable(a.generes, b.generes, fusionGenere, quandGenere, efface),
     derniere: derniere && !(efface && derniere.quand < efface) ? derniere : undefined,
     efface,
   });
