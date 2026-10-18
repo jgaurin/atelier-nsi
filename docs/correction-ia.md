@@ -43,8 +43,9 @@ la console Anthropic.
 
 ## Coût
 
-Claude Haiku 5.5 : 0,10 $ par million de jetons en entrée, 0,50 $ en sortie (octobre 2026). Mesuré en test : une relecture ≈
-0,1 centime, une séance orale complète ≈ 1 centime. Réglages : `effort: "low"` (réponses rapides, 2 à 8 s), `max_tokens` 8 000
+Claude Haiku 5.5 : 0,10 $ par million de jetons en entrée, 0,50 $ en sortie (octobre 2026). Ordre de grandeur estimé (pas
+mesuré) : une relecture ≈ 0,1 centime, une séance orale complète ≈ 1 centime. La consommation réelle se lit dans la console
+Anthropic (Usage). Réglages : `effort: "low"` (réponses rapides, 2 à 8 s), `max_tokens` 8 000
 (une réponse coupée ou refusée est signalée comme une erreur, jamais affichée à moitié).
 
 ## Faire évoluer

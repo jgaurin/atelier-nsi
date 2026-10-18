@@ -37,7 +37,8 @@ export default defineConfig({
     // alors deux fois en même temps son cache de contenu (.astro/data-store.json), la seconde écriture échouait et la
     // collection des leçons se retrouvait vide (toutes les leçons en 404). On attend que le fichier soit stable.
     server: {
-      watch: { awaitWriteFinish: { stabilityThreshold: 400, pollInterval: 100 } },
+      // Les sorties de construction (dist, .vercel) ne doivent pas déclencher le serveur de développement.
+      watch: { awaitWriteFinish: { stabilityThreshold: 400, pollInterval: 100 }, ignored: ["**/.vercel/**", "**/dist/**"] },
     },
   },
 });
