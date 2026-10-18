@@ -9,6 +9,8 @@ export interface Relecture {
   points_forts: string[];
   a_revoir: string[];
   conseil: string;
+  /** Relecture de code seulement : sa solution corrigée et améliorée. */
+  code_ameliore?: string;
 }
 
 export interface TourOral {

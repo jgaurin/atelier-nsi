@@ -621,3 +621,5 @@ details.question[open] summary::after { content: "Masquer"; }
 .oral-bilan { padding: 1rem 1.1rem; border-radius: 12px; border: 1px solid var(--bord); border-left: 4px solid var(--vert); background: var(--surface-2); display: grid; gap: .6rem; }
 .oral-note { color: #d99a00; font-size: 1.15rem; letter-spacing: .1em; }
 .oral-modele { padding: .7rem .85rem; border-radius: 10px; background: var(--surface); border: 1px dashed var(--bord-fort); display: grid; gap: .3rem; justify-items: start; }
+.relecture-code summary { cursor: pointer; font-weight: 650; }
+.relecture-code pre { margin: .5rem 0 0; padding: .7rem .85rem; border-radius: 8px; background: var(--surface); border: 1px solid var(--bord); overflow-x: auto; font-size: .88rem; }

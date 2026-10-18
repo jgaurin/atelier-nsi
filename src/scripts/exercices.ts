@@ -207,6 +207,7 @@ function exercicePython(ctx: Contexte) {
   const resultat = el("div", { class: "resultat", "aria-live": "polite" });
   ctx.actions.after(resultat);
   let essais = 0;
+  let bilanTests = "";
   ctx.aEssaye = () => essais > 0;
 
   const lancer = bouton("▶ Exécuter les tests");
@@ -229,10 +230,13 @@ function exercicePython(ctx: Contexte) {
     const morceaux: Node[] = [];
     if (r.erreur) {
       morceaux.push(enTete("mal", "Ton code s'arrête sur une erreur"), el("pre", { class: "resultat-sortie erreur" }, r.erreur));
+      bilanTests = `Le code s'arrête sur une erreur :\n${r.erreur}`;
       noter(ctx, "tente");
     } else {
       const reussis = r.tests.filter((t) => t.ok).length;
       const tout = tests.length > 0 && reussis === tests.length;
+      bilanTests = `${reussis} test(s) réussi(s) sur ${tests.length} :\n` +
+        r.tests.map((t) => `${t.ok ? "✓" : "✗"} ${t.label}${t.detail ? ` (${t.detail})` : ""}`).join("\n");
       morceaux.push(enTete(tout ? "bien" : "mal", tout ? `Bravo : les ${tests.length} tests passent.` : `${reussis} test(s) sur ${tests.length} réussi(s)`));
       morceaux.push(el("ul", { class: "resultat-tests" }, ...r.tests.map((t) =>
         el("li", {}, el("span", { class: t.ok ? "ok" : "ko" }, t.ok ? "✓" : "✗"), el("span", {}, t.label), t.detail ? el("span", { class: "detail" }, t.detail) : null))));
@@ -245,6 +249,7 @@ function exercicePython(ctx: Contexte) {
   }
 
   lancer.addEventListener("click", executer);
+  boutonRelecture(ctx, { type: "python", reponse: async () => (await pret, editeur!.valeur()), resultats: () => bilanTests, noteParIA: false });
   reinitialiser.addEventListener("click", async () => {
     await pret;
     if (editeur!.valeur() !== depart && !confirm("Effacer ton code et revenir au code de départ ?")) return;
@@ -261,6 +266,7 @@ function exerciceSQL(ctx: Contexte) {
   const ordreCompte = zone.dataset.ordre === "1";
   const resultat = el("div", { class: "resultat", "aria-live": "polite" });
   let essais = 0;
+  let bilanRequete = "";
   ctx.aEssaye = () => essais > 0;
 
   const schema = el("details", { class: "schema-base" }, el("summary", {}, `Voir les tables de la base « ${base} »`));
@@ -290,11 +296,16 @@ function exerciceSQL(ctx: Contexte) {
     essais += 1;
     if (r.erreur) {
       resultat.replaceChildren(enTete("mal", "La requête n'a pas pu s'exécuter"), el("pre", { class: "resultat-sortie erreur" }, r.erreur));
+      bilanRequete = `La requête ne s'exécute pas :\n${r.erreur}`;
       noter(ctx, "tente");
       return;
     }
     const obtenu = r.tables.at(-1);
     const verdict = comparer(obtenu, attendu.tables.at(-1), ordreCompte);
+    bilanRequete = verdict.egal
+      ? "Le résultat est identique au résultat attendu."
+      : `Le résultat diffère du résultat attendu : ${verdict.raison}` +
+        (obtenu ? `\nColonnes obtenues : ${obtenu.colonnes.join(", ")} ; ${obtenu.lignes.length} ligne(s).` : "\nAucune ligne renvoyée.");
     const morceaux: Node[] = [enTete(verdict.egal ? "bien" : "mal", verdict.egal ? "Résultat identique au résultat attendu." : verdict.raison)];
     if (obtenu) {
       morceaux.push(tableHTML(obtenu.colonnes, obtenu.lignes));
@@ -308,6 +319,7 @@ function exerciceSQL(ctx: Contexte) {
     else ctx.message.textContent = "";
   }
   lancer.addEventListener("click", executer);
+  boutonRelecture(ctx, { type: "sql", reponse: async () => (await pret, editeur!.valeur()), resultats: () => bilanRequete, noteParIA: false });
 }
 
 /* Rédaction ------------------------------------------------------------ */
@@ -332,32 +344,7 @@ function redaction(ctx: Contexte) {
   requestAnimationFrame(ajuster);
   ctx.aEssaye = () => texte.value.trim().length >= 15;
 
-  // Relecture par l'IA : seulement si on la demande.
-  if (synchroConfiguree) {
-    const relire = bouton("Faire relire par l'IA", "bouton bouton-petit bouton-ia");
-    const resultat = el("div", { class: "relecture-ia", hidden: true });
-    ctx.message.after(resultat);
-    relire.addEventListener("click", async () => {
-      if (texte.value.trim().length < 15) return dire(ctx, "Écris d'abord ta réponse (quelques phrases) : l'IA la comparera au corrigé.");
-      relire.disabled = true;
-      relire.textContent = "Relecture en cours…";
-      dire(ctx, "");
-      try {
-        const r = await appelIA<Relecture>("relire", {
-          enonce: ctx.section.querySelector(".exercice-enonce")?.textContent?.trim() ?? "",
-          corrige: ctx.corrige?.textContent?.trim() ?? "",
-          criteres: [...(ctx.criteres?.querySelectorAll("li") ?? [])].map((li) => li.textContent?.trim() ?? ""),
-          reponse: texte.value,
-        });
-        afficherRelecture(ctx, resultat, r);
-      } catch (e) {
-        dire(ctx, (e as Error).message, "moyen");
-      }
-      relire.disabled = false;
-      relire.textContent = "Faire relire par l'IA";
-    });
-    ctx.actions.append(relire);
-  }
+  boutonRelecture(ctx, { type: "redaction", reponse: () => texte.value, noteParIA: true });
 
   const boite = el("div", { class: "auto-evaluation", hidden: true });
   ctx.section.append(boite);
@@ -382,10 +369,61 @@ function redaction(ctx: Contexte) {
 
 const VERDICTS = { juste: "✓ Juste", partiel: "≈ En partie", faux: "✗ À retravailler" } as const;
 
-/** Résultat de la relecture IA ; son verdict note l'exercice, que l'on peut corriger d'un clic. */
-function afficherRelecture(ctx: Contexte, boite: HTMLElement, r: Relecture) {
+/** Texte d'un bloc pour l'IA : chaque formule KaTeX remplacée par sa source LaTeX (sinon elle apparaît en double). */
+function texteLisible(noeud: Element | null): string {
+  if (!noeud) return "";
+  const copie = noeud.cloneNode(true) as Element;
+  copie.querySelectorAll(".katex").forEach((k) => k.replaceWith(` $${k.querySelector("annotation")?.textContent ?? k.textContent ?? ""}$ `));
+  return (copie.textContent ?? "").replace(/[ \t]+/g, " ").trim();
+}
+
+/**
+ * Bouton « Faire relire par l'IA » (rien n'est envoyé sans ce clic) : la réponse ou le code est comparé au corrigé.
+ * noteParIA : pour une rédaction, le verdict de l'IA note l'exercice ; pour du code, ce sont les tests qui notent.
+ */
+function boutonRelecture(ctx: Contexte, o: {
+  type: "redaction" | "python" | "sql";
+  reponse: () => string | Promise<string>;
+  resultats?: () => string;
+  noteParIA: boolean;
+}) {
+  if (!synchroConfiguree) return;
+  const relire = bouton("Faire relire par l'IA", "bouton bouton-petit bouton-ia");
+  const boite = el("div", { class: "relecture-ia", hidden: true });
+  ctx.message.after(boite);
+  relire.addEventListener("click", async () => {
+    const reponse = (await o.reponse()).trim();
+    if (reponse.length < (o.type === "redaction" ? 15 : 5)) {
+      return dire(ctx, o.type === "redaction"
+        ? "Écris d'abord ta réponse (quelques phrases) : l'IA la comparera au corrigé."
+        : "Écris d'abord ton code : l'IA le comparera au corrigé.");
+    }
+    relire.disabled = true;
+    relire.textContent = "Relecture en cours…";
+    dire(ctx, "");
+    try {
+      const r = await appelIA<Relecture>("relire", {
+        type: o.type,
+        enonce: texteLisible(ctx.section.querySelector(".exercice-enonce")),
+        corrige: texteLisible(ctx.corrige),
+        criteres: [...(ctx.criteres?.querySelectorAll("li") ?? [])].map(texteLisible),
+        resultats: o.resultats?.() ?? "",
+        reponse,
+      });
+      afficherRelecture(ctx, boite, r, o.noteParIA);
+    } catch (e) {
+      dire(ctx, (e as Error).message, "moyen");
+    }
+    relire.disabled = false;
+    relire.textContent = "Faire relire par l'IA";
+  });
+  ctx.actions.append(relire);
+}
+
+/** Résultat de la relecture IA ; pour une rédaction, son verdict note l'exercice (modifiable d'un clic). */
+function afficherRelecture(ctx: Contexte, boite: HTMLElement, r: Relecture, noteParIA: boolean) {
   const statut: progression.StatutExercice = r.verdict === "juste" ? "reussi" : "a-revoir";
-  noter(ctx, statut);
+  if (noteParIA) noter(ctx, statut);
   const liste = (titre: string, elements: string[], classe: string) =>
     elements.length ? el("div", { class: classe }, el("strong", {}, titre), el("ul", {}, ...elements.map((t) => el("li", {}, t)))) : null;
   const correctif = el("p", { class: "relecture-statut" }, `Exercice noté « ${statut === "reussi" ? "réussi" : "à revoir"} » d'après l'IA. Pas d'accord ? `);
@@ -406,7 +444,10 @@ function afficherRelecture(ctx: Contexte, boite: HTMLElement, r: Relecture) {
           el("ul", {}, ...r.criteres.map((c) => el("li", { "data-atteint": String(c.atteint) }, `${c.atteint ? "✓" : "✗"} ${c.texte}`, c.commentaire ? el("small", {}, c.commentaire) : null))))
       : null,
     r.conseil ? el("p", { class: "relecture-conseil" }, el("strong", {}, "Conseil : "), r.conseil) : null,
-    correctif,
+    r.code_ameliore?.trim()
+      ? el("details", { class: "relecture-code" }, el("summary", {}, "Voir une version améliorée de ton code"), el("pre", {}, el("code", {}, r.code_ameliore)))
+      : null,
+    noteParIA ? correctif : null,
     el("p", { class: "aide" }, "L'IA peut se tromper : compare aussi avec le corrigé."),
   ].filter(Boolean) as HTMLElement[]);
 }
