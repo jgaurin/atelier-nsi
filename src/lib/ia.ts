@@ -47,9 +47,18 @@ export function erreurAPI(e: unknown): Response {
   if (e instanceof Anthropic.BadRequestError && /credit|balance/i.test(e.message)) {
     return erreur(402, "Plus de crédit sur ton compte Claude (console Anthropic → Billing).");
   }
-  if (e instanceof Anthropic.APIError) return erreur(502, "Le service Claude ne répond pas correctement pour le moment. Réessaie plus tard.");
+  if (e instanceof Anthropic.APIError) {
+    console.error("API Claude", e.status, e.message);
+    return erreur(502, "Le service Claude ne répond pas correctement pour le moment. Réessaie plus tard.");
+  }
+  // Réponse du modèle qui ne respecte pas le format attendu (JSON abîmé ou champ inattendu).
+  const nom = (e as { name?: string })?.name ?? "";
+  if (nom === "ZodError" || nom === "SyntaxError" || /parse|json/i.test(nom)) {
+    console.error("Réponse de l'IA au mauvais format", e);
+    return erreur(502, "La réponse de l'IA n'avait pas le format attendu. Réessaie (ça arrive de temps en temps).");
+  }
   console.error(e);
-  return erreur(500, "Erreur inattendue du serveur.");
+  return erreur(500, `Erreur inattendue du serveur (${nom || "inconnue"}). Réessaie ; si ça recommence, signale-le.`);
 }
 
 /** Réponse du modèle inutilisable (coupée ou refusée) : message clair plutôt qu'un résultat tronqué. */

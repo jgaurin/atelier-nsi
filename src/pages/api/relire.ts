@@ -7,8 +7,10 @@ import { champ, claude, erreur, erreurAPI, LIMITES, MODELE, reponseIncomplete, v
 
 export const prerender = false;
 
+// Le verdict est un texte libre (« juste », « partiel », « faux » demandés) : l'API ne garantit pas la liste exacte,
+// et une formulation voisine (« Partiel », « en partie ») ne doit pas faire échouer toute la relecture.
 const Relecture = z.object({
-  verdict: z.enum(["juste", "partiel", "faux"]),
+  verdict: z.string().describe("juste, partiel ou faux"),
   criteres: z.array(z.object({ texte: z.string(), atteint: z.boolean(), commentaire: z.string() })),
   points_forts: z.array(z.string()),
   a_revoir: z.array(z.string()),
@@ -44,6 +46,15 @@ Points forts et points à revoir : 0 à 4 éléments chacun, une phrase courte p
 Conseil : une ou deux phrases sur ce qu'il doit travailler en priorité.
 code_ameliore : SA solution corrigée et améliorée, complète, en gardant son approche quand elle est valable ; dans le même langage ; pas de Markdown ni de balises de code ; chaîne vide si son code est déjà très bien.
 Écris en français, en le tutoyant, avec des phrases courtes et concrètes. Sois exigeant et bienveillant.`;
+
+/** Ramène la formulation du modèle à l'un des trois verdicts affichés. */
+function normaliserVerdict(texte: string): "juste" | "partiel" | "faux" {
+  const t = texte.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  if (/faux|fausse|retravailler|incorrect|echec/.test(t)) return "faux";
+  if (/partiel|partie|presque|incomplet/.test(t)) return "partiel";
+  if (/juste|correct|reussi|bon/.test(t)) return "juste";
+  return "partiel";
+}
 
 export const POST: APIRoute = async ({ request }) => {
   const refus = await verifierAcces(request);
@@ -95,7 +106,7 @@ export const POST: APIRoute = async ({ request }) => {
     const incomplete = reponseIncomplete(r.stop_reason);
     if (incomplete) return incomplete;
     if (!r.parsed_output) return erreur(502, "La réponse de l'IA était illisible. Réessaie.");
-    return Response.json(r.parsed_output);
+    return Response.json({ ...r.parsed_output, verdict: normaliserVerdict(r.parsed_output.verdict) });
   } catch (e) {
     return erreurAPI(e);
   }
