@@ -8,7 +8,7 @@ Des aides toujours **à la demande** (rien n'est envoyé à l'IA sans un clic) :
 | **Discuter de la correction** | sous chaque relecture | `POST /api/discuter` : questions libres sur la relecture (« pourquoi ? », « un exemple ? »), réponses courtes, code si utile ; 8 questions au plus, rien n'est gardé. |
 | **Explique-le à l'oral** / **Entraîne-toi face au jury** | fin de chaque leçon | `POST /api/oral` : une question sur UNE notion de la leçon (ou une question de jury pour les leçons sur le métier), une ou deux relances, puis un bilan noté sur 5 avec une explication modèle. Au plus 3 réponses par séance. |
 | **Exercices supplémentaires** | fin de chaque leçon (sauf leçons sur le métier) | `POST /api/exercice` : un exercice Python au niveau choisi (énoncé, code de départ, tests, indices, corrigé). Le navigateur exécute le corrigé contre les tests (Pyodide) avant de l'afficher ; s'il échoue, l'exercice est redemandé avec l'erreur (3 essais au plus). Les exercices sont gardés dans la progression (`generes`, synchronisée ; une suppression se propage) et s'affichent comme ceux des leçons. |
-| **Dicter**, **Écouter / Arrêter** | zones de réponse, questions de l'IA | reconnaissance et synthèse vocales du navigateur (Chrome, Edge) : gratuites, sans IA ; la lecture se coupe d'un clic. |
+| **Dicter** | zones de réponse | reconnaissance vocale du navigateur (Chrome, Edge) : gratuite, sans IA. |
 
 ## Architecture
 

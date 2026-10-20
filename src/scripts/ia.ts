@@ -2,8 +2,6 @@
 // La clé de l'API Claude reste sur le serveur : ici, on envoie seulement le jeton de connexion du compte (Supabase),
 // que le serveur vérifie avant d'appeler Claude.
 import { jetonAcces } from "./synchro";
-import { el } from "./dom";
-import { icone } from "./icones";
 
 export interface Relecture {
   verdict: "juste" | "partiel" | "faux";
@@ -53,60 +51,3 @@ export async function appelIA<T>(chemin: "relire" | "oral" | "exercice" | "discu
   }
   return donnees as T;
 }
-
-/* Lecture à voix haute (synthèse vocale du navigateur, gratuite) ------------------------------------ */
-export const lectureDisponible = () => "speechSynthesis" in window;
-
-/** Fin de la lecture en cours (pour remettre son bouton sur « Écouter »). */
-let finEnCours: (() => void) | null = null;
-
-/** Arrête toute lecture en cours. */
-export function arreterLecture() {
-  if (!lectureDisponible()) return;
-  speechSynthesis.cancel();
-  finEnCours?.();
-  finEnCours = null;
-}
-
-export function lire(texte: string, surFin?: () => void) {
-  if (!lectureDisponible()) return;
-  arreterLecture();
-  const enonce = new SpeechSynthesisUtterance(texte);
-  enonce.lang = "fr-FR";
-  const voix = speechSynthesis.getVoices().find((v) => v.lang.startsWith("fr"));
-  if (voix) enonce.voice = voix;
-  let fini = false;
-  const finir = () => {
-    if (fini) return;
-    fini = true;
-    if (finEnCours === finir) finEnCours = null;
-    surFin?.();
-  };
-  enonce.onend = finir;
-  enonce.onerror = finir;
-  finEnCours = finir;
-  speechSynthesis.speak(enonce);
-}
-
-/** Bouton « Écouter » qui devient « Arrêter » pendant la lecture ; null si le navigateur ne sait pas lire. */
-export function boutonLecture(texte: string, libelle = "Écouter"): HTMLButtonElement | null {
-  if (!lectureDisponible()) return null;
-  const b = el("button", { type: "button", class: "bouton-lien bouton-lecture" });
-  let actif = false;
-  const afficher = () => {
-    b.replaceChildren(icone(actif ? "stop" : "son", 15), actif ? "Arrêter" : libelle);
-    b.setAttribute("aria-pressed", String(actif));
-    b.setAttribute("aria-label", actif ? "Arrêter la lecture" : libelle);
-  };
-  afficher();
-  b.addEventListener("click", () => {
-    if (actif) return arreterLecture();
-    actif = true;
-    afficher();
-    lire(texte, () => { actif = false; afficher(); });
-  });
-  return b;
-}
-
-// On coupe la voix en quittant la page.
-if (lectureDisponible()) window.addEventListener("pagehide", arreterLecture);

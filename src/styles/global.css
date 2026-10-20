@@ -708,7 +708,6 @@ details.question[open] summary::after { content: "Masquer"; }
 .oral-moi { justify-content: flex-end; }
 .oral-moi .oral-bulles { justify-items: end; }
 .oral-moi .oral-bulle { background: var(--accent); color: var(--accent-texte); border-bottom-right-radius: 5px; }
-.oral-ecouter { font-size: .82rem; margin-left: .3rem; }
 .oral-frappe { display: inline-flex; gap: .3rem; align-items: center; padding: .85rem 1rem; }
 .oral-frappe span { width: .45rem; height: .45rem; border-radius: 50%; background: var(--texte-3); animation: ia-saut 1.2s ease-in-out infinite; }
 .oral-frappe span:nth-child(2) { animation-delay: .15s; }
@@ -737,7 +736,6 @@ details.question[open] summary::after { content: "Masquer"; }
 .oral-criteres dt { margin-bottom: .15rem; }
 .oral-criteres dd { margin: 0; line-height: 1.5; }
 .oral-modele { padding: .8rem .95rem; border-radius: var(--rayon-petit); border: 1px dashed var(--bord-fort); display: grid; gap: .25rem; }
-.oral-modele-tete { display: flex; justify-content: space-between; align-items: center; gap: .5rem; }
 .oral-modele h4 { margin: 0; }
 .oral-modele p { margin: 0; line-height: 1.6; }
 /* Exercices supplémentaires créés par l'IA */
@@ -830,7 +828,6 @@ details.question[open] summary::after { content: "Masquer"; }
   color: var(--texte-2); font: inherit; font-size: .84rem; cursor: pointer;
 }
 .ia-suggestion:hover { color: var(--accent); border-color: var(--accent); }
-.bouton-lecture[aria-pressed="true"] { color: var(--rouge); }
 
 /* Les grilles des outils IA ne s'élargissent jamais à cause d'un bloc de code : il défile dans son cadre. */
 .ia-outils, .onglet-panneau, .exos-ia-exercices, .relecture-ia, .ia-carte, .ia-discussion, .ia-discussion-fil,
