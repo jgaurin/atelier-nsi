@@ -6,10 +6,11 @@ import * as progression from "./progression";
 import type { ExerciceGenere } from "./progression";
 import { appelIA } from "./ia";
 import { executerPython, pythonEstPret, type TestPython } from "./python";
-import { initialiserExercices } from "./exercices";
+import { initialiserExercices, ouvrirExercice } from "./exercices";
 import { objectifCourant } from "./objectif";
 import { el } from "./dom";
 import { icone } from "./icones";
+import { miniMarkdown } from "./ia-ui";
 
 interface ExerciceIA {
   titre: string;
@@ -28,39 +29,6 @@ const ESSAIS = 3;
 
 const bloc = document.querySelector<HTMLElement>("[data-exos-ia]");
 if (bloc) monter(bloc);
-
-/** Texte de l'IA → nœuds sûrs (jamais d'innerHTML) : paragraphes, listes « - », `code`, **gras**, blocs ```. */
-function miniMarkdown(texte: string): Node[] {
-  const noeuds: Node[] = [];
-  const enLigne = (ligne: string) => {
-    const morceaux: Node[] = [];
-    for (const m of ligne.split(/(`[^`]+`|\*\*[^*]+\*\*)/g)) {
-      if (!m) continue;
-      if (m.startsWith("`") && m.endsWith("`") && m.length > 1) morceaux.push(el("code", {}, m.slice(1, -1)));
-      else if (m.startsWith("**") && m.endsWith("**") && m.length > 4) morceaux.push(el("strong", {}, m.slice(2, -2)));
-      else morceaux.push(document.createTextNode(m));
-    }
-    return morceaux;
-  };
-  texte.replace(/\r/g, "").split(/```/).forEach((partie, i) => {
-    if (i % 2 === 1) {
-      noeuds.push(el("pre", { class: "code-genere" }, el("code", {}, partie.replace(/^[a-z]*\n/i, "").replace(/\n$/, ""))));
-      return;
-    }
-    for (const paragraphe of partie.split(/\n\s*\n/)) {
-      const lignes = paragraphe.split("\n").filter((l) => l.trim());
-      if (!lignes.length) continue;
-      if (lignes.every((l) => /^\s*[-*] /.test(l))) {
-        noeuds.push(el("ul", {}, ...lignes.map((l) => el("li", {}, ...enLigne(l.replace(/^\s*[-*] /, ""))))));
-      } else {
-        const p = el("p");
-        lignes.forEach((l, j) => { if (j) p.append(el("br")); p.append(...enLigne(l.trim())); });
-        noeuds.push(p);
-      }
-    }
-  });
-  return noeuds;
-}
 
 function monter(bloc: HTMLElement) {
   const lecon = bloc.dataset.exosIa!;
@@ -130,6 +98,11 @@ function monter(bloc: HTMLElement) {
     // Numérotation et compteur.
     conteneur.querySelectorAll<HTMLElement>("section.exercice-genere .exercice-numero").forEach((n, i) => (n.textContent = `Exercice ${i + 1}`));
     nombre.textContent = String(gardes.length);
+    const compte = document.querySelector<HTMLElement>("[data-exos-ia-compte]");
+    if (compte) {
+      compte.textContent = String(gardes.length);
+      compte.hidden = gardes.length === 0;
+    }
     liste.hidden = gardes.length === 0;
     initialiserExercices(conteneur);
   }
@@ -177,6 +150,7 @@ function monter(bloc: HTMLElement) {
       liste.open = true;
       afficherEtat("");
       const nouvelle = conteneur.querySelector<HTMLElement>(`[data-exercice="${id}"]`);
+      if (nouvelle) ouvrirExercice(nouvelle);
       nouvelle?.scrollIntoView({ behavior: "smooth", block: "start" });
     } catch (e) {
       afficherEtat((e as Error).message, "erreur");

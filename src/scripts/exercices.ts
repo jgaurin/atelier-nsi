@@ -8,6 +8,7 @@ import { bouton, differer, el, tableHTML } from "./dom";
 import { icone, type NomIcone } from "./icones";
 import { conseilIA, enTeteIA, listeIA, pointsARevoir, pointsForts, squelette } from "./ia-ui";
 import { appelIA, type Relecture } from "./ia";
+import { discussionIA } from "./discussion";
 import { micro } from "./dictee";
 import { synchroConfiguree } from "../data/synchro";
 import type { Editeur } from "./editeur";
@@ -64,6 +65,39 @@ function initialiser(section: HTMLElement) {
     default: redaction(ctx);
   }
   boutonsCommuns(ctx);
+  rendreRepliable(section);
+}
+
+/* Exercice repliable : l'en-tête et le titre restent visibles, le reste se déplie d'un clic. ------- */
+function rendreRepliable(section: HTMLElement) {
+  const tete = section.querySelector<HTMLElement>(".exercice-tete");
+  const titre = section.querySelector<HTMLElement>(".exercice-titre");
+  if (!tete || !titre) return;
+  const corps = el("div", { class: "exercice-corps", id: `${section.id || `ex-${section.dataset.exercice}`}-corps` });
+  for (let n = titre.nextSibling; n; ) {
+    const suivant = n.nextSibling;
+    corps.append(n);
+    n = suivant;
+  }
+  section.append(corps);
+  const bascule = el("button", { type: "button", class: "exercice-bascule", "aria-expanded": "false", "aria-controls": corps.id },
+    el("span", { class: "exercice-bascule-texte" }, ...titre.childNodes), icone("chevron", 18, "exercice-chevron"));
+  titre.replaceChildren(bascule);
+  const basculer = () => ouvrirExercice(section, !section.hasAttribute("data-ouvert"));
+  bascule.addEventListener("click", basculer);
+  tete.addEventListener("click", (e) => {
+    if (!(e.target as HTMLElement).closest("button, a")) basculer();
+  });
+  ouvrirExercice(section, location.hash === `#${section.id}`);
+}
+
+/** Ouvre (ou referme) un exercice repliable. */
+export function ouvrirExercice(section: HTMLElement, ouvert = true) {
+  const corps = section.querySelector<HTMLElement>(":scope > .exercice-corps");
+  if (!corps) return;
+  section.toggleAttribute("data-ouvert", ouvert);
+  corps.hidden = !ouvert;
+  section.querySelector(".exercice-bascule")?.setAttribute("aria-expanded", String(ouvert));
 }
 
 function dire(ctx: Contexte, texte: string, ton: "bien" | "moyen" | "info" = "info") {
@@ -415,16 +449,18 @@ function boutonRelecture(ctx: Contexte, o: {
     relire.setAttribute("aria-busy", "true");
     dire(ctx, "");
     attenteRelecture(boite);
+    const demande = {
+      type: o.type,
+      enonce: texteLisible(ctx.section.querySelector(".exercice-enonce")),
+      corrige: texteLisible(ctx.corrige),
+      criteres: [...(ctx.criteres?.querySelectorAll("li") ?? [])].map(texteLisible),
+      resultats: o.resultats?.() ?? "",
+      reponse,
+    };
     try {
-      const r = await appelIA<Relecture>("relire", {
-        type: o.type,
-        enonce: texteLisible(ctx.section.querySelector(".exercice-enonce")),
-        corrige: texteLisible(ctx.corrige),
-        criteres: [...(ctx.criteres?.querySelectorAll("li") ?? [])].map(texteLisible),
-        resultats: o.resultats?.() ?? "",
-        reponse,
-      });
+      const r = await appelIA<Relecture>("relire", demande);
       afficherRelecture(ctx, boite, r, o.noteParIA, o.editeur);
+      boite.querySelector(".ia-pied")!.before(discussionIA({ ...demande, relecture: resumeRelecture(r) }));
     } catch (e) {
       boite.hidden = true;
       dire(ctx, (e as Error).message, "moyen");
@@ -433,6 +469,18 @@ function boutonRelecture(ctx: Contexte, o: {
     relire.removeAttribute("aria-busy");
   });
   ctx.actions.append(relire);
+}
+
+/** La relecture en texte, pour que l'IA sache ce qu'elle a dit quand on l'interroge ensuite. */
+function resumeRelecture(r: Relecture): string {
+  return [
+    `Verdict : ${r.verdict}`,
+    r.points_forts.length ? `Points forts : ${r.points_forts.join(" ; ")}` : "",
+    r.a_revoir.length ? `À revoir : ${r.a_revoir.join(" ; ")}` : "",
+    ...r.criteres.map((c) => `Critère « ${c.texte} » : ${c.atteint ? "atteint" : "non atteint"}${c.commentaire ? ` (${c.commentaire})` : ""}`),
+    r.conseil ? `Conseil : ${r.conseil}` : "",
+    r.code_ameliore?.trim() ? `Version améliorée proposée :\n${r.code_ameliore}` : "",
+  ].filter(Boolean).join("\n");
 }
 
 /** Carte d'attente pendant que l'IA relit. */

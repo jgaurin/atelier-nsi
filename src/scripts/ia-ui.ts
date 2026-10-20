@@ -28,3 +28,36 @@ export const conseilIA = (texte: string) =>
 
 /** Lignes grises animées pendant l'attente. */
 export const squelette = (lignes = 3) => el("div", { class: "ia-squelette" }, ...Array.from({ length: lignes }, () => el("span", {})));
+
+/** Texte de l'IA → nœuds sûrs (jamais d'innerHTML) : paragraphes, listes « - », `code`, **gras**, blocs ```. */
+export function miniMarkdown(texte: string): Node[] {
+  const noeuds: Node[] = [];
+  const enLigne = (ligne: string) => {
+    const morceaux: Node[] = [];
+    for (const m of ligne.split(/(`[^`]+`|\*\*[^*]+\*\*)/g)) {
+      if (!m) continue;
+      if (m.startsWith("`") && m.endsWith("`") && m.length > 1) morceaux.push(el("code", {}, m.slice(1, -1)));
+      else if (m.startsWith("**") && m.endsWith("**") && m.length > 4) morceaux.push(el("strong", {}, m.slice(2, -2)));
+      else morceaux.push(document.createTextNode(m));
+    }
+    return morceaux;
+  };
+  texte.replace(/\r/g, "").split(/```/).forEach((partie, i) => {
+    if (i % 2 === 1) {
+      noeuds.push(el("pre", { class: "code-genere" }, el("code", {}, partie.replace(/^[a-z]*\n/i, "").replace(/\n$/, ""))));
+      return;
+    }
+    for (const paragraphe of partie.split(/\n\s*\n/)) {
+      const lignes = paragraphe.split("\n").filter((l) => l.trim());
+      if (!lignes.length) continue;
+      if (lignes.every((l) => /^\s*[-*] /.test(l))) {
+        noeuds.push(el("ul", {}, ...lignes.map((l) => el("li", {}, ...enLigne(l.replace(/^\s*[-*] /, ""))))));
+      } else {
+        const p = el("p");
+        lignes.forEach((l, j) => { if (j) p.append(el("br")); p.append(...enLigne(l.trim())); });
+        noeuds.push(p);
+      }
+    }
+  });
+  return noeuds;
+}

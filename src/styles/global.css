@@ -684,7 +684,7 @@ details.question[open] summary::after { content: "Masquer"; }
 .ia-statut { color: var(--texte-2); }
 
 /* Oral : une conversation */
-.oral { margin-top: 2rem; display: grid; gap: 1rem; }
+.oral { display: grid; gap: 1rem; }
 .oral-titre { font-family: var(--police-titre); font-size: 1.2rem; }
 .oral-titre .ia-pastille { width: 2.2rem; height: 2.2rem; }
 .oral-titre small { display: block; font-family: var(--police); font-size: .8rem; font-weight: 500; color: var(--texte-3); }
@@ -741,7 +741,7 @@ details.question[open] summary::after { content: "Masquer"; }
 .oral-modele h4 { margin: 0; }
 .oral-modele p { margin: 0; line-height: 1.6; }
 /* Exercices supplémentaires créés par l'IA */
-.exos-ia { margin-top: 2rem; display: grid; gap: .9rem; }
+.exos-ia { display: grid; gap: .9rem; }
 .exos-ia-intro { margin: 0; color: var(--texte-2); }
 .exos-ia-commande { display: flex; flex-wrap: wrap; align-items: center; gap: .7rem 1rem; }
 .choix-niveau { display: inline-flex; flex-wrap: wrap; gap: .25rem; padding: .25rem; border-radius: 12px; background: var(--surface-2); }
@@ -771,6 +771,73 @@ details.question[open] summary::after { content: "Masquer"; }
 .exercice-supprimer { order: 99; margin-left: auto; width: 1.9rem; height: 1.9rem; }
 .exercice-supprimer:hover { color: var(--rouge); border-color: var(--rouge); }
 .code-genere { margin: .5rem 0; padding: .8rem .95rem; border-radius: var(--rayon-petit); border: 1px solid var(--bord); background: var(--code-fond); overflow-x: auto; font-family: var(--police-code); font-size: .88rem; line-height: 1.55; }
+/* Bloc « S'entraîner avec l'IA » : onglets repliables */
+.ia-outils { margin-top: 2rem; padding: 1rem 1.1rem; display: grid; gap: .9rem; }
+.ia-outils-tete { display: flex; align-items: center; gap: .7rem; }
+.ia-outils-tete .ia-pastille { width: 2.2rem; height: 2.2rem; }
+.ia-outils-tete h2 { margin: 0; font-size: 1.15rem; }
+.ia-outils-tete p { margin: 0; font-size: .85rem; color: var(--texte-3); }
+.onglets { display: flex; flex-wrap: wrap; gap: .4rem; }
+.onglets [role="tab"] {
+  display: inline-flex; align-items: center; gap: .45rem; padding: .5rem .9rem; cursor: pointer;
+  border: 1px solid var(--bord-fort); border-radius: 99px; background: var(--surface); color: var(--texte-2);
+  font: inherit; font-size: .92rem; font-weight: 600; transition: background .15s ease, color .15s ease, border-color .15s ease;
+}
+.onglets [role="tab"] span { display: inline-flex; }
+.onglets [role="tab"]:hover { color: var(--texte); border-color: var(--accent); }
+.onglets [role="tab"][aria-selected="true"] { background: var(--accent-doux); border-color: var(--accent); color: var(--accent); }
+.onglets [role="tab"]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.onglet-compte { min-width: 1.35rem; padding: 0 .4rem; border-radius: 99px; background: var(--accent); color: var(--accent-texte); font-size: .75rem; line-height: 1.35rem; justify-content: center; }
+.onglet-panneau { margin-top: 0; padding-top: .9rem; border-top: 1px solid var(--bord); display: grid; gap: .9rem; }
+.ia-outils:not([data-ouvert]) .onglets { margin-bottom: -.1rem; }
+
+/* Exercices repliables */
+.contenu .exercice-titre { margin: .5rem 0 0; }
+.exercice-bascule {
+  display: flex; align-items: center; justify-content: space-between; gap: .6rem; width: 100%; padding: 0;
+  border: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer;
+}
+.exercice-bascule:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 4px; }
+.exercice-chevron { flex: none; color: var(--texte-3); transition: transform .15s ease; }
+.exercice[data-ouvert] .exercice-chevron { transform: rotate(90deg); color: var(--accent); }
+.exercice-tete { cursor: pointer; }
+.exercice:not([data-ouvert]) { padding-bottom: .95rem; margin: .7rem 0; box-shadow: none; transition: border-color .15s ease; }
+.exercice:not([data-ouvert]):hover { border-color: var(--bord-fort); }
+.exercice-corps { margin-top: .65rem; }
+.exercices-outils { display: flex; justify-content: flex-end; margin: .2rem 0 -.3rem; }
+
+/* Discussion sous une relecture */
+.ia-discussion { display: grid; gap: .6rem; padding-top: .75rem; border-top: 1px solid var(--bord); }
+.ia-discussion h4 { margin: 0; font-size: .76rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--texte-3); }
+.ia-discussion-fil { display: grid; gap: .7rem; }
+.ia-discussion-fil:empty { display: none; }
+.ia-discussion .oral-bulle > :last-child { margin-bottom: 0; }
+.ia-discussion .oral-bulle p, .ia-discussion .oral-bulle ul { margin: 0 0 .45rem; }
+.ia-discussion .oral-bulle ul { padding-left: 1.1rem; }
+.ia-discussion .oral-bulle .code-genere { margin: .4rem 0; background: var(--surface); }
+.ia-discussion-saisie textarea {
+  resize: none; min-height: 2.9rem; padding: .7rem 6rem .7rem .9rem; line-height: 1.5;
+  border: 1.5px solid var(--bord); border-radius: 14px; background: var(--fond);
+}
+.ia-discussion-saisie.avec-micro textarea { padding-bottom: .7rem; }
+.ia-discussion-saisie .saisie-outils { bottom: 50%; transform: translateY(50%); }
+.ia-discussion-saisie textarea:focus { outline: none; border-color: var(--accent); background: var(--surface); }
+.ia-discussion-erreur { display: flex; align-items: center; gap: .4rem; color: var(--rouge); margin: 0; }
+.ia-suggestions { display: flex; flex-wrap: wrap; gap: .4rem; }
+.ia-suggestions[hidden] { display: none; }
+.ia-suggestion {
+  padding: .3rem .7rem; border: 1px solid var(--bord-fort); border-radius: 99px; background: var(--surface);
+  color: var(--texte-2); font: inherit; font-size: .84rem; cursor: pointer;
+}
+.ia-suggestion:hover { color: var(--accent); border-color: var(--accent); }
+.bouton-lecture[aria-pressed="true"] { color: var(--rouge); }
+
+/* Les grilles des outils IA ne s'élargissent jamais à cause d'un bloc de code : il défile dans son cadre. */
+.ia-outils, .onglet-panneau, .exos-ia-exercices, .relecture-ia, .ia-carte, .ia-discussion, .ia-discussion-fil,
+.oral-fil, .oral-composer, .oral-bulles { grid-template-columns: minmax(0, 1fr); }
+.oral-bulles, .oral-bulle, .exos-ia-liste, .exercice-corps { min-width: 0; }
+.code-genere, .ia-code pre { max-width: 100%; }
+
 @media (prefers-reduced-motion: reduce) {
   .tourne, .bouton-icone-ia[aria-busy="true"] .icone, .micro-point, .ia-squelette span, .oral-frappe span { animation: none; }
 }

@@ -64,66 +64,72 @@ const parNiveau = [1, 2, 3, 4].map((n) => lecon.exercices.filter((e) => e.niveau
         <Content />
       </div>
 
-      {synchroConfiguree && module.partie !== "enseigner" && (
-        <section class="carte exos-ia" data-exos-ia={cle}>
-          <div class="ia-tete">
-            <span class="ia-titre oral-titre">
-              <span class="ia-pastille" set:html={iconeHTML("etincelles", 14)} />
-              <span>Exercices supplémentaires<small>Créés par l'IA sur cette leçon</small></span>
-            </span>
-          </div>
-          <p class="exos-ia-intro">
-            Choisis un niveau : l'IA crée un exercice Python avec ses tests, des indices et un corrigé. Avant de te le montrer,
-            l'Atelier vérifie que son corrigé passe bien ses tests. Les exercices créés sont gardés ci-dessous.
-          </p>
-          <div class="exos-ia-commande">
-            <div class="choix-niveau" role="radiogroup" aria-label="Niveau de l'exercice">
-              <button type="button" role="radio" data-niveau="1" aria-checked="false">Découverte</button>
-              <button type="button" role="radio" data-niveau="2" aria-checked="true">Entraînement</button>
-              <button type="button" role="radio" data-niveau="3" aria-checked="false">Approfondissement</button>
-              <button type="button" role="radio" data-niveau="4" aria-checked="false">Type concours</button>
-            </div>
-            <button type="button" class="bouton" data-exos-ia-generer>
-              <span set:html={iconeHTML("etincelles", 16)} />
-              Créer un exercice
-            </button>
-          </div>
-          <p class="exos-ia-etat" data-exos-ia-etat role="status" aria-live="polite"></p>
-          <details class="exos-ia-liste" data-exos-ia-liste hidden>
-            <summary><span set:html={iconeHTML("chevron", 16)} />Exercices générés <span class="exos-ia-nombre" data-exos-ia-nombre>0</span></summary>
-            <div class="exos-ia-exercices" data-exos-ia-exercices></div>
-          </details>
-        </section>
-      )}
-
       {synchroConfiguree && (
-        <section class="carte oral" data-oral={cle}>
-          <div class="ia-tete">
-            <span class="ia-titre oral-titre">
-              <span class="ia-pastille" set:html={iconeHTML("etincelles", 14)} />
-              <span>
-                {module.partie === "enseigner" ? "Entraîne-toi face au jury" : "Explique-le à l'oral"}
-                <small>Entraînement avec l'IA</small>
-              </span>
-            </span>
+        <section class="carte ia-outils" data-ia-outils>
+          <div class="ia-outils-tete">
+            <span class="ia-pastille" set:html={iconeHTML("etincelles", 15)} />
+            <div>
+              <h2>S'entraîner avec l'IA</h2>
+              <p>À la demande, sur cette leçon.</p>
+            </div>
           </div>
-          <div class="oral-accueil" data-oral-accueil>
-            <p>
-              {module.partie === "enseigner"
-                ? "L'IA joue le jury : une question sur ce thème, des relances comme en entretien, puis un bilan."
-                : "L'IA te pose une question sur une notion de cette leçon. Explique comme devant une classe : elle te relance, puis te fait un bilan."}
-            </p>
-            <ul class="oral-etapes">
-              <li><span set:html={iconeHTML("micro", 16)} />Réponds à voix haute ou au clavier</li>
-              <li><span set:html={iconeHTML("fleche", 16)} />Une ou deux relances</li>
-              <li><span set:html={iconeHTML("etoile", 16)} />Un bilan noté sur 5</li>
-            </ul>
-            <button type="button" class="bouton" data-oral-demarrer>
-              <span set:html={iconeHTML("etincelles", 16)} />
-              Me poser une question
+          <div class="onglets" role="tablist" aria-label="Outils d'entraînement avec l'IA">
+            {module.partie !== "enseigner" && (
+              <button type="button" role="tab" id={`onglet-exos-${cle}`} aria-controls={`panneau-exos-${cle}`} aria-selected="false" data-onglet>
+                <span set:html={iconeHTML("inserer", 16)} />Exercices en plus
+                <span class="onglet-compte" data-exos-ia-compte hidden></span>
+              </button>
+            )}
+            <button type="button" role="tab" id={`onglet-oral-${cle}`} aria-controls={`panneau-oral-${cle}`} aria-selected="false" data-onglet>
+              <span set:html={iconeHTML("micro", 16)} />{module.partie === "enseigner" ? "Face au jury" : "À l'oral"}
             </button>
           </div>
-          <div class="oral-fil" data-oral-fil></div>
+
+          {module.partie !== "enseigner" && (
+            <div class="onglet-panneau exos-ia" role="tabpanel" id={`panneau-exos-${cle}`} aria-labelledby={`onglet-exos-${cle}`} hidden data-exos-ia={cle}>
+              <p class="exos-ia-intro">
+                Choisis un niveau : l'IA crée un exercice Python sur cette leçon, avec ses tests, des indices et un corrigé.
+                L'Atelier vérifie que son corrigé passe ses tests avant de te le montrer.
+              </p>
+              <div class="exos-ia-commande">
+                <div class="choix-niveau" role="radiogroup" aria-label="Niveau de l'exercice">
+                  <button type="button" role="radio" data-niveau="1" aria-checked="false">Découverte</button>
+                  <button type="button" role="radio" data-niveau="2" aria-checked="true">Entraînement</button>
+                  <button type="button" role="radio" data-niveau="3" aria-checked="false">Approfondissement</button>
+                  <button type="button" role="radio" data-niveau="4" aria-checked="false">Type concours</button>
+                </div>
+                <button type="button" class="bouton" data-exos-ia-generer>
+                  <span set:html={iconeHTML("etincelles", 16)} />
+                  Créer un exercice
+                </button>
+              </div>
+              <p class="exos-ia-etat" data-exos-ia-etat role="status" aria-live="polite"></p>
+              <details class="exos-ia-liste" data-exos-ia-liste hidden>
+                <summary><span set:html={iconeHTML("chevron", 16)} />Exercices générés <span class="exos-ia-nombre" data-exos-ia-nombre>0</span></summary>
+                <div class="exos-ia-exercices" data-exos-ia-exercices></div>
+              </details>
+            </div>
+          )}
+
+          <div class="onglet-panneau oral" role="tabpanel" id={`panneau-oral-${cle}`} aria-labelledby={`onglet-oral-${cle}`} hidden data-oral={cle}>
+            <div class="oral-accueil" data-oral-accueil>
+              <p>
+                {module.partie === "enseigner"
+                  ? "L'IA joue le jury : une question sur ce thème, des relances comme en entretien, puis un bilan."
+                  : "L'IA te pose une question sur une notion de cette leçon. Explique comme devant une classe : elle te relance, puis te fait un bilan."}
+              </p>
+              <ul class="oral-etapes">
+                <li><span set:html={iconeHTML("micro", 16)} />À voix haute ou au clavier</li>
+                <li><span set:html={iconeHTML("fleche", 16)} />Une ou deux relances</li>
+                <li><span set:html={iconeHTML("etoile", 16)} />Un bilan noté sur 5</li>
+              </ul>
+              <button type="button" class="bouton" data-oral-demarrer>
+                <span set:html={iconeHTML("etincelles", 16)} />
+                Me poser une question
+              </button>
+            </div>
+            <div class="oral-fil" data-oral-fil></div>
+          </div>
         </section>
       )}
 
@@ -159,5 +165,6 @@ const parNiveau = [1, 2, 3, 4].map((n) => lecon.exercices.filter((e) => e.niveau
     import "../../../scripts/lecon";
     import "../../../scripts/oral";
     import "../../../scripts/exos-ia";
+    import "../../../scripts/onglets";
   </script>
 </Base>

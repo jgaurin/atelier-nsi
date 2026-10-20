@@ -1,6 +1,6 @@
 // Page de leçon : progression, exercices, code exécutable, schémas, sommaire actif, validation.
 import * as progression from "./progression";
-import { initialiserExercices } from "./exercices";
+import { initialiserExercices, ouvrirExercice } from "./exercices";
 import { initialiserCodeExec } from "./code-exec";
 import { dessinerSchemas } from "./schemas";
 import { annoncer, bouton, el } from "./dom";
@@ -12,6 +12,23 @@ if (article) {
   const cle = article.dataset.lecon!;
   progression.marquerVue(cle);
   initialiserExercices(article);
+
+  // Exercices repliés : un bouton pour tout déplier (ou tout replier), et le lien #ex-… ouvre l'exercice visé.
+  const premier = article.querySelector<HTMLElement>(".bloc-exercices section.exercice");
+  if (premier) {
+    const tous = () => [...article.querySelectorAll<HTMLElement>(".bloc-exercices section.exercice:not([hidden])")];
+    const bouton = el("button", { type: "button", class: "bouton-lien" }, "Tout déplier");
+    bouton.addEventListener("click", () => {
+      const ouvrir = tous().some((s) => !s.hasAttribute("data-ouvert"));
+      tous().forEach((s) => ouvrirExercice(s, ouvrir));
+      bouton.textContent = ouvrir ? "Tout replier" : "Tout déplier";
+    });
+    premier.parentElement!.querySelector(".exercices-intro")?.after(el("div", { class: "exercices-outils" }, bouton));
+  }
+  window.addEventListener("hashchange", () => {
+    const cible = document.getElementById(location.hash.slice(1));
+    if (cible?.matches("section.exercice")) ouvrirExercice(cible);
+  });
   initialiserCodeExec(article);
   dessinerSchemas(article);
 

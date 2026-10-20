@@ -1,6 +1,6 @@
 // « Explique-le à l'oral » en fin de leçon : l'IA pose une question sur une notion, relance, puis fait un bilan.
 // Présenté comme une conversation. On répond à voix haute (micro) ou au clavier ; rien n'est envoyé sans clic.
-import { appelIA, lectureDisponible, lire, type TourOral } from "./ia";
+import { appelIA, arreterLecture, boutonLecture, type TourOral } from "./ia";
 import { arreterDictee, micro } from "./dictee";
 import { bouton, el } from "./dom";
 import { icone } from "./icones";
@@ -29,11 +29,8 @@ function monter(bloc: HTMLElement) {
   /** Messages de l'IA, groupés derrière une seule pastille ; la dernière bulle peut être lue à voix haute. */
   function messageIA(textes: string[], aLire?: string) {
     const bulles = el("div", { class: "oral-bulles" }, ...textes.filter((t) => t.trim()).map((t) => el("p", { class: "oral-bulle" }, t)));
-    if (aLire && lectureDisponible()) {
-      const ecouter = el("button", { type: "button", class: "bouton-lien oral-ecouter", "aria-label": "Écouter la question" }, icone("son", 16), "Écouter");
-      ecouter.addEventListener("click", () => lire(aLire));
-      bulles.append(ecouter);
-    }
+    const ecouter = aLire ? boutonLecture(aLire) : null;
+    if (ecouter) bulles.append(ecouter);
     const ligne = el("div", { class: "oral-ligne oral-ia" }, el("span", { class: "ia-pastille", "aria-hidden": "true" }, icone("etincelles", 14)), bulles);
     fil.append(ligne);
     defiler(ligne);
@@ -128,13 +125,10 @@ function monter(bloc: HTMLElement) {
           ...Array.from({ length: 5 }, (_, i) => icone("etoile", 16, i < note ? "pleine" : "")), el("span", {}, `${note}/5`))
       : null;
     const modele = t.explication_modele.trim();
-    let ecouter: HTMLButtonElement | null = null;
-    if (modele && lectureDisponible()) {
-      ecouter = el("button", { type: "button", class: "bouton-lien", "aria-label": "Écouter l'explication" }, icone("son", 16), "Écouter");
-      ecouter.addEventListener("click", () => lire(modele));
-    }
+    const ecouter = modele ? boutonLecture(modele) : null;
     const encore = el("button", { type: "button", class: "bouton bouton-petit bouton-second" }, icone("recommencer", 16), "Une autre question");
     encore.addEventListener("click", () => {
+      arreterLecture();
       fil.replaceChildren();
       echanges = [];
       void tour();
