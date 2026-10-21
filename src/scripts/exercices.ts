@@ -60,6 +60,7 @@ function initialiser(section: HTMLElement) {
 
   switch (section.dataset.type) {
     case "qcm": qcm(ctx); break;
+    case "quiz": quiz(ctx); break;
     case "python": exercicePython(ctx); break;
     case "sql": exerciceSQL(ctx); break;
     default: redaction(ctx);
@@ -208,6 +209,97 @@ function qcm(ctx: Contexte) {
     if (ctx.corrige) ctx.corrige.hidden = false;
   });
   ctx.actions.append(b);
+}
+
+/* Grand QCM : une série de questions, la correction s'affiche à chaque réponse ---------------- */
+const SEUIL_QUIZ = 0.8; // part de bonnes réponses pour que le grand QCM compte comme réussi
+
+function quiz(ctx: Contexte) {
+  const liste = ctx.section.querySelector<HTMLOListElement>("ol.quiz");
+  if (!liste) return;
+  const questions = [...liste.children] as HTMLLIElement[];
+  const total = questions.length;
+  const score = el("div", { class: "quiz-score", "aria-live": "polite" });
+  const barre = el("div", { class: "quiz-barre", "aria-hidden": "true" }, el("span"));
+  liste.before(el("div", { class: "quiz-tete" }, score, barre));
+
+  questions.forEach((q, i) => {
+    q.dataset.numero = String(i + 1);
+    q.querySelector(".quiz-enonce")?.prepend(el("span", { class: "quiz-numero" }, `Question ${i + 1} / ${total}`));
+    q.querySelectorAll<HTMLLIElement>(".quiz-options > li").forEach((li) => {
+      const choix = el("button", { type: "button", class: "quiz-choix" });
+      choix.append(...li.childNodes);
+      li.append(choix);
+      choix.addEventListener("click", () => repondre(q, li));
+    });
+  });
+
+  const repondues = () => questions.filter((q) => q.dataset.resultat);
+  const justes = () => questions.filter((q) => q.dataset.resultat === "juste").length;
+  ctx.aEssaye = () => repondues().length > 0;
+
+  function afficherScore() {
+    const n = repondues().length;
+    score.replaceChildren(n
+      ? el("span", {}, el("strong", {}, `${justes()} / ${n}`), ` bonne${justes() > 1 ? "s" : ""} réponse${justes() > 1 ? "s" : ""} · ${total - n} question${total - n > 1 ? "s" : ""} restante${total - n > 1 ? "s" : ""}`)
+      : el("span", {}, `${total} questions · clique sur une réponse : la correction s'affiche aussitôt.`));
+    (barre.firstElementChild as HTMLElement).style.width = `${(100 * n) / total}%`;
+  }
+
+  function repondre(q: HTMLLIElement, choisi: HTMLLIElement) {
+    if (q.dataset.resultat) return;
+    const juste = choisi.dataset.ok === "1";
+    q.dataset.resultat = juste ? "juste" : "faux";
+    choisi.dataset.resultat = juste ? "bonne" : "erreur";
+    if (!juste) {
+      const bonne = q.querySelector<HTMLElement>('.quiz-options > li[data-ok="1"]');
+      if (bonne) bonne.dataset.resultat = "solution";
+    }
+    q.querySelectorAll<HTMLButtonElement>(".quiz-choix").forEach((b) => (b.disabled = true));
+    const explication = q.querySelector<HTMLElement>(".quiz-explication");
+    if (explication) explication.hidden = false;
+    afficherScore();
+    if (repondues().length === total) terminer();
+  }
+
+  function terminer() {
+    const taux = justes() / total;
+    const acquis = taux >= SEUIL_QUIZ;
+    noter(ctx, acquis ? "reussi" : "a-revoir");
+    dire(ctx, acquis
+      ? `Score final : ${justes()} / ${total}. C'est acquis !`
+      : `Score final : ${justes()} / ${total}. Relis les explications des questions ratées, puis refais-les (il faut ${Math.ceil(SEUIL_QUIZ * total)} bonnes réponses).`,
+    acquis ? "bien" : "moyen");
+    refaire.hidden = justes() === total;
+  }
+
+  function remettre(q: HTMLLIElement) {
+    delete q.dataset.resultat;
+    q.querySelectorAll<HTMLElement>(".quiz-options > li").forEach((li) => delete li.dataset.resultat);
+    q.querySelectorAll<HTMLButtonElement>(".quiz-choix").forEach((b) => (b.disabled = false));
+    const explication = q.querySelector<HTMLElement>(".quiz-explication");
+    if (explication) explication.hidden = true;
+  }
+
+  const refaire = bouton("Refaire mes erreurs", "bouton bouton-petit");
+  refaire.hidden = true;
+  refaire.addEventListener("click", () => {
+    const ratees = questions.filter((q) => q.dataset.resultat === "faux");
+    ratees.forEach(remettre);
+    ctx.message.textContent = "";
+    refaire.hidden = true;
+    afficherScore();
+    ratees[0]?.scrollIntoView({ behavior: "smooth", block: "center" });
+  });
+  const recommencer = bouton("Tout recommencer", "bouton bouton-petit bouton-discret");
+  recommencer.addEventListener("click", () => {
+    questions.forEach(remettre);
+    ctx.message.textContent = "";
+    refaire.hidden = true;
+    afficherScore();
+  });
+  ctx.actions.append(refaire, recommencer);
+  afficherScore();
 }
 
 /* Éditeur de code (chargé à la demande) --------------------------------- */

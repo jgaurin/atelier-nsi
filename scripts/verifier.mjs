@@ -19,7 +19,7 @@ import remarkDirective from "remark-directive";
 import { visit } from "unist-util-visit";
 import { toString } from "mdast-util-to-string";
 import { parse as lireYaml } from "yaml";
-import { analyserExercice, decouperTests, lireMeta } from "../src/plugins/exercices.mjs";
+import { analyserExercice, analyserQuestion, decouperTests, lireMeta } from "../src/plugins/exercices.mjs";
 import { MODULES } from "../src/data/modules.ts";
 import { TOUTES_LES_LIGNES } from "../src/data/programme.ts";
 import { OBJECTIFS } from "../src/data/objectifs.ts";
@@ -61,7 +61,7 @@ function ajouterTache(lieu, tache) {
 
 const idsExercices = new Map();
 
-function verifierCorps(fichier, corps, { estLecon }) {
+function verifierCorps(fichier, corps, { estLecon, niveauClasse = false }) {
   const arbre = analyseur.parse(corps);
 
   // Plan de la leçon.
@@ -92,8 +92,21 @@ function verifierCorps(fichier, corps, { estLecon }) {
       if (idsExercices.has(ex.id)) erreur(fichier, `${nom} : identifiant #${ex.id} déjà utilisé dans ${idsExercices.get(ex.id)}`);
       idsExercices.set(ex.id, fichier);
     }
-    if (!ex.corrige) erreur(fichier, `${nom} : pas de :::corrige`);
+    if (!ex.corrige && ex.type !== "quiz") erreur(fichier, `${nom} : pas de :::corrige`);
     if (ex.enonce.length === 0) erreur(fichier, `${nom} : énoncé vide`);
+    if (ex.type === "quiz") {
+      const questions = ex.questions?.children ?? [];
+      if (questions.length < 5) erreur(fichier, `${nom} : un grand QCM compte au moins 5 questions (liste numérotée)`);
+      questions.forEach((item, i) => {
+        const q = analyserQuestion(item);
+        const options = q.options?.children ?? [];
+        const bonnes = options.filter((li) => li.checked).length;
+        if (options.length < 2) erreur(fichier, `${nom}, question ${i + 1} : au moins deux réponses (- [ ] / - [x])`);
+        if (bonnes !== 1) erreur(fichier, `${nom}, question ${i + 1} : il faut exactement une bonne réponse [x] (${bonnes} trouvée(s))`);
+        if (!q.explication) avertir(fichier, `${nom}, question ${i + 1} : pas d'explication (> …)`);
+        if (!q.enonce.length) erreur(fichier, `${nom}, question ${i + 1} : énoncé vide`);
+      });
+    }
     if (ex.type === "qcm") {
       const options = ex.options?.children ?? [];
       if (options.length < 2) erreur(fichier, `${nom} : un QCM doit proposer au moins deux réponses`);
@@ -117,7 +130,8 @@ function verifierCorps(fichier, corps, { estLecon }) {
   });
   if (estLecon) {
     if (nombre < 4) avertir(fichier, `seulement ${nombre} exercice(s)`);
-    if (nombre > 0 && parNiveau[3] + parNiveau[4] === 0) avertir(fichier, "aucun exercice de niveau 3 ou 4");
+    if (nombre > 0 && !niveauClasse && parNiveau[3] + parNiveau[4] === 0) avertir(fichier, "aucun exercice de niveau 3 ou 4");
+    if (niveauClasse && parNiveau[3] + parNiveau[4] > 0) avertir(fichier, "fiche de classe : exercice de niveau 3 ou 4 (niveau concours) à éviter");
   }
 
   // Exemples exécutables.
@@ -176,7 +190,7 @@ for (const dossier of readdirSync(dossierLecons, { withFileTypes: true })) {
     for (const c of cartes) if (!c?.q || !c?.r) erreur(fichier, "carte de révision sans question (q) ou sans réponse (r)");
     for (const c of cartes) if (/\\"/.test(`${c?.q}${c?.r}`)) erreur(fichier, `carte « ${String(c.q).slice(0, 40)}… » : \\" visible, mets la valeur YAML entre guillemets doubles`);
     lecons.push({ cle, fichier, prerequis: entete.prerequis ?? [] });
-    totalExercices += verifierCorps(fichier, corps, { estLecon: true });
+    totalExercices += verifierCorps(fichier, corps, { estLecon: true, niveauClasse: module?.partie === "classe" });
   }
 }
 const clesLecons = new Set(lecons.map((l) => l.cle));

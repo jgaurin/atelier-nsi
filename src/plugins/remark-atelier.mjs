@@ -9,7 +9,7 @@
 // et il range la page en blocs : intro, cours, exemple guidé, l'essentiel, exercices.
 import { visit, SKIP } from "unist-util-visit";
 import { toString } from "mdast-util-to-string";
-import { analyserExercice, decouperTests, lireMeta, NIVEAUX, TYPES } from "./exercices.mjs";
+import { analyserExercice, analyserQuestion, decouperTests, lireMeta, NIVEAUX, TYPES } from "./exercices.mjs";
 
 const ENCADRES = {
   definition: "Définition",
@@ -48,7 +48,21 @@ function transformerExercice(noeud, numero, prefixe) {
     bloc("div", { className: ["exercice-enonce"] }, ex.enonce),
   ];
 
-  if (ex.type === "qcm" && ex.options) {
+  if (ex.type === "quiz" && ex.questions) {
+    enfants.push(bloc("ol", { className: ["quiz"] }, ex.questions.children.map((item) => {
+      const q = analyserQuestion(item);
+      const options = (q.options?.children ?? []).map((li) => {
+        const ok = li.checked ? "1" : "0";
+        li.checked = null;
+        return bloc("li", { "data-ok": ok }, li.children);
+      });
+      return bloc("li", { className: ["quiz-question"] }, [
+        bloc("div", { className: ["quiz-enonce"] }, q.enonce),
+        bloc("ul", { className: ["quiz-options"] }, options),
+        ...(q.explication ? [bloc("div", { className: ["quiz-explication"], hidden: true }, q.explication.children)] : []),
+      ]);
+    })));
+  } else if (ex.type === "qcm" && ex.options) {
     const bonnes = ex.options.children.filter((li) => li.checked).length;
     ex.options.data = { hName: "ol", hProperties: { className: ["qcm"], "data-multiple": bonnes > 1 ? "1" : "0" } };
     for (const li of ex.options.children) {

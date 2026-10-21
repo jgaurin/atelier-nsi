@@ -13,6 +13,7 @@ export const NIVEAUX = {
 
 export const TYPES = {
   qcm: "QCM",
+  quiz: "Grand QCM",
   python: "Python",
   sql: "SQL",
   redaction: "Rédaction",
@@ -84,6 +85,20 @@ function intitule(code, i) {
  * - une liste à cocher - [x] / - [ ] : un QCM ;
  * - tout le reste : l'énoncé.
  */
+/**
+ * Une question de grand QCM (élément de la liste numérotée) : l'énoncé, la liste des réponses (- [x] / - [ ]),
+ * et une explication facultative écrite en citation (> …).
+ */
+export function analyserQuestion(item) {
+  const q = { enonce: [], options: null, explication: null };
+  for (const enfant of item.children) {
+    if (!q.options && enfant.type === "list" && enfant.children.some((li) => typeof li.checked === "boolean")) q.options = enfant;
+    else if (!q.explication && enfant.type === "blockquote") q.explication = enfant;
+    else q.enonce.push(enfant);
+  }
+  return q;
+}
+
 export function analyserExercice(noeud) {
   const attributs = noeud.attributes || {};
   const ex = {
@@ -100,6 +115,7 @@ export function analyserExercice(noeud) {
     tests: null,
     solution: null,
     options: null,
+    questions: null,
     type: attributs.type || "",
   };
   for (const enfant of noeud.children) {
@@ -117,6 +133,10 @@ export function analyserExercice(noeud) {
       if (r.has("depart")) { ex.depart = enfant; continue; }
       if (r.has("tests")) { ex.tests = enfant; continue; }
       if (r.has("solution")) { ex.solution = enfant; ex.enonceSolutionVisible = true; continue; }
+    }
+    if (ex.type === "quiz" && !ex.questions && enfant.type === "list" && enfant.ordered) {
+      ex.questions = enfant;
+      continue;
     }
     if (!ex.options && enfant.type === "list" && enfant.children.some((li) => typeof li.checked === "boolean")) {
       ex.options = enfant;
