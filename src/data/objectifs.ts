@@ -66,14 +66,15 @@ export const OBJECTIFS: Objectif[] = [
       {
         id: "snt",
         titre: "SNT : les sept thèmes",
-        description: "Internet, Web, réseaux sociaux, données, localisation, objets connectés, photographie numérique.",
+        description: "Un cours par thème du programme de seconde, au niveau des élèves : Internet, Web, réseaux sociaux, données, localisation, objets connectés, photographie numérique.",
         lecons: [
-          "reseaux/couches",
-          "web/http",
-          "web/html-css",
-          "lycee/snt-internet-reseaux-sociaux",
-          "lycee/snt-donnees-localisation",
-          "lycee/snt-photo-objets",
+          "snt-themes/internet",
+          "snt-themes/web",
+          "snt-themes/reseaux-sociaux",
+          "snt-themes/donnees",
+          "snt-themes/localisation",
+          "snt-themes/objets-connectes",
+          "snt-themes/photo",
         ],
       },
       {
