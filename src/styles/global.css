@@ -486,6 +486,15 @@ details.question[open] summary::after { content: "Masquer"; }
 .resultat-sortie { margin: 0; padding: .7rem .9rem; font-family: var(--police-code); font-size: .85rem; white-space: pre-wrap; background: var(--code-fond); border-top: 1px solid var(--bord); max-height: 22rem; overflow: auto; }
 .resultat-sortie:first-child { border-top: 0; }
 .resultat-sortie.erreur { color: var(--rouge); }
+.console { border-top: 1px solid var(--bord); }
+.console:first-child { border-top: 0; }
+.console-titre { display: flex; align-items: center; gap: .5rem; padding: .35rem .9rem; background: var(--surface-2); font-size: .74rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--texte-3); }
+.console-titre small { text-transform: none; letter-spacing: 0; font-weight: 500; }
+.console-texte { margin: 0; padding: .7rem .9rem; font-family: var(--police-code); font-size: .85rem; line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere; background: var(--code-fond); max-height: 22rem; overflow: auto; }
+.console-texte:empty { display: none; }
+.console-texte + .console-texte { border-top: 1px dashed var(--bord); }
+.console-vide { color: var(--texte-3); font-family: inherit; font-size: .82rem; }
+.console-erreur { color: var(--rouge); }
 .resultat .table-resultat { margin: .6rem .9rem; font-size: .85rem; }
 .resultat .note { padding: .2rem .9rem .6rem; color: var(--texte-3); font-size: .82rem; margin: 0; }
 .schema-base { font-size: .85rem; margin: .5rem 0 0; }

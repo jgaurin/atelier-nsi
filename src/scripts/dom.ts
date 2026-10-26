@@ -47,3 +47,27 @@ export function tableHTML(colonnes: string[], lignes: unknown[][], max = 60) {
   );
   return table;
 }
+
+/**
+ * La console d'une exécution : ce que le programme a affiché, puis l'erreur éventuelle, comme dans un terminal.
+ * `maj` la remplit pendant l'exécution ; l'élément reste à sa place dans la page.
+ */
+export function blocConsole(enCours = false, vide = "Rien n'a été affiché.") {
+  const texte = el("pre", { class: "console-texte" });
+  const erreur = el("pre", { class: "console-texte console-erreur", hidden: true });
+  const titre = el("div", { class: "console-titre" }, el("span", {}, "Console"), el("small", {}, enCours ? "en cours…" : ""));
+  const bloc = el("div", { class: "console" }, titre, texte, erreur);
+  function maj(sortie: string, messageErreur?: string | null, fini = false) {
+    texte.textContent = sortie;
+    texte.hidden = !sortie && Boolean(messageErreur);
+    if (!sortie && !messageErreur) {
+      texte.textContent = fini ? vide : "";
+      texte.classList.toggle("console-vide", fini);
+    } else texte.classList.remove("console-vide");
+    erreur.textContent = messageErreur ?? "";
+    erreur.hidden = !messageErreur;
+    titre.querySelector("small")!.textContent = fini ? "" : "en cours…";
+    texte.scrollTop = texte.scrollHeight;
+  }
+  return { bloc, maj };
+}

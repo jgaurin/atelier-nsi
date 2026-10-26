@@ -3,7 +3,7 @@
 import { executerPython, pythonEstPret } from "./python";
 import { executerSQL } from "./sql";
 import { executerJS } from "./javascript";
-import { bouton, el, tableHTML } from "./dom";
+import { blocConsole, bouton, el, tableHTML } from "./dom";
 import type { Editeur } from "./editeur";
 
 export function initialiserCodeExec(racine: ParentNode = document) {
@@ -28,12 +28,13 @@ export function initialiserCodeExec(racine: ParentNode = document) {
       sortie.replaceChildren(el("p", { class: "note" }, el("span", { class: "chargement" },
         langage === "python" && !pythonEstPret() ? "Chargement de Python… (quelques secondes la première fois)" : "Exécution…")));
       if (langage === "python" || langage === "javascript") {
-        const r = langage === "python" ? await executerPython(code) : await executerJS(code);
-        const morceaux: Node[] = [];
-        if (r.sortie) morceaux.push(el("pre", { class: "resultat-sortie" }, r.sortie));
-        if (r.erreur) morceaux.push(el("pre", { class: "resultat-sortie erreur" }, r.erreur));
-        if (!morceaux.length) morceaux.push(el("p", { class: "note" }, "Le programme s'est exécuté sans rien afficher."));
-        sortie.replaceChildren(...morceaux);
+        const console_ = blocConsole(true);
+        if (langage === "python") sortie.append(console_.bloc);
+        const r = langage === "python"
+          ? await executerPython(code, [], { surSortie: (texte) => console_.maj(texte) })
+          : await executerJS(code);
+        console_.maj(r.sortie, r.erreur, true);
+        sortie.replaceChildren(console_.bloc);
       } else {
         const r = await executerSQL(code, base);
         if (r.erreur) sortie.replaceChildren(el("pre", { class: "resultat-sortie erreur" }, r.erreur));

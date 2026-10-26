@@ -4,7 +4,7 @@ import * as progression from "./progression";
 import { executerPython, pythonEstPret, type TestPython } from "./python";
 import { comparer, executerSQL, schemaBase } from "./sql";
 import { correcteurPourRedaction, type Correction } from "./correction";
-import { bouton, differer, el, tableHTML } from "./dom";
+import { bouton, differer, el, tableHTML, blocConsole } from "./dom";
 import { icone, type NomIcone } from "./icones";
 import { conseilIA, enTeteIA, listeIA, pointsARevoir, pointsForts, squelette } from "./ia-ui";
 import { appelIA, type Relecture } from "./ia";
@@ -351,13 +351,18 @@ function exercicePython(ctx: Contexte) {
   async function executer() {
     await pret;
     lancer.disabled = true;
-    resultat.replaceChildren(el("p", { class: "note" }, el("span", { class: "chargement" }, pythonEstPret() ? "Exécution…" : "Chargement de Python… (quelques secondes la première fois)")));
-    const r = await executerPython(editeur!.valeur(), tests);
+    // La console s'affiche tout de suite et se remplit pendant l'exécution, même si le programme ne s'arrête pas.
+    const console_ = blocConsole(true, "Rien n'a été affiché. Ajoute des print(...) pour suivre ce que fait ton programme.");
+    resultat.replaceChildren(
+      el("p", { class: "note" }, el("span", { class: "chargement" }, pythonEstPret() ? "Exécution…" : "Chargement de Python… (quelques secondes la première fois)")),
+      console_.bloc,
+    );
+    const r = await executerPython(editeur!.valeur(), tests, { surSortie: (sortie) => console_.maj(sortie) });
     lancer.disabled = false;
     essais += 1;
     const morceaux: Node[] = [];
     if (r.erreur) {
-      morceaux.push(enTete("mal", "Ton code s'arrête sur une erreur"), el("pre", { class: "resultat-sortie erreur" }, r.erreur));
+      morceaux.push(enTete("mal", "Ton code s'arrête sur une erreur"));
       bilanTests = `Le code s'arrête sur une erreur :\n${r.erreur}`;
       noter(ctx, "tente");
     } else {
@@ -372,7 +377,9 @@ function exercicePython(ctx: Contexte) {
       if (tout) dire(ctx, "Exercice réussi. Compare quand même avec le corrigé : il y a parfois une solution plus simple.", "bien");
       else ctx.message.textContent = "";
     }
-    if (r.sortie.trim()) morceaux.push(el("pre", { class: "resultat-sortie" }, r.sortie));
+    if (r.sortie.trim()) bilanTests += `\nSortie console :\n${r.sortie.slice(0, 2000)}`;
+    console_.maj(r.sortie, r.erreur, true);
+    morceaux.push(console_.bloc);
     resultat.replaceChildren(...morceaux);
   }
 
