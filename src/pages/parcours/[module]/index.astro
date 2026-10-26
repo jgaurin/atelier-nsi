@@ -17,7 +17,7 @@ const lignes = [...new Set(module.ecrites.flatMap((l) => l.entree!.data.programm
   .map((idLigne) => TOUTES_LES_LIGNES.find((l) => l.id === idLigne))
   .filter((l) => l !== undefined);
 ---
-<Base titre={module.titre} description={module.description} rubrique="parcours">
+<Base titre={module.titre} description={module.description}>
   <div class="page page-etroite" style={`--teinte: ${module.teinte}`}>
     <nav class="fil-ariane" aria-label="Fil d'Ariane"><a href="/parcours/">Parcours</a><span aria-hidden="true">›</span><span>{partie?.titre}</span></nav>
     <header class="module-entete" data-progres={JSON.stringify(module.ecrites.map((l) => l.cle))}>

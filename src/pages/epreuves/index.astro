@@ -8,7 +8,7 @@ const sujets = (await getCollection("sujets")).sort((a, b) => a.data.ordre - b.d
 const lecons = await leconsEcrites();
 const leconExiste = (url?: string) => url && lecons.some((l) => l.url === url);
 ---
-<Base titre="Épreuves" rubrique="epreuves">
+<Base titre="Épreuves" objectifPage="capes">
   <div class="page page-etroite">
     <div class="surtitre">Épreuves du concours</div>
     <h1>Les quatre épreuves du CAPES NSI bac+3</h1>

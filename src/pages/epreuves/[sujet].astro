@@ -13,7 +13,7 @@ const { sujet } = Astro.props;
 const { Content } = await render(sujet);
 const epreuve = EPREUVES.find((e) => e.id === sujet.data.epreuve)!;
 ---
-<Base titre={sujet.data.titre} description={sujet.data.resume} rubrique="epreuves">
+<Base titre={sujet.data.titre} description={sujet.data.resume} objectifPage="capes">
   <div class="page page-etroite" data-lecon={`sujet/${sujet.id}`}>
     <nav class="fil-ariane" aria-label="Fil d'Ariane"><a href="/epreuves/">Épreuves</a><span aria-hidden="true">›</span><a href={`/epreuves/#${epreuve.id}`}>{epreuve.court}</a></nav>
     <div class="surtitre">Sujet d'entraînement · {epreuve.court}</div>

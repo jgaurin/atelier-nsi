@@ -1,4 +1,4 @@
-// Comportements présents sur toutes les pages : thème, pastille des révisions,
+// Comportements présents sur toutes les pages : thème,
 // statuts des leçons et barres de progression des modules.
 import * as progression from "./progression";
 import "./objectif";
@@ -11,12 +11,6 @@ function basculerTheme() {
   racine.dataset.theme = sombre ? "sombre" : "clair";
   try { localStorage.setItem("atelier-nsi:theme", racine.dataset.theme); } catch { /* rien */ }
   document.dispatchEvent(new CustomEvent("atelier:theme"));
-}
-
-/** Nombre de cartes dont la date de révision est passée. */
-export function cartesDues(etat = progression.lire()) {
-  const maintenant = Date.now();
-  return Object.values(etat.cartes).filter((c) => Date.parse(c.echeance) <= maintenant).length;
 }
 
 export function rafraichir() {
@@ -37,11 +31,6 @@ export function rafraichir() {
     const ids: string[] = JSON.parse(noeud.dataset.exercicesReussis || "[]");
     const n = ids.filter((id) => etat.exercices[id]?.statut === "reussi").length;
     noeud.textContent = `${n} / ${ids.length}`;
-  });
-  const dues = cartesDues(etat);
-  document.querySelectorAll<HTMLElement>("[data-compte-revisions]").forEach((noeud) => {
-    noeud.textContent = dues ? String(dues) : "";
-    noeud.dataset.valeur = String(dues);
   });
 }
 

@@ -142,26 +142,23 @@ button, input, textarea, select { font: inherit; color: inherit; }
   border: 0; background: none; cursor: pointer;
 }
 .nav-principale a:hover, .nav-outils a:hover, .nav-outils button:hover { background: var(--surface-2); color: var(--texte); }
-.nav-principale a[aria-current="page"] { background: var(--accent-doux); color: var(--accent-fort); }
-.nav-outils { display: flex; gap: .15rem; align-items: center; }
-.pastille-compte { min-width: 1.35rem; height: 1.35rem; padding: 0 .35rem; border-radius: 999px; background: var(--accent); color: var(--accent-texte); font-size: .72rem; display: inline-grid; place-items: center; font-weight: 700; }
-.pastille-compte:empty, .pastille-compte[data-valeur="0"] { display: none; }
+.nav-principale a[aria-current="page"], .nav-outils a[aria-current="page"] { background: var(--accent-doux); color: var(--accent-fort); }
+.nav-outils { display: flex; gap: .15rem; align-items: center; margin-left: .5rem; padding-left: .6rem; border-left: 1px solid var(--bord); }
+.nav-outils a, .nav-outils button { padding: .5rem; }
 .nav-mobile { display: none; }
 
 @media (max-width: 820px) {
   .nav-principale { display: none; }
-  .nav-outils { margin-left: auto; }
+  .nav-outils { margin-left: auto; border-left: 0; padding-left: 0; }
   .nav-outils .texte-bouton { display: none; }
   .nav-mobile {
-    display: grid; grid-template-columns: repeat(4, 1fr);
+    display: grid; grid-template-columns: repeat(3, 1fr);
     position: fixed; inset: auto 0 0 0; z-index: 60;
     background: var(--surface); border-top: 1px solid var(--bord);
     padding: .3rem .4rem calc(.3rem + env(safe-area-inset-bottom));
   }
-  .nav-mobile a { display: flex; flex-direction: column; align-items: center; gap: .1rem; padding: .35rem 0; font-size: .72rem; font-weight: 600; color: var(--texte-3); text-decoration: none; border-radius: 10px; position: relative; }
+  .nav-mobile a { display: flex; flex-direction: column; align-items: center; gap: .2rem; padding: .4rem 0; font-size: .72rem; font-weight: 600; color: var(--texte-3); text-decoration: none; border-radius: 10px; position: relative; }
   .nav-mobile a[aria-current="page"] { color: var(--accent); background: var(--accent-doux); }
-  .nav-mobile .icone { font-size: 1.15rem; line-height: 1; }
-  .nav-mobile .pastille-compte { position: absolute; top: 2px; left: calc(50% + 6px); height: 1.1rem; min-width: 1.1rem; font-size: .65rem; }
   body { padding-bottom: 4.5rem; }
 }
 
@@ -515,8 +512,17 @@ details.question[open] summary::after { content: "Masquer"; }
 .chiffre strong { display: block; font-size: 1.55rem; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; }
 .chiffre span { font-size: .82rem; color: var(--texte-3); }
 /* Parcours : objectif, statistiques, étapes */
-.parcours-tete { display: flex; align-items: center; justify-content: space-between; gap: .8rem 1.2rem; flex-wrap: wrap; margin-bottom: 1rem; }
-.parcours-tete h1 { margin: 0; }
+.parcours-tete { margin-bottom: 1rem; }
+.parcours-tete h1 { margin: .1rem 0 0; }
+.epreuves-resume { margin: 0 0 2rem; }
+.epreuves-tete { display: flex; align-items: baseline; justify-content: space-between; gap: .4rem 1rem; flex-wrap: wrap; margin-bottom: .6rem; }
+.epreuves-tete h2 { margin: 0; font-size: 1.15rem; }
+.epreuves-tete a { font-size: .9rem; font-weight: 600; }
+.epreuves-grille { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: .6rem; }
+.epreuve-mini { padding: .8rem 1rem; display: flex; flex-direction: column; gap: .3rem; }
+.epreuve-mini strong { color: var(--texte); font-size: .95rem; }
+.epreuve-mini span { display: flex; align-items: flex-start; gap: .35rem; line-height: 1.35; font-size: .82rem; color: var(--texte-3); }
+.epreuve-mini span .icone { flex: none; margin-top: .1rem; }
 .bandeau-stats { display: flex; flex-wrap: wrap; align-items: stretch; gap: .5rem; margin-bottom: 1rem; }
 .bandeau-stats > * { display: flex; align-items: center; gap: .4rem; padding: .55rem .85rem; border: 1px solid var(--bord); border-radius: 10px; background: var(--surface); font-size: .88rem; color: var(--texte-2); text-decoration: none; }
 .bandeau-stats strong { color: var(--texte); font-size: 1.05rem; }
@@ -525,10 +531,6 @@ details.question[open] summary::after { content: "Masquer"; }
 .bandeau-reprendre strong { font-size: .98rem; flex: 1 1 auto; }
 .bandeau-reprendre::after { content: "→"; margin-left: auto; font-weight: 700; color: var(--accent-fort); }
 .bandeau-etiquette { font-size: .74rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--accent-fort); }
-.choix-objectif { display: inline-flex; flex-wrap: wrap; gap: .25rem; padding: .25rem; background: var(--surface-2); border: 1px solid var(--bord); border-radius: 999px; }
-.choix-objectif button { border: 0; background: none; font: inherit; font-size: .9rem; font-weight: 650; color: var(--texte-2); padding: .4rem .9rem; border-radius: 999px; cursor: pointer; }
-.choix-objectif button:hover { color: var(--texte); }
-.choix-objectif button[aria-checked="true"] { background: var(--surface); color: var(--accent-fort); box-shadow: var(--ombre); }
 .etapes { display: grid; gap: 1rem; }
 .etape { padding: 1.1rem 1.25rem; }
 .etape-tete { display: flex; gap: .9rem; align-items: flex-start; }
@@ -579,15 +581,6 @@ details.question[open] summary::after { content: "Masquer"; }
 .table-programme td, .table-programme th { padding: .55rem .7rem; border-bottom: 1px solid var(--bord); text-align: left; vertical-align: top; }
 .table-programme th { font-size: .78rem; text-transform: uppercase; letter-spacing: .06em; color: var(--texte-3); }
 .table-programme ul { margin: 0; padding-left: 1rem; }
-
-/* Révisions */
-.carte-revision { max-width: 40rem; margin: 0 auto; min-height: 16rem; display: flex; flex-direction: column; gap: 1rem; padding: 1.75rem; }
-.carte-revision .question-carte { font-size: 1.2rem; font-weight: 600; line-height: 1.5; }
-.carte-revision .reponse-carte { border-top: 1px dashed var(--bord-fort); padding-top: 1rem; }
-.carte-revision .origine { font-size: .8rem; color: var(--texte-3); }
-.notes-revision { display: grid; grid-template-columns: repeat(4, 1fr); gap: .5rem; }
-.notes-revision button small { display: block; font-weight: 500; font-size: .72rem; opacity: .8; }
-@media (max-width: 520px) { .notes-revision { grid-template-columns: repeat(2, 1fr); } }
 
 /* Chronomètre des sujets */
 .chrono { position: sticky; top: calc(var(--entete) + .75rem); z-index: 5; display: flex; gap: .75rem; align-items: center; justify-content: space-between; padding: .6rem 1rem; margin: 1rem 0 1.5rem; }

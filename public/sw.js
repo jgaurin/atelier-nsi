@@ -12,7 +12,7 @@ const ouvrir = () => caches.open(VERSION).catch(() => null);
 
 self.addEventListener("install", (evenement) => {
   evenement.waitUntil(
-    ouvrir().then((cache) => cache?.addAll(["/parcours/", "/reglages/", "/revisions/"])).catch(() => {}),
+    ouvrir().then((cache) => cache?.addAll(["/parcours/", "/reglages/"])).catch(() => {}),
   );
   self.skipWaiting();
 });

@@ -4,7 +4,8 @@
 import Base from "../../layouts/Base.astro";
 import CarteModule from "../../components/CarteModule.astro";
 import { parties, leconsEcrites } from "../../lib/parcours";
-import { CALENDRIER } from "../../data/concours";
+import { CALENDRIER, EPREUVES } from "../../data/concours";
+import { iconeHTML } from "../../scripts/icones";
 import { OBJECTIFS, OBJECTIF_PAR_DEFAUT } from "../../data/objectifs";
 
 const lesParties = await parties();
@@ -26,19 +27,14 @@ const objectifs = OBJECTIFS.map((o) => {
   return { ...o, cles, ordre, idsExercices };
 });
 ---
-<Base titre="Parcours" rubrique="parcours">
+<Base titre="Parcours">
   <div class="page">
-    <div class="parcours-tete">
-      <h1>Mon parcours</h1>
-      <div class="choix-objectif" role="radiogroup" aria-label="Objectif de préparation">
-        {OBJECTIFS.map((o) => (
-          <button type="button" role="radio" data-choisir-objectif={o.id} aria-checked={String(o.id === OBJECTIF_PAR_DEFAUT)}>{o.titre}</button>
-        ))}
-      </div>
-    </div>
-
     {objectifs.map((o) => (
       <section data-objectif={o.id} hidden={o.id !== OBJECTIF_PAR_DEFAUT}>
+        <div class="parcours-tete">
+          <div class="surtitre">Mon parcours</div>
+          <h1>{o.titre}</h1>
+        </div>
         <div class="bandeau-stats">
           <a class="bandeau-reprendre" href={o.ordre[0]?.url} data-reprendre={JSON.stringify(o.ordre)}>
             <span class="bandeau-etiquette" data-reprendre-surtitre>Commencer</span>
@@ -46,12 +42,28 @@ const objectifs = OBJECTIFS.map((o) => {
           </a>
           <span class="bandeau-chiffre"><strong data-progres-global={JSON.stringify(o.cles)}>0</strong> / {o.cles.length} leçons validées</span>
           <span class="bandeau-chiffre"><strong data-exercices-total={JSON.stringify(o.idsExercices)}>0</strong> / {o.idsExercices.length} exercices réussis</span>
-          <a class="bandeau-chiffre" href="/revisions/"><strong data-cartes-dues>0</strong> cartes à réviser</a>
           {o.id === "capes" && (
             <span class="bandeau-chiffre" data-calendrier={CALENDRIER.debutEcrits}><strong data-jours>—</strong> jours avant les écrits</span>
           )}
         </div>
         <p class="parcours-intro">{o.description} {o.conseil}</p>
+
+        {o.id === "capes" && (
+          <section class="epreuves-resume" aria-labelledby="titre-epreuves">
+            <div class="epreuves-tete">
+              <h2 id="titre-epreuves">Les épreuves du concours</h2>
+              <a href="/epreuves/">Méthode et sujets d'entraînement →</a>
+            </div>
+            <div class="epreuves-grille">
+              {EPREUVES.map((e) => (
+                <a class="carte carte-lien epreuve-mini" href={`/epreuves/#${e.id}`}>
+                  <strong>{e.court}</strong>
+                  <span><Fragment set:html={iconeHTML("horloge", 14)} />{e.duree} · coefficient {e.coefficient}</span>
+                </a>
+              ))}
+            </div>
+          </section>
+        )}
 
         {o.etapes.length > 0 ? (
           <div class="etapes">
@@ -69,11 +81,12 @@ const objectifs = OBJECTIFS.map((o) => {
                 <ol class="liste-lecons etape-lecons">
                   {e.lecons.map((c, j) => {
                     const l = parCle.get(c)!;
+                    const plusieursModules = new Set(e.lecons.map((x) => parCle.get(x)?.module)).size > 1;
                     return (
                       <li>
                         <a href={l.url}>
                           <span class="statut" data-statut-lecon={l.cle}><span class="numero">{j + 1}</span></span>
-                          <span class="etape-titre">{l.titre}<small>{titresModules[l.module]}</small></span>
+                          <span class="etape-titre">{l.titre}{plusieursModules && <small>{titresModules[l.module]}</small>}</span>
                         </a>
                       </li>
                     );
@@ -82,7 +95,7 @@ const objectifs = OBJECTIFS.map((o) => {
               </section>
             ))}
             <p style="color:var(--texte-3);font-size:.9rem">
-              Les autres modules (mathématiques discrètes, automates, Java, méthode des épreuves du CAPES…) restent accessibles en choisissant l'objectif « CAPES NSI 2027 ».
+              Les autres modules (mathématiques discrètes, automates, Java, épreuves du concours…) sont dans l'onglet « CAPES NSI ».
             </p>
           </div>
         ) : (

@@ -1,7 +1,6 @@
 // Page Parcours : pour chaque objectif, lien « reprendre » (dernière leçon ouverte de l'objectif, sinon la prochaine
 // non validée), compteurs et compte à rebours. Les statuts et barres des étapes sont remplis par site.ts.
 import * as progression from "./progression";
-import { cartesDues } from "./site";
 
 interface Repere { cle: string; titre: string; url: string; module: string }
 
@@ -22,8 +21,8 @@ function remplir() {
       lien.href = cible.url;
     } else {
       etiquette.textContent = "Parcours terminé";
-      titre.textContent = "Réviser les cartes";
-      lien.href = "/revisions/";
+      titre.textContent = ordre[0].titre;
+      lien.href = ordre[0].url;
     }
   });
 
@@ -35,8 +34,6 @@ function remplir() {
     const ids: string[] = JSON.parse(noeud.dataset.exercicesTotal || "[]");
     noeud.textContent = String(ids.filter((id) => etat.exercices[id]?.statut === "reussi").length);
   });
-  const dues = String(cartesDues(etat));
-  document.querySelectorAll<HTMLElement>("[data-cartes-dues]").forEach((noeud) => { noeud.textContent = dues; });
 
   document.querySelectorAll<HTMLElement>("[data-calendrier]").forEach((noeud) => {
     const jours = Math.ceil((Date.parse(noeud.dataset.calendrier!) - Date.now()) / 86_400_000);

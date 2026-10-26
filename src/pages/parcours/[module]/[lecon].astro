@@ -26,7 +26,7 @@ const sommaire = headings.filter((h) => h.depth === 2);
 const idsExercices = lecon.exercices.map((e) => e.id);
 const parNiveau = [1, 2, 3, 4].map((n) => lecon.exercices.filter((e) => e.niveau === n).length);
 ---
-<Base titre={lecon.titre} description={lecon.resume} rubrique="parcours">
+<Base titre={lecon.titre} description={lecon.resume}>
   <div class="lecon-grille" style={`--teinte: ${module.teinte}`}>
     <aside class="lecon-module" aria-label={`Leçons du module ${module.titre}`}>
       <a class="module-titre" href={module.url}><span class="pastille-module"></span>{module.titre}</a>
@@ -137,7 +137,7 @@ const parNiveau = [1, 2, 3, 4].map((n) => lecon.exercices.filter((e) => e.niveau
         <h2 data-validation-titre>As-tu bien compris cette leçon ?</h2>
         <p>
           {idsExercices.length > 0 && <>Exercices réussis : <strong data-exercices-reussis={JSON.stringify(idsExercices)}>0 / {idsExercices.length}</strong>. </>}
-          Valide la leçon quand tu sais refaire les exercices sans regarder le corrigé. Ses cartes de révision rejoindront alors tes révisions espacées.
+          Valide la leçon quand tu sais refaire les exercices sans regarder le corrigé.
         </p>
         <div class="boutons">
           <button type="button" class="bouton bouton-vert" data-valider>Je valide cette leçon</button>

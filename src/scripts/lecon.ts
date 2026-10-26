@@ -78,7 +78,7 @@ if (article) {
   boutonValider?.addEventListener("click", () => {
     const validee = progression.statutLecon(cle) === "validee";
     progression.validerLecon(cle, !validee);
-    annoncer(validee ? "Validation annulée." : "Leçon validée : ses cartes rejoignent tes révisions.");
+    annoncer(validee ? "Validation annulée." : "Leçon validée.");
     majValidation();
   });
   majValidation();

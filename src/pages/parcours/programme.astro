@@ -9,7 +9,7 @@ const couverture = (id: string) => lecons.filter((l) => l.entree!.data.programme
 const totalLignes = PROGRAMME.reduce((n, s) => n + s.lignes.length, 0);
 const couvertes = PROGRAMME.flatMap((s) => s.lignes).filter((l) => couverture(l.id).length > 0).length;
 ---
-<Base titre="Couverture du programme" rubrique="parcours">
+<Base titre="Couverture du programme">
   <div class="page page-etroite">
     <nav class="fil-ariane" aria-label="Fil d'Ariane"><a href="/parcours/">Parcours</a><span aria-hidden="true">›</span><span>Programme officiel</span></nav>
     <h1>Couverture du programme officiel</h1>
