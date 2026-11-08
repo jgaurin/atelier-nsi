@@ -26,6 +26,8 @@ print([e["nom"] for e in sorted(table, key=note, reverse=True)])
 
 On passe la fonction `note` sans parenthèses : `key=note`, et non `key=note()`.
 
+Ce tri est **stable** : deux lignes de même note gardent leur ordre. Pour trier selon deux critères, on trie d'abord selon le critère secondaire, puis selon le principal.
+
 ## 2. Fusionner deux tables
 
 Deux tables peuvent partager une **colonne commune**. Les valeurs de cette colonne doivent appartenir au même **domaine** : un identifiant d'élève des deux côtés, par exemple.
@@ -88,32 +90,6 @@ Une question à la fois : la correction s'affiche aussitôt.
    - [ ] qu'elles aient exactement les mêmes colonnes
 
    > On associe les lignes qui ont la même valeur dans la colonne commune.
-::::
-
-::::exercice[Lire un tri]{niveau=1 type=reponses}
-On considère `t = [{"n": "A", "v": 3}, {"n": "B", "v": 1}, {"n": "C", "v": 2}]` et la fonction `v(e)` qui renvoie `e["v"]`.
-
-1. Que s'affiche-t-il ?
-
-   ```python verifier
-   t = [{"n": "A", "v": 3}, {"n": "B", "v": 1}, {"n": "C", "v": 2}]
-   def v(e):
-       return e["v"]
-   print([e["n"] for e in sorted(t, key=v)])
-   ```
-
-   - ['B', 'C', 'A']
-
-1. Que s'affiche-t-il ?
-
-   ```python verifier
-   t = [{"n": "A", "v": 3}, {"n": "B", "v": 1}, {"n": "C", "v": 2}]
-   def v(e):
-       return e["v"]
-   print(sorted(t, key=v, reverse=True)[0]["n"])
-   ```
-
-   - A
 ::::
 
 ::::exercice[Compléter un tri]{niveau=1 type=completer}
@@ -225,5 +201,66 @@ def bulletin(eleves, notes):
 
 Plutôt que deux boucles imbriquées, on construit d'abord un dictionnaire `id → nom` : chaque recherche devient immédiate. La double boucle du
 cours est aussi une réponse correcte.
+:::
+::::
+
+::::exercice[Clients et commandes]{niveau=3}
+Une table `clients` contient des lignes `{"id": "007", "nom": "Ada"}`. Une table `commandes` contient des lignes `{"client": 7, "montant": 20}`. L'identifiant du client est du texte d'un côté, et un entier de l'autre.
+
+1. Écris `harmoniser(clients)`, qui renvoie une nouvelle table où `id` est un entier.
+2. Écris `fusion(clients, commandes)`, qui reçoit une table `clients` harmonisée et renvoie une table de lignes `{"nom": ..., "montant": ...}`, une par commande. On ignore les commandes dont le client est inconnu.
+3. Écris `classement(lignes)`, qui reçoit le résultat de `fusion` et renvoie les noms des clients, sans répétition, du total dépensé le plus élevé au plus faible.
+4. À l'écrit : que se serait-il passé en fusionnant sans `harmoniser` ? Quelle notion du cours cela illustre-t-il ?
+
+```python depart
+def harmoniser(clients):
+    ...
+
+def fusion(clients, commandes):
+    ...
+
+def classement(lignes):
+    ...
+```
+
+```python tests
+cl = [{"id": "007", "nom": "Ada"}, {"id": "012", "nom": "Bob"}]
+h = harmoniser(cl)
+assert h == [{"id": 7, "nom": "Ada"}, {"id": 12, "nom": "Bob"}], "identifiants entiers"
+assert cl[0]["id"] == "007", "table d'origine intacte"
+co = [{"client": 12, "montant": 5}, {"client": 7, "montant": 20}, {"client": 12, "montant": 30}, {"client": 99, "montant": 1}]
+f = fusion(h, co)
+assert f == [{"nom": "Bob", "montant": 5}, {"nom": "Ada", "montant": 20}, {"nom": "Bob", "montant": 30}], "fusion"
+assert classement(f) == ["Bob", "Ada"], "classement"
+assert classement([]) == [], "aucune ligne"
+```
+
+:::corrige
+```python solution
+def harmoniser(clients):
+    return [{"id": int(c["id"]), "nom": c["nom"]} for c in clients]
+
+def fusion(clients, commandes):
+    resultat = []
+    for co in commandes:
+        for c in clients:
+            if c["id"] == co["client"]:
+                resultat.append({"nom": c["nom"], "montant": co["montant"]})
+    return resultat
+
+def total(couple):
+    return couple[1]
+
+def classement(lignes):
+    totaux = {}
+    for l in lignes:
+        if l["nom"] in totaux:
+            totaux[l["nom"]] = totaux[l["nom"]] + l["montant"]
+        else:
+            totaux[l["nom"]] = l["montant"]
+    return [c[0] for c in sorted(totaux.items(), key=total, reverse=True)]
+```
+
+**Question 4.** `"007"` n'est jamais égal à `7` : la fusion serait vide. Les deux colonnes doivent appartenir au même **domaine de valeurs**.
 :::
 ::::

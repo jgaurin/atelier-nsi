@@ -184,3 +184,64 @@ def charger(contenu, sep):
 C'est ce que fait `csv.DictReader`, en plus robuste (il gère les guillemets et les séparateurs à l'intérieur des valeurs).
 :::
 ::::
+
+::::exercice[Des villes européennes]{niveau=3}
+Une table, importée d'un fichier CSV, contient des lignes comme `{"ville": "Lyon", "pays": "France", "hab": "520000"}`. Toutes les valeurs sont donc des chaînes.
+
+1. Écris `convertir(table)`, qui renvoie une **nouvelle** table où `hab` est un entier.
+2. Écris `habitants_par_pays(table)`, qui reçoit une table convertie et renvoie un dictionnaire associant à chaque pays son nombre total d'habitants.
+3. Écris `pays_le_plus_peuple(table)`, qui reçoit une table convertie non vide et renvoie le nom de ce pays.
+4. À l'écrit : sans conversion, que vaut `"9" > "15"` ? Pourquoi ?
+
+```python depart
+def convertir(table):
+    ...
+
+def habitants_par_pays(table):
+    ...
+
+def pays_le_plus_peuple(table):
+    ...
+```
+
+```python tests
+brut = [{"ville": "Lyon", "pays": "France", "hab": "520000"}, {"ville": "Porto", "pays": "Portugal", "hab": "230000"}, {"ville": "Nice", "pays": "France", "hab": "340000"}]
+t = convertir(brut)
+assert t[0]["hab"] == 520000, "conversion"
+assert brut[0]["hab"] == "520000", "table d'origine intacte"
+assert t[0]["ville"] == "Lyon", "autres colonnes conservées"
+assert habitants_par_pays(t) == {"France": 860000, "Portugal": 230000}, "total par pays"
+assert habitants_par_pays([]) == {}, "table vide"
+assert pays_le_plus_peuple(t) == "France", "le plus peuplé"
+```
+
+:::corrige
+```python solution
+def convertir(table):
+    resultat = []
+    for ligne in table:
+        resultat.append({"ville": ligne["ville"], "pays": ligne["pays"], "hab": int(ligne["hab"])})
+    return resultat
+
+def habitants_par_pays(table):
+    total = {}
+    for ligne in table:
+        p = ligne["pays"]
+        if p in total:
+            total[p] = total[p] + ligne["hab"]
+        else:
+            total[p] = ligne["hab"]
+    return total
+
+def pays_le_plus_peuple(table):
+    total = habitants_par_pays(table)
+    meilleur = None
+    for p in total:
+        if meilleur is None or total[p] > total[meilleur]:
+            meilleur = p
+    return meilleur
+```
+
+**Question 4.** `"9" > "15"` vaut `True` : les chaînes se comparent caractère par caractère, et `"9"` vient après `"1"`.
+:::
+::::

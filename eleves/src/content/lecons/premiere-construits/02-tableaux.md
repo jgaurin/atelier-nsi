@@ -59,15 +59,6 @@ Après `b = a`, les deux noms désignent **le même** tableau : modifier `b` mod
 ::::exercice[QCM : les tableaux]{niveau=1 type=quiz}
 Une question à la fois : la correction s'affiche aussitôt.
 
-1. Avec `t = [5, 3, 8, 1]`, que vaut `t[2]` ?
-
-   - [ ] 3
-   - [x] 8
-   - [ ] 1
-   - [ ] 5
-
-   > Indices 0, 1, 2, 3 : la case d'indice 2 est la troisième.
-
 1. Quel est l'indice du dernier élément d'un tableau de 10 éléments ?
 
    - [ ] 10
@@ -76,15 +67,6 @@ Une question à la fois : la correction s'affiche aussitôt.
    - [ ] -10
 
    > Les indices vont de 0 à `len(t) - 1`.
-
-1. Que vaut `t` après `t = [1, 2, 3]` puis `t.append(4)` ?
-
-   - [ ] `[4, 1, 2, 3]`
-   - [x] `[1, 2, 3, 4]`
-   - [ ] `[1, 2, 3]`
-   - [ ] `[5, 6, 7]`
-
-   > `append` ajoute à la fin.
 
 1. Que fait `for x in t: x = 0` sur `t = [3, 4]` ?
 
@@ -121,55 +103,6 @@ Une question à la fois : la correction s'affiche aussitôt.
    - [ ] `while True`
 
    > On a besoin des indices pour retenir la position.
-::::
-
-::::exercice[Lire un programme]{niveau=1 type=reponses}
-Donne ce que le programme affiche.
-
-1. Que s'affiche-t-il ?
-
-   ```python verifier
-   t = [3, 6, 9]
-   t[0] = t[1] + t[2]
-   print(t[0])
-   ```
-
-   - 15
-
-1. Que s'affiche-t-il ?
-
-   ```python verifier
-   t = [2, 5, 1, 7]
-   s = 0
-   for x in t:
-       if x > 2:
-           s = s + x
-   print(s)
-   ```
-
-   - 12
-
-1. Que s'affiche-t-il ?
-
-   ```python verifier
-   t = [1, 2, 3]
-   for i in range(len(t)):
-       t[i] = t[i] * 2
-   print(t)
-   ```
-
-   - [2, 4, 6]
-
-1. Que s'affiche-t-il ?
-
-   ```python verifier
-   a = [1, 2]
-   b = a
-   b[0] = 9
-   print(a)
-   ```
-
-   - [9, 2]
 ::::
 
 ::::exercice[Compléter un parcours]{niveau=1 type=completer}
@@ -243,5 +176,67 @@ def plafonner(t, limite):
 ```
 
 Le parcours **par indice** est indispensable pour modifier les cases. Le tableau est modifié directement : c'est un effet de bord, voulu ici.
+:::
+::::
+
+::::exercice[Des relevés de température]{niveau=3}
+Le tableau `t` contient une température par jour.
+
+1. Écris `nb_gel(t)`, qui renvoie le nombre de jours où la température est strictement négative.
+2. Écris `plus_forte_hausse(t)`, qui renvoie la plus grande augmentation entre deux jours consécutifs, pour un tableau d'au moins deux valeurs.
+3. Écris `plus_longue_serie(t, seuil)`, qui renvoie le plus grand nombre de jours **consécutifs** où la température est strictement supérieure à `seuil`.
+4. À l'écrit : pour `plus_forte_hausse`, pourquoi `for x in t` ne suffit-il pas ? Quelle borne faut-il donner à la boucle, et pourquoi ?
+
+```python depart
+def nb_gel(t):
+    ...
+
+def plus_forte_hausse(t):
+    ...
+
+def plus_longue_serie(t, seuil):
+    ...
+```
+
+```python tests
+assert nb_gel([3, -1, 0, -4]) == 2, "deux jours de gel"
+assert nb_gel([]) == 0, "tableau vide"
+assert plus_forte_hausse([1, 4, 2, 9, 8]) == 7, "de 2 à 9"
+assert plus_forte_hausse([5, 3]) == -2, "seulement une baisse"
+assert plus_longue_serie([21, 25, 26, 19, 30, 31, 32, 10], 20) == 3, "dernière série"
+assert plus_longue_serie([1, 2], 20) == 0, "aucun jour"
+assert plus_longue_serie([25, 26], 20) == 2, "série jusqu'à la fin"
+```
+
+:::corrige
+```python solution
+def nb_gel(t):
+    n = 0
+    for x in t:
+        if x < 0:
+            n = n + 1
+    return n
+
+def plus_forte_hausse(t):
+    maxi = t[1] - t[0]
+    for i in range(len(t) - 1):
+        if t[i + 1] - t[i] > maxi:
+            maxi = t[i + 1] - t[i]
+    return maxi
+
+def plus_longue_serie(t, seuil):
+    meilleure = 0
+    courante = 0
+    for x in t:
+        if x > seuil:
+            courante = courante + 1
+            if courante > meilleure:
+                meilleure = courante
+        else:
+            courante = 0
+    return meilleure
+```
+
+**Question 4.** Il faut comparer chaque case à la **suivante** : on a besoin des indices. La boucle s'arrête à `len(t) - 1` : au-delà, `t[i + 1]` provoquerait une `IndexError`.
 :::
 ::::

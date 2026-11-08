@@ -69,15 +69,6 @@ Une question à la fois : la correction s'affiche aussitôt.
 
    > Les indices commencent à 0 : p[1] est le deuxième élément.
 
-1. Que vaut `len((4, 8, 15, 16))` ?
-
-   - [ ] 3
-   - [x] 4
-   - [ ] 16
-   - [ ] 43
-
-   > Quatre éléments.
-
 1. Après `a, b, c = (1, 2, 3)`, que vaut `c` ?
 
    - [ ] 1
@@ -96,15 +87,6 @@ Une question à la fois : la correction s'affiche aussitôt.
 
    > `TypeError` : on crée un nouveau p-uplet à la place.
 
-1. Quel est le type de `(5,)` ?
-
-   - [ ] `int`
-   - [x] `tuple`
-   - [ ] `list`
-   - [ ] `str`
-
-   > La virgule fait le p-uplet ; `(5)` serait simplement le nombre 5.
-
 1. Que renvoie `division(17, 5)` si la fonction se termine par `return (a // b, a % b)` ?
 
    - [ ] 3.4
@@ -114,15 +96,6 @@ Une question à la fois : la correction s'affiche aussitôt.
 
    > Un couple : le quotient puis le reste.
 
-1. Que vaut `a` après `a, b = 3, 7` puis `a, b = b, a` ?
-
-   - [ ] 3
-   - [x] 7
-   - [ ] (7, 3)
-   - [ ] une erreur
-
-   > L'échange se fait en une instruction grâce aux p-uplets.
-
 1. Comment représenter en Python un p-uplet nommé décrivant un livre (titre, auteur, année) ?
 
    - [ ] `("titre", "auteur", "annee")`
@@ -131,58 +104,6 @@ Une question à la fois : la correction s'affiche aussitôt.
    - [ ] ce n'est pas possible
 
    > Un dictionnaire : chaque valeur est repérée par un nom.
-
-1. Qu'affiche `for x in (2, 4, 6): print(x * 10)` ?
-
-   - [x] 20, 40 et 60, une valeur par ligne
-   - [ ] 2, 4 et 6
-   - [ ] (20, 40, 60)
-   - [ ] une erreur
-
-   > On peut parcourir un p-uplet avec `for`.
-
-1. Pourquoi une fonction renvoie-t-elle un p-uplet plutôt que d'afficher ses deux résultats ?
-
-   - [ ] parce que `print` est interdit
-   - [x] pour que le programme puisse réutiliser les deux valeurs
-   - [ ] parce que c'est plus rapide
-   - [ ] parce qu'un p-uplet est modifiable
-
-   > `return` donne les valeurs au programme ; `print` ne fait que les montrer.
-::::
-
-::::exercice[Que vaut cette expression ?]{niveau=1 type=reponses}
-Lis le code et donne ce qu'il affiche.
-
-1. Que s'affiche-t-il ?
-
-   ```python verifier
-   p = (4, 8, 15)
-   print(p[2])
-   ```
-
-   - 15
-
-1. Que s'affiche-t-il ?
-
-   ```python verifier
-   a, b = (1, 2)
-   a, b = b, a
-   print(a)
-   ```
-
-   - 2
-
-1. Que s'affiche-t-il ?
-
-   ```python verifier
-   def f(x):
-       return (x + 1, x * 2)
-
-   print(f(5))
-   ```
-
-   - (6, 10)
 ::::
 
 ::::exercice[Compléter une fonction]{niveau=1 type=completer}
@@ -196,7 +117,7 @@ def ordonner(a, b):
 ```
 ::::
 
-::::exercice[Milieu d'un segment]{niveau=1}
+::::exercice[Milieu d'un segment]{niveau=2}
 Les points sont des couples `(x, y)`. Écris `milieu(a, b)` qui renvoie le milieu du segment [ab].
 
 ```python depart
@@ -253,5 +174,75 @@ def statistiques(notes):
 ```
 
 À l'appel : `mini, maxi, moy = statistiques(mes_notes)`.
+:::
+::::
+
+::::exercice[Un trajet GPS]{niveau=3}
+Un trajet est un tableau de points, chaque point étant un couple `(x, y)`, en kilomètres. Des stations sont représentées par des p-uplets nommés : `{"nom": "Gare", "pos": (1, 2)}`.
+
+1. Écris `distance(a, b)`, qui renvoie la distance entre deux points.
+2. Écris `longueur(trajet)`, qui renvoie la longueur totale d'un trajet.
+3. Écris `extremes(trajet)`, qui renvoie le couple `(x_min, x_max)` des abscisses d'un trajet non vide.
+4. Écris `plus_proche(stations, p)`, qui renvoie le nom de la station la plus proche du point `p`, dans un tableau non vide.
+5. À l'écrit : pourquoi un p-uplet convient-il pour un point ? Pourquoi un p-uplet nommé est-il plus clair pour une station ?
+
+```python depart
+from math import sqrt
+
+def distance(a, b):
+    ...
+
+def longueur(trajet):
+    ...
+
+def extremes(trajet):
+    ...
+
+def plus_proche(stations, p):
+    ...
+```
+
+```python tests
+assert distance((0, 0), (3, 4)) == 5, "distance"
+assert longueur([(0, 0), (3, 4), (3, 10)]) == 11, "deux segments"
+assert longueur([(1, 1)]) == 0, "un seul point"
+assert extremes([(3, 0), (-1, 5), (7, 2)]) == (-1, 7), "extrêmes"
+s = [{"nom": "Gare", "pos": (1, 2)}, {"nom": "Port", "pos": (10, 0)}]
+assert plus_proche(s, (2, 2)) == "Gare", "la plus proche"
+assert plus_proche(s, (9, 1)) == "Port", "autre station"
+```
+
+:::corrige
+```python solution
+from math import sqrt
+
+def distance(a, b):
+    return sqrt((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2)
+
+def longueur(trajet):
+    total = 0
+    for i in range(len(trajet) - 1):
+        total = total + distance(trajet[i], trajet[i + 1])
+    return total
+
+def extremes(trajet):
+    x_min = trajet[0][0]
+    x_max = trajet[0][0]
+    for p in trajet:
+        if p[0] < x_min:
+            x_min = p[0]
+        if p[0] > x_max:
+            x_max = p[0]
+    return (x_min, x_max)
+
+def plus_proche(stations, p):
+    meilleure = stations[0]
+    for s in stations:
+        if distance(s["pos"], p) < distance(meilleure["pos"], p):
+            meilleure = s
+    return meilleure["nom"]
+```
+
+**Question 5.** Un point regroupe peu de valeurs, toujours dans le même ordre, et ne change pas : un p-uplet convient. Pour une station, `s["nom"]` est plus lisible qu'un indice.
 :::
 ::::

@@ -39,12 +39,9 @@ C'est l'encodage presque universel du Web.
 
 Si un fichier est écrit dans un encodage et lu dans un autre, on voit apparaître des caractères incorrects : `é` s'affiche `Ã©`.
 
-Pour **convertir un fichier**, on l'ouvre dans un éditeur de texte avec son encodage d'origine, puis on l'enregistre en choisissant un autre encodage. En Python :
+Pour **convertir un fichier**, on l'ouvre dans un éditeur de texte avec son encodage d'origine, puis on l'enregistre en choisissant un autre encodage.
 
-```python
-ord("A")    # 65 : le numéro du caractère
-chr(65)     # "A" : le caractère de ce numéro
-```
+En Python, `ord("A")` donne 65, le numéro d'un caractère, et `chr(65)` donne `"A"`.
 
 ## L'essentiel
 
@@ -66,24 +63,6 @@ Une question à la fois : la correction s'affiche aussitôt.
    - [ ] plus de 150 000
 
    > Codes 0 à 127, sur 7 bits.
-
-1. Que renvoie `ord("B")` ?
-
-   - [ ] 2
-   - [x] 66
-   - [ ] 98
-   - [ ] "B"
-
-   > « A » vaut 65, les lettres se suivent.
-
-1. Que renvoie `chr(97)` ?
-
-   - [ ] "A"
-   - [x] "a"
-   - [ ] "97"
-   - [ ] une erreur
-
-   > Les minuscules commencent à 97.
 
 1. Pourquoi l'ASCII ne suffit-il pas pour écrire le français ?
 
@@ -112,15 +91,6 @@ Une question à la fois : la correction s'affiche aussitôt.
 
    > C3 A9.
 
-1. Combien d'octets occupe « A » en UTF-8 ?
-
-   - [x] 1
-   - [ ] 2
-   - [ ] 4
-   - [ ] 8
-
-   > Les caractères ASCII gardent leur octet : compatibilité.
-
 1. Un texte affiche « Ã© » au lieu de « é ». Quelle est la cause ?
 
    - [ ] le fichier est corrompu
@@ -129,33 +99,6 @@ Une question à la fois : la correction s'affiche aussitôt.
    - [ ] l'écran est trop petit
 
    > Les deux octets de « é » sont lus comme deux caractères.
-
-1. Quel est l'encodage le plus utilisé sur le Web ?
-
-   - [ ] ASCII
-   - [ ] ISO-8859-1
-   - [x] UTF-8
-   - [ ] binaire
-
-   > Plus de 98 % des pages web.
-
-1. Que renvoie `ord("7")` ?
-
-   - [ ] 7
-   - [x] 55
-   - [ ] "7"
-   - [ ] 48
-
-   > Le caractère « 7 » n'est pas le nombre 7 : les chiffres commencent à 48.
-
-1. Quelle est la différence entre Unicode et UTF-8 ?
-
-   - [ ] aucune
-   - [x] Unicode attribue un numéro à chaque caractère ; UTF-8 est une manière d'écrire ces numéros en octets
-   - [ ] UTF-8 est plus ancien qu'Unicode
-   - [ ] Unicode ne contient que l'anglais
-
-   > Il existe d'autres encodages d'Unicode, comme UTF-16.
 ::::
 
 ::::exercice[Quel encodage ?]{niveau=1 type=associer}
@@ -214,22 +157,6 @@ On rappelle que `A` a pour code 65 et `a` a pour code 97.
    - 3
 ::::
 
-::::exercice[Décoder un message]{niveau=2 type=completer}
-Voici un message en ASCII, écrit en décimal. Décode-le.
-
-```python calcul
-for n in (78, 83, 73):
-    print(chr(n))
-print("NSI")
-```
-
-| Code | 78 | 83 | 73 |
-| --- | --- | --- | --- |
-| Caractère | [[N]] | [[S]] | [[I]] |
-
-Le message est : [[NSI]]
-::::
-
 ::::exercice[Un fichier illisible]{niveau=2}
 Une élève ouvre un fichier CSV et lit `PrÃ©nom` au lieu de `Prénom`. Explique ce qui s'est passé et ce qu'elle doit faire.
 
@@ -242,4 +169,51 @@ Une élève ouvre un fichier CSV et lit `PrÃ©nom` au lieu de `Prénom`. Expliq
 :::corrige
 Le fichier a été enregistré en UTF-8, où `é` occupe deux octets, mais il est lu comme de l'ISO-8859-1, où chaque octet est un caractère. Les deux octets s'affichent donc comme `Ã` et `©`. Elle doit ouvrir le fichier en indiquant l'encodage UTF-8, ou le convertir.
 :::
+::::
+
+::::exercice[Convertir un fichier]{niveau=3 type=reponses}
+Un fichier contient 1 000 caractères : 900 caractères ASCII et 100 lettres accentuées comme `é`.
+
+1. Combien d'octets occupe-t-il en ISO-8859-1 ?
+
+   ```python calcul
+   print(1000)
+   ```
+
+   - 1000
+   - 1 000
+
+1. Combien d'octets occupe-t-il en UTF-8 ?
+
+   ```python calcul
+   print(900 + 100 * 2)
+   ```
+
+   - 1100
+   - 1 100
+
+1. On ajoute 20 fois le symbole `€`, qui n'existe pas en ISO-8859-1. Combien d'octets occupe alors le fichier en UTF-8 ?
+
+   ```python calcul
+   print(1100 + 20 * 3)
+   ```
+
+   - 1160
+   - 1 160
+
+1. Un fichier encodé en ASCII peut-il être lu sans erreur comme de l'UTF-8 ? Réponds par oui ou par non.
+
+   - oui
+
+   > UTF-8 code les caractères ASCII sur un octet, avec les mêmes valeurs.
+
+1. Un mot en UTF-8 est lu par erreur en ISO-8859-1. Chaque `é` s'affiche sur combien de caractères ?
+
+   - 2
+
+   > Les deux octets de `é` sont lus comme deux caractères.
+
+1. On veut écrire un texte en japonais. Lequel de ces encodages convient : ASCII, ISO-8859-1 ou UTF-8 ?
+
+   - UTF-8
 ::::

@@ -82,33 +82,6 @@ Une question à la fois : la correction s'affiche aussitôt.
 
    > 4 + 0 + 1 = 5.
 
-1. Que vaut 1111₂ en décimal ?
-
-   - [ ] 4
-   - [ ] 16
-   - [x] 15
-   - [ ] 1111
-
-   > 8 + 4 + 2 + 1 = 15 = 2⁴ − 1.
-
-1. Que vaut 1000 0000₂ ?
-
-   - [x] 128
-   - [ ] 256
-   - [ ] 8
-   - [ ] 127
-
-   > Seul le bit de poids 2⁷ = 128 est à 1.
-
-1. Quelle est l'écriture binaire de 10 ?
-
-   - [ ] 0101
-   - [x] 1010
-   - [ ] 1100
-   - [ ] 1001
-
-   > 10 = 8 + 2.
-
 1. Quelle est l'écriture binaire de 25 ?
 
    - [ ] 10011
@@ -127,15 +100,6 @@ Une question à la fois : la correction s'affiche aussitôt.
 
    > 2⁸ = 256 valeurs, de 0 à 255.
 
-1. Quel est le plus grand entier naturel codable sur 4 bits ?
-
-   - [ ] 16
-   - [x] 15
-   - [ ] 4
-   - [ ] 8
-
-   > 2⁴ − 1 = 15 (1111₂).
-
 1. Combien de bits faut-il au minimum pour écrire 200 ?
 
    - [ ] 7
@@ -145,24 +109,6 @@ Une question à la fois : la correction s'affiche aussitôt.
 
    > 128 ≤ 200 < 256 = 2⁸.
 
-1. Que vaut le chiffre hexadécimal C ?
-
-   - [ ] 11
-   - [x] 12
-   - [ ] 13
-   - [ ] 14
-
-   > A = 10, B = 11, C = 12.
-
-1. Que vaut 1F₁₆ en décimal ?
-
-   - [ ] 25
-   - [x] 31
-   - [ ] 115
-   - [ ] 16
-
-   > 1 × 16 + 15 = 31.
-
 1. Quelle est l'écriture hexadécimale de 1010 1111₂ ?
 
    - [x] AF
@@ -171,33 +117,6 @@ Une question à la fois : la correction s'affiche aussitôt.
    - [ ] A7
 
    > 1010 = A, 1111 = F, en groupant par 4 à partir de la droite.
-
-1. Pourquoi utilise-t-on souvent l'hexadécimal ?
-
-   - [ ] parce que l'ordinateur calcule en base 16
-   - [x] parce qu'un chiffre hexadécimal remplace exactement 4 bits : c'est plus court à lire et à écrire
-   - [ ] parce qu'il permet de coder plus de nombres
-   - [ ] parce que c'est la base des nombres négatifs
-
-   > L'ordinateur calcule en binaire ; l'hexadécimal est une écriture compacte pour les humains.
-
-1. Quelle couleur web correspond à `#00FF00` ?
-
-   - [ ] rouge
-   - [x] vert
-   - [ ] bleu
-   - [ ] blanc
-
-   > Rouge 00, vert FF (255), bleu 00.
-
-1. Que renvoie `int("101", 2)` en Python ?
-
-   - [ ] 101
-   - [x] 5
-   - [ ] `"0b101"`
-   - [ ] une erreur
-
-   > `int` lit le texte comme un nombre écrit en base 2.
 ::::
 
 ::::exercice[Du binaire au décimal]{niveau=1 type=reponses}
@@ -305,38 +224,57 @@ Pour passer du binaire à l'hexadécimal, on regroupe les bits par 4 en partant 
 :::
 ::::
 
-::::exercice[Couleurs et nombres de bits]{niveau=2 type=reponses}
-Une couleur Web s'écrit avec trois octets en hexadécimal : rouge, vert, bleu.
+::::exercice[Le codage d'une image]{niveau=3 type=reponses}
+Dans une image, chaque pixel est codé sur 3 octets : rouge, vert, bleu. La couleur s'écrit en hexadécimal sous la forme `#RRVVBB`.
 
-1. Dans la couleur `#FF8000`, quelle est la valeur décimale du rouge ?
-
-   ```python calcul
-   print(0xFF)
-   ```
-
-   - 255
-
-1. Dans la couleur `#FF8000`, quelle est la valeur décimale du vert ?
+1. Dans `#7F00C8`, quelle est la valeur décimale du rouge ?
 
    ```python calcul
-   print(0x80)
+   print(0x7F)
    ```
 
-   - 128
+   - 127
 
-1. Combien de valeurs différentes peut-on écrire sur 4 bits ?
+1. Écris en binaire, sur 8 bits, le bleu de cette couleur.
 
    ```python calcul
-   print(2 ** 4)
+   print(format(0xC8, "08b"))
    ```
 
-   - 16
+   - 11001000
+   - 1100 1000
 
-1. Quel est le plus grand entier qu'on peut écrire sur 10 bits ?
+1. Un gris a le même niveau pour les trois couleurs. Écris en hexadécimal, sans `#`, le gris de niveau 200.
 
    ```python calcul
-   print(2 ** 10 - 1)
+   print(format(200, "02X") * 3)
    ```
 
-   - 1023
+   - C8C8C8
+
+1. Combien de couleurs différentes peut-on coder ainsi ?
+
+   ```python calcul
+   print(2 ** 24)
+   ```
+
+   - 16777216
+   - 16 777 216
+
+1. Quelle est la taille en octets d'une image de 200 × 100 pixels, sans compter l'en-tête ?
+
+   ```python calcul
+   print(200 * 100 * 3)
+   ```
+
+   - 60000
+   - 60 000
+
+1. On numérote 1 000 images à partir de 0. Combien de bits faut-il au minimum pour écrire ces numéros ?
+
+   ```python calcul
+   print((1000 - 1).bit_length())
+   ```
+
+   - 10
 ::::

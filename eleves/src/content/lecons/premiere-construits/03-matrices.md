@@ -179,59 +179,77 @@ Les deux styles sont corrects : compréhension imbriquée pour le négatif, bouc
 :::
 ::::
 
-::::exercice[Somme des lignes et des colonnes]{niveau=2}
-Écris `sommes_lignes(m)` et `sommes_colonnes(m)` qui renvoient respectivement le tableau des sommes de chaque ligne et de chaque colonne d'une
-matrice rectangulaire non vide. Puis `est_magique(m)` qui renvoie `True` si toutes les lignes et toutes les colonnes d'une matrice carrée ont la
-même somme.
+::::exercice[Le morpion]{niveau=3}
+Une grille de morpion est une matrice carrée. Une case contient `"X"`, `"O"` ou `""` si elle est vide.
+
+1. Écris `grille_vide(n)`, qui renvoie une grille vide de côté `n`.
+2. Écris `ligne_pleine(g, i, s)`, qui renvoie `True` si toutes les cases de la ligne `i` contiennent `s`.
+3. Écris `colonne_pleine(g, j, s)`, de même pour la colonne `j`.
+4. Écris `gagne(g, s)`, qui renvoie `True` si `s` remplit une ligne, une colonne ou l'une des deux diagonales.
+5. À l'écrit : pourquoi ne faut-il pas écrire `[[""] * n] * n` pour créer la grille ?
 
 ```python depart
-def sommes_lignes(m):
+def grille_vide(n):
     ...
 
-def sommes_colonnes(m):
+def ligne_pleine(g, i, s):
     ...
 
-def est_magique(m):
+def colonne_pleine(g, j, s):
+    ...
+
+def gagne(g, s):
     ...
 ```
 
 ```python tests
-m = [[1, 2, 3], [4, 5, 6]]
-assert sommes_lignes(m) == [6, 15], "lignes"
-assert sommes_colonnes(m) == [5, 7, 9], "colonnes"
-assert est_magique([[2, 7, 6], [9, 5, 1], [4, 3, 8]]), "carré magique 3x3"
-assert not est_magique([[1, 2], [3, 4]]), "pas magique"
+g = grille_vide(3)
+assert g == [["", "", ""], ["", "", ""], ["", "", ""]], "grille vide"
+g[0][0] = "X"
+assert g[1][0] == "", "les lignes sont indépendantes"
+g = [["X", "X", "X"], ["O", "", "O"], ["", "O", ""]]
+assert ligne_pleine(g, 0, "X") and not ligne_pleine(g, 1, "O"), "ligne"
+c = [["O", "X", ""], ["O", "X", ""], ["O", "", "X"]]
+assert colonne_pleine(c, 0, "O") and not colonne_pleine(c, 1, "X"), "colonne"
+assert gagne(g, "X") and not gagne(g, "O"), "gagne par ligne"
+assert gagne(c, "O"), "gagne par colonne"
+assert gagne([["X", "", ""], ["", "X", ""], ["", "", "X"]], "X"), "diagonale"
+assert gagne([["", "", "O"], ["", "O", ""], ["O", "", ""]], "O"), "autre diagonale"
+assert not gagne(grille_vide(3), "X"), "grille vide"
 ```
 
 :::corrige
 ```python solution
-def sommes_lignes(m):
-    resultat = []
-    for ligne in m:
-        s = 0
-        for x in ligne:
-            s = s + x
-        resultat.append(s)
-    return resultat
+def grille_vide(n):
+    return [[""] * n for i in range(n)]
 
-def sommes_colonnes(m):
-    resultat = []
-    for j in range(len(m[0])):
-        s = 0
-        for i in range(len(m)):
-            s = s + m[i][j]
-        resultat.append(s)
-    return resultat
-
-def est_magique(m):
-    toutes = sommes_lignes(m) + sommes_colonnes(m)
-    for s in toutes:
-        if s != toutes[0]:
+def ligne_pleine(g, i, s):
+    for j in range(len(g)):
+        if g[i][j] != s:
             return False
     return True
+
+def colonne_pleine(g, j, s):
+    for i in range(len(g)):
+        if g[i][j] != s:
+            return False
+    return True
+
+def gagne(g, s):
+    n = len(g)
+    for k in range(n):
+        if ligne_pleine(g, k, s) or colonne_pleine(g, k, s):
+            return True
+    d1 = True
+    d2 = True
+    for k in range(n):
+        if g[k][k] != s:
+            d1 = False
+        if g[k][n - 1 - k] != s:
+            d2 = False
+    return d1 or d2
 ```
 
-Pour les colonnes, la boucle extérieure porte sur j (la colonne) et la boucle intérieure sur i (les lignes). On réutilise les deux premières
-fonctions dans la troisième.
+**Question 5.** Cette écriture répète **le même** tableau `n` fois. Modifier une case modifierait alors toute sa colonne.
 :::
 ::::

@@ -74,33 +74,6 @@ George Boole invente en 1847 ce calcul sur le vrai et le faux, un siècle avant 
 ::::exercice[QCM : booléens]{niveau=1 type=quiz}
 Une question à la fois : la correction s'affiche aussitôt.
 
-1. Que vaut `True and False` ?
-
-   - [ ] `True`
-   - [x] `False`
-   - [ ] 1
-   - [ ] une erreur
-
-   > `and` demande que les deux soient vrais.
-
-1. Que vaut `True or False` ?
-
-   - [x] `True`
-   - [ ] `False`
-   - [ ] 0
-   - [ ] une erreur
-
-   > Un seul vrai suffit pour `or`.
-
-1. Que vaut `True or True` ?
-
-   - [x] `True`
-   - [ ] `False`
-   - [ ] cela dépend
-   - [ ] une erreur
-
-   > Le « ou » logique est **inclusif**.
-
 1. Que vaut `a xor b` quand a = 1 et b = 1 ?
 
    - [ ] 1
@@ -137,15 +110,6 @@ Une question à la fois : la correction s'affiche aussitôt.
 
    > Loi de De Morgan : la négation d'un « ou » est le « et » des négations.
 
-1. Pour quelles valeurs `(a or b) and not c` est-il vrai quand a = 1, b = 0 ?
-
-   - [x] seulement si c = 0
-   - [ ] seulement si c = 1
-   - [ ] toujours
-   - [ ] jamais
-
-   > `a or b` vaut 1 ; il faut `not c` vrai, donc c = 0.
-
 1. Avec `t = [1, 2]` et `i = 3`, que fait `i < len(t) and t[i] > 0` ?
 
    - [ ] une erreur `IndexError`
@@ -154,33 +118,6 @@ Une question à la fois : la correction s'affiche aussitôt.
    - [ ] il vaut 0
 
    > `i < len(t)` est faux : Python n'évalue pas la suite.
-
-1. Et que fait `t[i] > 0 and i < len(t)` avec les mêmes valeurs ?
-
-   - [x] une erreur `IndexError`
-   - [ ] il vaut `False`
-   - [ ] il vaut `True`
-   - [ ] rien
-
-   > `t[3]` est évalué en premier : il n'existe pas.
-
-1. Dans un demi-additionneur, comment obtient-on le bit de retenue ?
-
-   - [ ] `a or b`
-   - [ ] `a xor b`
-   - [x] `a and b`
-   - [ ] `not a`
-
-   > La retenue vaut 1 seulement pour 1 + 1.
-
-1. Que vaut `True + True` en Python ?
-
-   - [ ] `True`
-   - [x] 2
-   - [ ] une erreur
-   - [ ] 1
-
-   > Dans un calcul, `True` vaut 1.
 ::::
 
 ::::exercice[Compléter une table]{niveau=1 type=completer}
@@ -224,70 +161,6 @@ for a in (0, 1):
 | 1 | 1 | 1 | [[1]] | [[1]] |
 ::::
 
-::::exercice[Que vaut cette expression ?]{niveau=1 type=reponses}
-On a `a = True`, `b = False` et `n = 5`. Réponds `True` ou `False`.
-
-1. Que vaut cette expression ?
-
-   ```python verifier
-   a, b, n = True, False, 5
-   print(a and not b)
-   ```
-
-   - True
-
-1. Que vaut cette expression ?
-
-   ```python verifier
-   a, b, n = True, False, 5
-   print(b or n > 10)
-   ```
-
-   - False
-
-1. Que vaut cette expression ?
-
-   ```python verifier
-   a, b, n = True, False, 5
-   print(not (a and n == 5))
-   ```
-
-   - False
-
-1. Que vaut cette expression ?
-
-   ```python verifier
-   a, b, n = True, False, 5
-   print(a != b)
-   ```
-
-   - True
-
-   > Sur des booléens, `!=` se comporte comme le ou exclusif.
-::::
-
-::::exercice[Le demi-additionneur]{niveau=2 type=completer}
-Complète la table d'addition de deux bits.
-
-```python calcul
-for a in (0, 1):
-    for b in (0, 1):
-        print(a ^ b)
-        print(a & b)
-print("xor")
-print("and")
-```
-
-| a | b | Somme | Retenue |
-| --- | --- | --- | --- |
-| 0 | 0 | [[0]] | [[0]] |
-| 0 | 1 | [[1]] | [[0]] |
-| 1 | 0 | [[1]] | [[0]] |
-| 1 | 1 | [[0]] | [[1]] |
-
-La colonne Somme correspond à l'opérateur [[xor;ou exclusif]] et la colonne Retenue à l'opérateur [[and;et]].
-::::
-
 ::::exercice[Évaluation séquentielle]{niveau=2}
 On considère `t = [4, 8]`, puis les deux instructions suivantes :
 
@@ -308,4 +181,33 @@ La première ligne d'affichage fonctionne, la seconde provoque une erreur. Expli
 :::corrige
 `and` évalue ses opérandes de gauche à droite et s'arrête dès que le résultat est connu. Dans la première expression, `i < len(t)` est faux : le résultat est donc faux et `t[i]` n'est pas lu. Dans la seconde, `t[2]` est lu en premier, or le tableau n'a pas d'indice 2 : Python provoque une `IndexError`.
 :::
+::::
+
+::::exercice[L'additionneur complet]{niveau=3 type=completer}
+Un additionneur complet additionne deux bits `a` et `b`, et une retenue d'entrée `r`. La somme vaut `(a xor b) xor r`, et la retenue de sortie `(a and b) or (r and (a xor b))`. Ce circuit combinatoire est répété pour chaque bit d'un nombre.
+
+```python calcul
+for a in (0, 1):
+    for b in (0, 1):
+        for r in (0, 1):
+            print((a ^ b) ^ r)
+            print((a & b) | (r & (a ^ b)))
+print(format(0b0111 + 0b0011, "04b"))
+print(4)
+```
+
+| a | b | r | Somme | Retenue |
+| --- | --- | --- | --- | --- |
+| 0 | 0 | 0 | [[0]] | [[0]] |
+| 0 | 0 | 1 | [[1]] | [[0]] |
+| 0 | 1 | 0 | [[1]] | [[0]] |
+| 0 | 1 | 1 | [[0]] | [[1]] |
+| 1 | 0 | 0 | [[1]] | [[0]] |
+| 1 | 0 | 1 | [[0]] | [[1]] |
+| 1 | 1 | 0 | [[0]] | [[1]] |
+| 1 | 1 | 1 | [[1]] | [[1]] |
+
+Avec ce circuit, 0111 + 0011 donne, sur 4 bits, [[1010]].
+
+Pour additionner deux nombres de 4 bits, il faut enchaîner [[4]] additionneurs complets.
 ::::

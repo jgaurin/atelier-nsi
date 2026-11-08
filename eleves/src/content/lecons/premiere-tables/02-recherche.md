@@ -67,15 +67,6 @@ Une question à la fois : la correction s'affiche aussitôt.
 
    > Les lignes suivantes sont les enregistrements.
 
-1. Pourquoi les CSV français utilisent-ils souvent `;` comme séparateur ?
-
-   - [ ] c'est plus rapide
-   - [x] parce que la virgule sert de séparateur décimal en français
-   - [ ] parce que la virgule est interdite
-   - [ ] pour économiser de la place
-
-   > Avec `12,5` dans une case, la virgule serait ambiguë.
-
 1. Après `csv.DictReader`, quel est le type de la valeur `table[0]["note"]` ?
 
    - [ ] `int`
@@ -111,44 +102,6 @@ Une question à la fois : la correction s'affiche aussitôt.
    - [ ] une fusion
 
    > On garde certaines lignes entières.
-
-::::
-
-::::exercice[Quelles lignes ?]{niveau=1 type=reponses}
-On considère cette table.
-
-```python
-t = [{"nom": "Léa", "age": 17, "ville": "Lyon"},
-     {"nom": "Tom", "age": 15, "ville": "Lyon"},
-     {"nom": "Inès", "age": 17, "ville": "Nantes"}]
-```
-
-1. Que s'affiche-t-il ?
-
-   ```python verifier
-   t = [{"nom": "Léa", "age": 17, "ville": "Lyon"}, {"nom": "Tom", "age": 15, "ville": "Lyon"}, {"nom": "Inès", "age": 17, "ville": "Nantes"}]
-   print([e["nom"] for e in t if e["ville"] == "Lyon"])
-   ```
-
-   - ['Léa', 'Tom']
-
-1. Que s'affiche-t-il ?
-
-   ```python verifier
-   t = [{"nom": "Léa", "age": 17, "ville": "Lyon"}, {"nom": "Tom", "age": 15, "ville": "Lyon"}, {"nom": "Inès", "age": 17, "ville": "Nantes"}]
-   print([e["nom"] for e in t if e["age"] == 17 and e["ville"] != "Lyon"])
-   ```
-
-   - ['Inès']
-
-1. Que s'affiche-t-il ?
-
-   ```python verifier
-   t = [{"nom": "Léa", "age": 17, "ville": "Lyon"}, {"nom": "Tom", "age": 15, "ville": "Lyon"}, {"nom": "Inès", "age": 17, "ville": "Nantes"}]
-   print(len([e for e in t if e["age"] < 17 or e["ville"] == "Nantes"]))
-   ```
-
-   - 2
 ::::
 
 ::::exercice[Écrire la recherche]{niveau=1 type=completer}
@@ -250,5 +203,61 @@ def doublons(table, cle):
         vus[v] = True
     return resultat
 ```
+:::
+::::
+
+::::exercice[Contrôler un fichier de notes]{niveau=3}
+Une table contient des lignes `{"id": 1, "nom": "Léa", "note": 15}`. Une note absente vaut `None`. Une note valide est comprise entre 0 et 20.
+
+1. Écris `sans_note(table)`, qui renvoie les noms des élèves dont la note est absente.
+2. Écris `impossibles(table)`, qui renvoie les identifiants des lignes dont la note existe mais n'est pas valide.
+3. Écris `nettoyer(table)`, qui renvoie une nouvelle table sans les notes absentes ou invalides, et sans les doublons d'identifiant : on garde la première ligne valide de chaque identifiant.
+4. À l'écrit : pourquoi faut-il tester la cohérence d'une table avant de calculer une moyenne ? Donne un exemple.
+
+```python depart
+def sans_note(table):
+    ...
+
+def impossibles(table):
+    ...
+
+def nettoyer(table):
+    ...
+```
+
+```python tests
+t = [
+    {"id": 1, "nom": "Léa", "note": 15},
+    {"id": 2, "nom": "Tom", "note": None},
+    {"id": 3, "nom": "Inès", "note": 25},
+    {"id": 1, "nom": "Léa", "note": 12},
+    {"id": 4, "nom": "Sam", "note": 0},
+    {"id": 5, "nom": "Zoé", "note": -1},
+]
+assert sans_note(t) == ["Tom"], "note absente"
+assert impossibles(t) == [3, 5], "notes invalides"
+assert nettoyer(t) == [{"id": 1, "nom": "Léa", "note": 15}, {"id": 4, "nom": "Sam", "note": 0}], "table nettoyée"
+assert nettoyer([]) == [], "table vide"
+```
+
+:::corrige
+```python solution
+def sans_note(table):
+    return [e["nom"] for e in table if e["note"] is None]
+
+def impossibles(table):
+    return [e["id"] for e in table if e["note"] is not None and not (0 <= e["note"] <= 20)]
+
+def nettoyer(table):
+    vus = {}
+    resultat = []
+    for e in table:
+        if e["note"] is not None and 0 <= e["note"] <= 20 and e["id"] not in vus:
+            vus[e["id"]] = True
+            resultat.append(e)
+    return resultat
+```
+
+**Question 4.** Une seule erreur fausse le résultat ou l'empêche : une note de 25 augmente la moyenne, un doublon compte un élève deux fois, et une note `None` provoque une erreur de calcul.
 :::
 ::::

@@ -70,15 +70,6 @@ abs(a - b) < 0.000001
 ::::exercice[QCM : nombres flottants]{niveau=1 type=quiz}
 Une question à la fois : la correction s'affiche aussitôt.
 
-1. Que vaut 0,1₂ (en binaire) ?
-
-   - [ ] 0,1
-   - [x] 0,5
-   - [ ] 0,25
-   - [ ] 1
-
-   > Le premier chiffre après la virgule vaut 1/2.
-
 1. Que vaut 0,11₂ ?
 
    - [ ] 0,11
@@ -87,15 +78,6 @@ Une question à la fois : la correction s'affiche aussitôt.
    - [ ] 3
 
    > 1/2 + 1/4 = 0,75.
-
-1. Quelle est l'écriture binaire de 0,25 ?
-
-   - [x] 0,01
-   - [ ] 0,1
-   - [ ] 0,11
-   - [ ] 0,001
-
-   > 0,25 = 1/4 : le deuxième bit après la virgule.
 
 1. Quelle est l'écriture binaire de 0,625 ?
 
@@ -115,15 +97,6 @@ Une question à la fois : la correction s'affiche aussitôt.
 
    > 0,75 = 3/4 : dénominateur puissance de 2.
 
-1. Pourquoi 0,1 ne peut-il pas être stocké exactement ?
-
-   - [ ] parce qu'il est trop petit
-   - [x] parce que son écriture en base 2 est infinie (périodique)
-   - [ ] parce que Python arrondit tout à l'entier
-   - [ ] parce que c'est un nombre négatif
-
-   > 0,1 = 0,000110011…₂ : il faut tronquer.
-
 1. Que renvoie `0.1 + 0.2 == 0.3` en Python ?
 
    - [ ] `True`
@@ -141,33 +114,6 @@ Une question à la fois : la correction s'affiche aussitôt.
    - [ ] `int(x) == 0.3`
 
    > On compare avec une tolérance.
-
-1. Que vaut `0.5 + 0.25 == 0.75` ?
-
-   - [x] `True`
-   - [ ] `False`
-   - [ ] une erreur
-   - [ ] cela dépend de l'ordinateur
-
-   > Ces nombres sont exacts en binaire : le calcul l'est aussi.
-
-1. Qu'est-ce qu'un nombre flottant ?
-
-   - [ ] un nombre entier très grand
-   - [x] une représentation approchée d'un réel avec un signe, une mantisse et un exposant
-   - [ ] un nombre qui change de valeur tout seul
-   - [ ] un nombre écrit en hexadécimal
-
-   > C'est l'écriture scientifique en base 2, avec une précision limitée.
-
-1. Un élève écrit `x = 0` puis `while x != 1: x = x + 0.1`. Que se passe-t-il ?
-
-   - [ ] la boucle s'arrête après 10 tours
-   - [x] la boucle ne s'arrête jamais, car x ne vaut jamais exactement 1
-   - [ ] une erreur
-   - [ ] la boucle ne s'exécute pas
-
-   > Les erreurs d'arrondi s'accumulent : x passe à côté de 1. Utiliser une boucle bornée ou une tolérance.
 ::::
 
 ::::exercice[Écrire en binaire]{niveau=1 type=reponses}
@@ -190,42 +136,6 @@ Une question à la fois : la correction s'affiche aussitôt.
    - 10,11
 
    > 2 s'écrit 10 et 0,75 s'écrit 0,11.
-::::
-
-::::exercice[Du binaire au décimal]{niveau=1 type=reponses}
-Donne la valeur décimale, avec une virgule.
-
-1. 0,11
-
-   ```python calcul
-   print(0.5 + 0.25)
-   ```
-
-   - 0,75
-
-1. 0,001
-
-   ```python calcul
-   print(0.125)
-   ```
-
-   - 0,125
-
-1. 1,1
-
-   ```python calcul
-   print(1 + 0.5)
-   ```
-
-   - 1,5
-
-1. 101,01
-
-   ```python calcul
-   print(5 + 0.25)
-   ```
-
-   - 5,25
 ::::
 
 ::::exercice[Dérouler les multiplications]{niveau=2 type=completer}
@@ -280,16 +190,31 @@ Réponds `True` ou `False`.
    > C'est la bonne façon de comparer deux flottants.
 ::::
 
-::::exercice[Expliquer un résultat surprenant]{niveau=2}
-Un camarade voit `0.30000000000000004` s'afficher et affirme que Python s'est trompé. Explique-lui ce qui se passe, en deux ou trois phrases.
+::::exercice[Une boucle qui ne s'arrête pas]{niveau=3}
+Une cagnotte augmente de 10 centimes à chaque tour. Le programme suivant ne s'arrête jamais.
+
+```python
+x = 0
+while x != 1:
+    x = x + 0.1
+```
+
+1. Explique pourquoi `x` ne vaut jamais exactement 1.
+2. Corrige la condition en gardant des flottants, pour que la boucle s'arrête quand `x` atteint environ 1.
+3. Propose une autre façon de faire, sans flottant.
+4. Un autre programme additionne dix fois `0.25` et teste si le résultat vaut `2.5`. Le test réussit-il ? Justifie.
 
 :::criteres
-- 0,1 et 0,2 n'ont pas d'écriture binaire finie.
-- La mémoire étant limitée, l'ordinateur stocke des valeurs approchées.
-- Le résultat est donc lui aussi approché : il n'y a pas d'erreur de Python.
+- 0,1 n'a pas d'écriture binaire finie : la mémoire en garde une valeur approchée, et les erreurs s'accumulent.
+- On arrête la boucle avec une condition du type `x < 1 - 0.000001`.
+- On compte en centimes entiers.
+- 0,25 s'écrit exactement en binaire, donc le test réussit.
 :::
 
 :::corrige
-Python ne se trompe pas : 0,1 et 0,2 n'ont pas d'écriture finie en binaire. Comme la mémoire est limitée, l'ordinateur en garde des valeurs approchées, et leur somme l'est aussi. C'est pour cela qu'on ne compare pas des flottants avec `==`.
+1. 0,1 n'a pas d'écriture binaire finie. L'ordinateur en garde une valeur approchée, et les petites erreurs s'accumulent : après dix tours, `x` vaut 0,99999… et non 1. La condition reste vraie indéfiniment.
+2. On écrit `while x < 1 - 0.000001:` : on ne teste plus l'égalité.
+3. On compte en **centimes**, avec des entiers : `c = 0`, puis `while c != 100: c = c + 10`.
+4. Oui. 0,25 vaut 2⁻², et 2,5 s'écrit exactement en binaire : aucun arrondi n'intervient.
 :::
 ::::

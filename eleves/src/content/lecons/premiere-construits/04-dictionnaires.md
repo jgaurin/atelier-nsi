@@ -91,15 +91,6 @@ Une question à la fois : la correction s'affiche aussitôt.
 
    > On accède à la valeur par sa clé.
 
-1. Que contient `d` après `d = {"a": 3}` puis `d["a"] = 5` ?
-
-   - [ ] `{"a": 3, "a": 5}`
-   - [x] `{"a": 5}`
-   - [ ] `{"a": 8}`
-   - [ ] une erreur
-
-   > Les clés sont uniques : la valeur est remplacée.
-
 1. Que contient `d` après `d = {"a": 3}` puis `d["b"] = 5` ?
 
    - [ ] une erreur, la clé n'existe pas
@@ -127,15 +118,6 @@ Une question à la fois : la correction s'affiche aussitôt.
 
    > `in` teste les clés : `"x"` et `"y"`, pas les valeurs.
 
-1. Que parcourt `for k in d:` ?
-
-   - [x] les clés
-   - [ ] les valeurs
-   - [ ] les couples (clé, valeur)
-   - [ ] les indices 0, 1, 2…
-
-   > C'est équivalent à `for k in d.keys()`.
-
 1. Quelle méthode donne les couples (clé, valeur) ?
 
    - [ ] `keys()`
@@ -144,86 +126,6 @@ Une question à la fois : la correction s'affiche aussitôt.
    - [ ] `pairs()`
 
    > `for k, v in d.items()`.
-
-1. Que vaut `len({"a": 1, "b": 1, "c": 2})` ?
-
-   - [ ] 2
-   - [x] 3
-   - [ ] 4
-   - [ ] 6
-
-   > Trois entrées ; que deux valeurs soient égales n'a pas d'importance.
-
-1. Lequel ne peut **pas** être une clé de dictionnaire ?
-
-   - [ ] `"NSI"`
-   - [ ] `42`
-   - [ ] `(3, 4)`
-   - [x] `[3, 4]`
-
-   > Un tableau est modifiable, il ne peut pas servir de clé.
-
-1. Après le comptage des lettres de `"aba"` avec le schéma du cours, que vaut le dictionnaire ?
-
-   - [ ] `{"a": 1, "b": 1}`
-   - [x] `{"a": 2, "b": 1}`
-   - [ ] `{"aba": 3}`
-   - [ ] `[2, 1]`
-
-   > 'a' apparaît deux fois et 'b' une fois.
-
-1. Avec `d = {0: "zéro", 5: "cinq"}`, que vaut `d[0]` ?
-
-   - [x] `"zéro"`
-   - [ ] la première entrée, quelle qu'elle soit
-   - [ ] une erreur
-   - [ ] `"cinq"`
-
-   > Ici 0 est une clé : `d[0]` cherche la clé 0, pas une position.
-
-1. Pour représenter la fiche d'un livre (titre, auteur, année), on utilise de préférence :
-
-   - [ ] un tableau `["titre", "auteur", 1887]`
-   - [x] un dictionnaire `{"titre": ..., "auteur": ..., "annee": ...}`
-   - [ ] trois variables séparées
-   - [ ] une chaîne de caractères
-
-   > Un enregistrement : chaque champ a un nom.
-::::
-
-::::exercice[Lire un programme]{niveau=1 type=reponses}
-Donne ce que le programme affiche.
-
-1. Que s'affiche-t-il ?
-
-   ```python verifier
-   d = {"a": 3, "b": 7}
-   d["a"] = d["a"] + d["b"]
-   print(d["a"])
-   ```
-
-   - 10
-
-1. Que s'affiche-t-il ?
-
-   ```python verifier
-   d = {"x": 1, "y": 2, "z": 2}
-   s = 0
-   for v in d.values():
-       s = s + v
-   print(s)
-   ```
-
-   - 5
-
-1. Que s'affiche-t-il ? Réponds `True` ou `False`.
-
-   ```python verifier
-   d = {"x": 1}
-   print(1 in d)
-   ```
-
-   - False
 ::::
 
 ::::exercice[Compléter un comptage]{niveau=1 type=completer}
@@ -241,7 +143,7 @@ def occurrences(t):
 ```
 ::::
 
-::::exercice[Compter les mots]{niveau=1}
+::::exercice[Compter les mots]{niveau=2}
 Écris `compter_mots(phrase)` qui renvoie un dictionnaire associant à chaque mot de la phrase son nombre d'occurrences. Les mots sont séparés par
 des espaces : `phrase.split()` donne le tableau des mots.
 
@@ -301,34 +203,65 @@ On retient la **clé** du meilleur, pas sa valeur : on peut toujours retrouver l
 :::
 ::::
 
-::::exercice[Traducteur mot à mot]{niveau=2}
-Écris `traduire(phrase, dico)` qui traduit une phrase mot à mot avec un dictionnaire. Un mot absent du dictionnaire est gardé tel quel. Les mots
-traduits sont recollés avec des espaces : `" ".join(tableau)` donne la chaîne.
+::::exercice[Les ventes d'une boulangerie]{niveau=3}
+Une boulangerie enregistre ses ventes dans un tableau de couples `(produit, quantite)`. Le dictionnaire `prix` associe à chaque produit son prix en euros.
+
+1. Écris `quantites(ventes)`, qui renvoie un dictionnaire associant à chaque produit la quantité totale vendue.
+2. Écris `recette(ventes, prix)`, qui renvoie le montant total des ventes.
+3. Écris `meilleur_produit(ventes, prix)`, qui renvoie le produit ayant rapporté le plus d'argent, ou `None` s'il n'y a aucune vente.
+4. À l'écrit : pour afficher chaque produit avec son prix, quelle méthode de dictionnaire utiliser ? Écris la boucle.
 
 ```python depart
-def traduire(phrase, dico):
+def quantites(ventes):
+    ...
+
+def recette(ventes, prix):
+    ...
+
+def meilleur_produit(ventes, prix):
     ...
 ```
 
 ```python tests
-fr_en = {"le": "the", "chat": "cat", "noir": "black", "dort": "sleeps"}
-assert traduire("le chat dort", fr_en) == "the cat sleeps", "tout est connu"
-assert traduire("le chat de Léa", fr_en) == "the cat de Léa", "mots inconnus gardés"
-assert traduire("", fr_en) == "", "phrase vide"
+p = {"pain": 1, "tarte": 15, "cookie": 2}
+v = [("pain", 10), ("tarte", 1), ("pain", 5), ("cookie", 4)]
+assert quantites(v) == {"pain": 15, "tarte": 1, "cookie": 4}, "quantités"
+assert quantites([]) == {}, "aucune vente"
+assert recette(v, p) == 38, "recette"
+assert meilleur_produit(v, p) in ("pain", "tarte"), "égalité possible"
+assert meilleur_produit([("cookie", 1), ("pain", 1)], p) == "cookie", "le meilleur"
+assert meilleur_produit([], p) is None, "aucune vente"
 ```
 
 :::corrige
 ```python solution
-def traduire(phrase, dico):
-    resultat = []
-    for mot in phrase.split():
-        if mot in dico:
-            resultat.append(dico[mot])
+def quantites(ventes):
+    q = {}
+    for produit, n in ventes:
+        if produit in q:
+            q[produit] = q[produit] + n
         else:
-            resultat.append(mot)
-    return " ".join(resultat)
+            q[produit] = n
+    return q
+
+def recette(ventes, prix):
+    total = 0
+    for produit, n in ventes:
+        total = total + n * prix[produit]
+    return total
+
+def meilleur_produit(ventes, prix):
+    meilleur = None
+    maxi = 0
+    q = quantites(ventes)
+    for produit, n in q.items():
+        montant = n * prix[produit]
+        if meilleur is None or montant > maxi:
+            meilleur = produit
+            maxi = montant
+    return meilleur
 ```
 
-Le test `if mot in dico` évite la `KeyError` sur les mots inconnus.
+**Question 4.** La méthode `items()` : `for produit, valeur in prix.items(): print(produit, valeur)`.
 :::
 ::::

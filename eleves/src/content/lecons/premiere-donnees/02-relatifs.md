@@ -70,24 +70,6 @@ Sur 4 bits, le plus grand nombre est 15. 15 + 15 = 30 tient sur 5 bits. 15 × 15
 ::::exercice[QCM : entiers relatifs]{niveau=1 type=quiz}
 Une question à la fois : la correction s'affiche aussitôt.
 
-1. Combien vaut 1 + 1 en binaire ?
-
-   - [ ] 2
-   - [x] 10
-   - [ ] 11
-   - [ ] 1
-
-   > On pose 0 et on retient 1 : 10₂ = 2.
-
-1. Quel est le résultat de 0110 + 0011 (sur 4 bits) ?
-
-   - [x] 1001
-   - [ ] 1000
-   - [ ] 0111
-   - [ ] 1101
-
-   > 6 + 3 = 9 = 1001.
-
 1. Comment code-t-on −1 en complément à deux sur 8 bits ?
 
    - [ ] 1000 0001
@@ -115,24 +97,6 @@ Une question à la fois : la correction s'affiche aussitôt.
 
    > 128 − 256 = −128 : c'est le plus petit entier sur 8 bits.
 
-1. Que vaut 1111 1100 ?
-
-   - [ ] 252
-   - [x] −4
-   - [ ] −3
-   - [ ] −124
-
-   > Négatif (bit de gauche à 1) : 252 − 256 = −4.
-
-1. Que vaut 0111 0000 ?
-
-   - [x] 112
-   - [ ] −112
-   - [ ] −16
-   - [ ] 240
-
-   > Bit de gauche à 0 : positif, 64 + 32 + 16 = 112.
-
 1. Quelle est la plage des entiers sur 8 bits en complément à deux ?
 
    - [ ] de 0 à 255
@@ -142,24 +106,6 @@ Une question à la fois : la correction s'affiche aussitôt.
 
    > 256 valeurs : −2⁷ à 2⁷ − 1.
 
-1. Quelle est la plage sur 16 bits ?
-
-   - [ ] de −65 536 à 65 535
-   - [x] de −32 768 à 32 767
-   - [ ] de 0 à 65 535
-   - [ ] de −16 à 15
-
-   > −2¹⁵ à 2¹⁵ − 1.
-
-1. Pourquoi n'utilise-t-on pas un simple bit de signe ?
-
-   - [ ] parce qu'il prend trop de place
-   - [x] parce qu'il donne deux zéros et que l'addition habituelle donne de faux résultats
-   - [ ] parce qu'il ne permet pas de coder les positifs
-   - [ ] parce que l'ordinateur ne connaît pas les signes
-
-   > Le complément à deux n'a qu'un zéro, et le même additionneur sert pour tous les entiers.
-
 1. Sur 8 bits, que donne 127 + 1 ?
 
    - [ ] 128
@@ -168,51 +114,22 @@ Une question à la fois : la correction s'affiche aussitôt.
    - [ ] une erreur affichée par le processeur
 
    > 0111 1111 + 1 = 1000 0000, qui code −128.
-
-1. En Python, que vaut `2 ** 100` ?
-
-   - [x] le bon résultat : les entiers Python n'ont pas de taille limite
-   - [ ] un nombre négatif à cause du dépassement
-   - [ ] une erreur
-   - [ ] 0
-
-   > Python gère des entiers aussi grands que la mémoire le permet.
 ::::
 
-::::exercice[Coder sur 8 bits]{niveau=1 type=reponses}
-Écris ces nombres en complément à 2 sur 8 bits, sans espace.
+::::exercice[Dérouler le complément à 2]{niveau=1 type=completer}
+Complète les étapes pour coder −20 sur 8 bits.
 
-1. 12
+```python calcul
+print(format(20, "08b"))
+print(format(20 ^ 0xFF, "08b"))
+print(format(-20 & 0xFF, "08b"))
+```
 
-   ```python calcul
-   print(format(12 & 0xFF, "08b"))
-   ```
-
-   - 00001100
-
-1. −1
-
-   ```python calcul
-   print(format(-1 & 0xFF, "08b"))
-   ```
-
-   - 11111111
-
-1. −12
-
-   ```python calcul
-   print(format(-12 & 0xFF, "08b"))
-   ```
-
-   - 11110100
-
-1. −128
-
-   ```python calcul
-   print(format(-128 & 0xFF, "08b"))
-   ```
-
-   - 10000000
+| Étape | Résultat |
+| --- | --- |
+| 20 en binaire sur 8 bits | [[00010100]] |
+| On inverse tous les bits | [[11101011]] |
+| On ajoute 1 | [[11101100]] |
 ::::
 
 ::::exercice[Décoder]{niveau=2 type=reponses}
@@ -297,18 +214,51 @@ Réponds à chaque question.
    > 0111 1111 + 1 donne 1000 0000 : c'est un dépassement.
 ::::
 
-::::exercice[Dérouler le complément à 2]{niveau=1 type=completer}
-Complète les étapes pour coder −20 sur 8 bits.
+::::exercice[Un capteur de température]{niveau=3 type=reponses}
+Un capteur envoie des températures entières, codées en complément à 2 sur 8 bits.
 
-```python calcul
-print(format(20, "08b"))
-print(format(20 ^ 0xFF, "08b"))
-print(format(-20 & 0xFF, "08b"))
-```
+1. Le capteur envoie `1110 1100`. Quelle température, en degrés, a-t-il mesurée ?
 
-| Étape | Résultat |
-| --- | --- |
-| 20 en binaire sur 8 bits | [[00010100]] |
-| On inverse tous les bits | [[11101011]] |
-| On ajoute 1 | [[11101100]] |
+   ```python calcul
+   v = 0b11101100
+   print(v - 256)
+   ```
+
+   - -20
+   - −20
+
+1. Écris cette valeur en hexadécimal.
+
+   ```python calcul
+   print(format(0b11101100, "X"))
+   ```
+
+   - EC
+
+1. Quelle est la température la plus élevée que ce capteur peut envoyer ?
+
+   - 127
+
+1. Un calcul additionne 100 et 50 sur 8 bits. Quelle valeur obtient-on, en lisant le résultat en complément à 2 ?
+
+   ```python calcul
+   v = (100 + 50) & 0xFF
+   print(v - 256 if v >= 128 else v)
+   ```
+
+   - -106
+   - −106
+
+1. Comment appelle-t-on ce phénomène ?
+
+   - dépassement
+   - un dépassement
+
+1. On multiplie deux entiers positifs écrits chacun sur 12 bits. Combien de bits faut-il prévoir au maximum pour le résultat ?
+
+   ```python calcul
+   print(2 * 12)
+   ```
+
+   - 24
 ::::
