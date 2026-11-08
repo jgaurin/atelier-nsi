@@ -41,7 +41,7 @@ def simplifier(texte):
     """Mêmes tolérances que sur la page : casse, accents, espaces et guillemets ne comptent pas."""
     texte = unicodedata.normalize("NFD", str(texte).strip().lower())
     texte = "".join(c for c in texte if not unicodedata.combining(c))
-    return re.sub(r"\\s+", "", texte).replace('"', "'").replace(",", ".")
+    return re.sub(r"\s+", "", texte).replace('"', "'").replace(",", ".")
 
 
 def executer_sortie(tache):
@@ -53,7 +53,7 @@ def executer_sortie(tache):
     except BaseException as e:  # noqa: BLE001
         return False, f"bloc de contrôle : {type(e).__name__}: {e}"
     attendus = tache["attendus"]
-    lignes = [sortie.getvalue().strip()] if len(attendus) == 1 else sortie.getvalue().strip().split("\\n")
+    lignes = [sortie.getvalue().strip()] if len(attendus) == 1 else sortie.getvalue().strip().split("\n")
     if len(lignes) != len(attendus):
         return False, f"{len(lignes)} valeur(s) calculée(s) pour {len(attendus)} case(s)"
     ecarts = [f"attendu {a!r}, calculé {l!r}" for a, l in zip(attendus, lignes) if simplifier(a) != simplifier(l)]
