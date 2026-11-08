@@ -51,6 +51,7 @@ Associe chaque extrait au problème qu'il contient.
 
 | Extrait | Problème |
 | --- | --- |
+| `a = b * c2` dans un calcul de prix | mauvais nommage |
 | `for i in range(len(t) + 1): print(t[i])` | débordement |
 | `if a == 0.3:` avec un flottant calculé | comparaison de flottants |
 | `age = input("Âge ?")` puis `age + 1` | typage |

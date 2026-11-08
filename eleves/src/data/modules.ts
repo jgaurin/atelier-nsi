@@ -28,7 +28,6 @@ export const PARTIES: Partie[] = [
   { id: "terminale", titre: "NSI · Terminale", description: "Le programme de terminale, pour être prêt le jour du bac." },
 ];
 
-const CONTROLE: [string, string] = ["controle", "Contrôle du chapitre"];
 const SNT = 185;
 const PREMIERE = 245;
 const TERMINALE = 290;
@@ -38,7 +37,7 @@ export const MODULES: Module[] = [
   {
     id: "snt-python", partie: "seconde", teinte: 200, programmation: true,
     titre: "Programmer en Python", description: "Variables, conditions, boucles, fonctions.",
-    plan: [["variables", "Variables et affectation"], ["conditions", "Les conditions"], ["boucles", "Les boucles"], ["fonctions", "Les fonctions"], CONTROLE],
+    plan: [["variables", "Variables et affectation"], ["fonctions", "Les fonctions"], ["conditions", "Les conditions"], ["boucles", "Les boucles"]],
   },
   {
     id: "snt-internet", partie: "seconde", teinte: SNT, programmation: false,
@@ -80,42 +79,42 @@ export const MODULES: Module[] = [
   {
     id: "premiere-donnees", partie: "premiere", teinte: PREMIERE, programmation: false,
     titre: "Représentation des données", description: "Bases, entiers relatifs, flottants, booléens, texte.",
-    plan: [["bases", "Écrire un entier dans une base"], ["relatifs", "Les entiers relatifs"], ["flottants", "Les nombres flottants"], ["booleens", "Les booléens"], ["texte", "Représenter du texte"], CONTROLE],
+    plan: [["bases", "Écrire un entier dans une base"], ["relatifs", "Les entiers relatifs"], ["flottants", "Les nombres flottants"], ["booleens", "Les booléens"], ["texte", "Représenter du texte"]],
   },
   {
     id: "premiere-construits", partie: "premiere", teinte: PREMIERE, programmation: true,
     titre: "Types construits", description: "p-uplets, tableaux, matrices, dictionnaires.",
-    plan: [["tuples", "p-uplets et p-uplets nommés"], ["tableaux", "Les tableaux"], ["matrices", "Compréhensions et matrices"], ["dictionnaires", "Les dictionnaires"], CONTROLE],
+    plan: [["tuples", "p-uplets et p-uplets nommés"], ["tableaux", "Les tableaux"], ["matrices", "Compréhensions et matrices"], ["dictionnaires", "Les dictionnaires"]],
   },
   {
     id: "premiere-tables", partie: "premiere", teinte: PREMIERE, programmation: true,
     titre: "Données en tables", description: "CSV, recherche, cohérence, tri, fusion.",
-    plan: [["csv", "Importer une table"], ["recherche", "Rechercher et vérifier"], ["tri-fusion", "Trier et fusionner"], CONTROLE],
+    plan: [["csv", "Importer une table"], ["recherche", "Rechercher et vérifier"], ["tri-fusion", "Trier et fusionner"]],
   },
   {
     id: "premiere-web", partie: "premiere", teinte: PREMIERE, programmation: false,
     titre: "Le Web et les interactions", description: "Composants, événements, client-serveur, formulaires.",
-    plan: [["evenements", "Composants et événements"], ["client-serveur", "Client, serveur et HTTP"], ["formulaires", "Les formulaires : GET et POST"], CONTROLE],
+    plan: [["evenements", "Composants et événements"], ["client-serveur", "Client, serveur et HTTP"], ["formulaires", "Les formulaires : GET et POST"]],
   },
   {
     id: "premiere-architecture", partie: "premiere", teinte: PREMIERE, programmation: false,
     titre: "Architecture et système", description: "Von Neumann, langage machine, système, commandes, capteurs.",
-    plan: [["von-neumann", "Le modèle de von Neumann"], ["langage-machine", "Dérouler un programme machine"], ["systeme", "Le système d'exploitation"], ["commandes-droits", "Commandes et droits d'accès"], ["capteurs-ihm", "Capteurs, actionneurs et IHM"], CONTROLE],
+    plan: [["von-neumann", "Le modèle de von Neumann"], ["langage-machine", "Dérouler un programme machine"], ["systeme", "Le système d'exploitation"], ["commandes-droits", "Commandes et droits d'accès"], ["capteurs-ihm", "Capteurs, actionneurs et IHM"]],
   },
   {
     id: "premiere-reseaux", partie: "premiere", teinte: PREMIERE, programmation: false,
     titre: "Réseaux", description: "Paquets, encapsulation, bit alterné et réseau local.",
-    plan: [["paquets", "Découper les données en paquets"], ["encapsulation", "Protocoles et encapsulation"], ["bit-alterne", "Le protocole du bit alterné"], ["reseau-local", "Le réseau local"], CONTROLE],
+    plan: [["paquets", "Découper les données en paquets"], ["encapsulation", "Protocoles et encapsulation"], ["bit-alterne", "Le protocole du bit alterné"], ["reseau-local", "Le réseau local"]],
   },
   {
     id: "premiere-langages", partie: "premiere", teinte: PREMIERE, programmation: true,
     titre: "Bien programmer", description: "Langages, spécification, tests, bibliothèques.",
-    plan: [["constructions", "Constructions et langages"], ["specification", "Spécifier une fonction"], ["tests", "Tester et corriger"], ["bibliotheques", "Utiliser une bibliothèque"], CONTROLE],
+    plan: [["constructions", "Constructions et langages"], ["specification", "Spécifier une fonction"], ["tests", "Tester et corriger"], ["bibliotheques", "Utiliser une bibliothèque"]],
   },
   {
     id: "premiere-algo", partie: "premiere", teinte: PREMIERE, programmation: true,
     titre: "Algorithmique", description: "Parcours, tris, dichotomie, gloutons, k plus proches voisins.",
-    plan: [["parcours", "Parcourir un tableau"], ["tris", "Tris par sélection et par insertion"], ["dichotomie", "La recherche dichotomique"], ["gloutons", "Les algorithmes gloutons"], ["knn", "Les k plus proches voisins"], CONTROLE],
+    plan: [["parcours", "Parcourir un tableau"], ["tris", "Tris par sélection et par insertion"], ["dichotomie", "La recherche dichotomique"], ["gloutons", "Les algorithmes gloutons"], ["knn", "Les k plus proches voisins"]],
   },
   {
     id: "premiere-histoire", partie: "premiere", teinte: PREMIERE, programmation: false,
@@ -127,26 +126,26 @@ export const MODULES: Module[] = [
   {
     id: "terminale-structures", partie: "terminale", teinte: TERMINALE, programmation: true,
     titre: "Structures de données", description: "Interface, objets, listes, piles, files, dictionnaires, arbres, graphes.",
-    plan: [["interface", "Interface et implémentation"], ["poo", "Programmation objet"], ["lineaires", "Listes, piles et files"], ["dictionnaires", "Dictionnaires, index et clés"], ["arbres", "Les arbres"], ["graphes", "Les graphes"], CONTROLE],
+    plan: [["interface", "Interface et implémentation"], ["poo", "Programmation objet"], ["lineaires", "Listes, piles et files"], ["dictionnaires", "Dictionnaires, index et clés"], ["arbres", "Les arbres"], ["graphes", "Les graphes"]],
   },
   {
     id: "terminale-bdd", partie: "terminale", teinte: TERMINALE, programmation: true,
     titre: "Bases de données", description: "Modèle relationnel, SGBD, requêtes SQL.",
-    plan: [["modele-relationnel", "Le modèle relationnel"], ["sgbd", "Anomalies et SGBD"], ["sql-interroger", "SQL : interroger"], ["sql-modifier", "SQL : modifier"], CONTROLE],
+    plan: [["modele-relationnel", "Le modèle relationnel"], ["sgbd", "Anomalies et SGBD"], ["sql-interroger", "SQL : interroger"], ["sql-modifier", "SQL : modifier"]],
   },
   {
     id: "terminale-archi", partie: "terminale", teinte: TERMINALE, programmation: false,
     titre: "Architecture, systèmes et réseaux", description: "Systèmes sur puce, processus, interblocage, routage, chiffrement.",
-    plan: [["soc", "Les systèmes sur puce"], ["processus", "Les processus"], ["interblocage", "L'interblocage"], ["routage", "Le routage : RIP et OSPF"], ["chiffrement", "Sécuriser les communications"], CONTROLE],
+    plan: [["soc", "Les systèmes sur puce"], ["processus", "Les processus"], ["interblocage", "L'interblocage"], ["routage", "Le routage : RIP et OSPF"], ["chiffrement", "Sécuriser les communications"]],
   },
   {
     id: "terminale-langages", partie: "terminale", teinte: TERMINALE, programmation: true,
     titre: "Langages et programmation", description: "Récursivité, modularité, paradigmes, bugs, calculabilité.",
-    plan: [["recursivite", "La récursivité"], ["modularite", "Modules et API"], ["paradigmes", "Les paradigmes"], ["bugs", "Les bugs typiques"], ["calculabilite", "Calculabilité et décidabilité"], CONTROLE],
+    plan: [["recursivite", "La récursivité"], ["modularite", "Modules et API"], ["paradigmes", "Les paradigmes"], ["bugs", "Les bugs typiques"], ["calculabilite", "Calculabilité et décidabilité"]],
   },
   {
     id: "terminale-algo", partie: "terminale", teinte: TERMINALE, programmation: true,
     titre: "Algorithmique", description: "Arbres, graphes, diviser pour régner, programmation dynamique, Boyer-Moore.",
-    plan: [["arbres", "Algorithmes sur les arbres"], ["abr", "Arbres binaires de recherche"], ["graphes", "Algorithmes sur les graphes"], ["diviser-regner", "Diviser pour régner"], ["prog-dynamique", "Programmation dynamique"], ["boyer-moore", "Recherche textuelle"], CONTROLE],
+    plan: [["arbres", "Algorithmes sur les arbres"], ["abr", "Arbres binaires de recherche"], ["graphes", "Algorithmes sur les graphes"], ["diviser-regner", "Diviser pour régner"], ["prog-dynamique", "Programmation dynamique"], ["boyer-moore", "Recherche textuelle"]],
   },
 ];

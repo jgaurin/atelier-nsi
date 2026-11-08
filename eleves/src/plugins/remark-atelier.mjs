@@ -93,7 +93,7 @@ function transformerExercice(noeud, numero, prefixe) {
   const enfants = [
     bloc("header", { className: ["exercice-tete"] }, [
       bloc("span", { className: ["exercice-numero"] }, [texte(`Exercice ${numero}`)]),
-      bloc("span", { className: ["niveau", `niveau-${ex.niveau}`] }, [texte(ex.points ? "Contrôle" : `Niveau ${ex.niveau} · ${NIVEAUX[ex.niveau] || ""}`)]),
+      bloc("span", { className: ["niveau", `niveau-${ex.niveau}`] }, [texte(`Niveau ${ex.niveau} · ${ex.niveau === 3 && prefixe?.startsWith("snt") ? "Type contrôle" : NIVEAUX[ex.niveau] || ""}`)]),
       bloc("span", { className: ["exercice-type"] }, [texte(TYPES[ex.type] || ex.type)]),
       ...(ex.points ? [bloc("span", { className: ["exercice-points"] }, [texte(`${ex.points} points`)])] : []),
       ...(ex.duree ? [bloc("span", { className: ["exercice-duree"] }, [texte(`≈ ${ex.duree} min`)])] : []),

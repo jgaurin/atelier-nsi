@@ -143,6 +143,21 @@ def occurrences(t):
 ```
 ::::
 
+::::exercice[Parcourir un dictionnaire]{niveau=1 type=completer}
+On a `notes = {"maths": 14, "NSI": 17}`. Complète chaque parcours avec `keys`, `values` ou `items`.
+
+```python trous
+for matiere in notes.[[keys]]():
+    print(matiere)
+
+for n in notes.[[values]]():
+    print(n)
+
+for matiere, n in notes.[[items]]():
+    print(matiere, n)
+```
+::::
+
 ::::exercice[Compter les mots]{niveau=2}
 Écris `compter_mots(phrase)` qui renvoie un dictionnaire associant à chaque mot de la phrase son nombre d'occurrences. Les mots sont séparés par
 des espaces : `phrase.split()` donne le tableau des mots.
