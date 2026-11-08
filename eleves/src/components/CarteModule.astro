@@ -1,0 +1,25 @@
+---
+// Carte d'un chapitre : titre, description et progression (remplie côté navigateur). « Bientôt » s'il n'est pas encore écrit.
+import type { InfoModule } from "../lib/parcours";
+
+interface Props { module: InfoModule }
+const { module } = Astro.props;
+const nbExercices = module.ecrites.reduce((n, l) => n + l.exercices.length, 0);
+---
+{module.ecrites.length > 0 ? (
+  <a class="carte carte-lien carte-module" href={module.url} style={`--teinte: ${module.teinte}`} data-progres={JSON.stringify(module.ecrites.map((l) => l.cle))}>
+    <h3>{module.titre}</h3>
+    <p>{module.description}</p>
+    <div class="barre" aria-hidden="true"><span></span></div>
+    <div class="pied-carte">
+      <span>{module.ecrites.length} leçon{module.ecrites.length > 1 ? "s" : ""}{nbExercices > 0 && ` · ${nbExercices} exercices`}</span>
+      <span data-progres-texte></span>
+    </div>
+  </a>
+) : (
+  <div class="carte carte-module carte-bientot" style={`--teinte: ${module.teinte}`}>
+    <h3>{module.titre}</h3>
+    <p>{module.description}</p>
+    <span class="etiquette-bientot">Bientôt</span>
+  </div>
+)}

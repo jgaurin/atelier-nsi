@@ -1,0 +1,68 @@
+---
+// Squelette commun à toutes les pages : en-tête, navigation par niveau (barre du bas sur téléphone), pied de page.
+import "katex/dist/katex.min.css";
+import "../styles/global.css";
+import { iconeHTML } from "../scripts/icones";
+
+interface Props {
+  titre: string;
+  description?: string;
+  /** Niveau mis en avant dans la navigation. */
+  niveau?: string;
+}
+
+const { titre, description = "Cours et exercices de SNT et de NSI pour le lycée, au niveau du programme.", niveau } = Astro.props;
+const courant = (n: string) => (niveau === n ? "page" : undefined);
+const NIVEAUX = [["seconde", "SNT"], ["premiere", "Première"], ["terminale", "Terminale"]];
+---
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#4a3dce" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <title>{titre === "NSI Lycée" ? titre : `${titre} · NSI Lycée`}</title>
+    <script is:inline>
+      (function () {
+        var choix = null;
+        try { choix = localStorage.getItem("atelier-nsi:theme"); } catch (e) {}
+        var sombre = choix ? choix === "sombre" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+        document.documentElement.dataset.theme = sombre ? "sombre" : "clair";
+      })();
+    </script>
+  </head>
+  <body>
+    <a class="visuellement-cache" href="#contenu">Aller au contenu</a>
+    <header class="entete">
+      <a class="marque" href="/" aria-label="NSI Lycée, accueil">
+        <span class="marque-logo" aria-hidden="true">&gt;_</span>
+        <span>NSI Lycée<small>Cours et exercices</small></span>
+      </a>
+      <nav class="nav-principale" aria-label="Niveaux">
+        {NIVEAUX.map(([id, nom]) => <a href={`/#${id}`} aria-current={courant(id)}>{nom}</a>)}
+      </nav>
+      <div class="nav-outils">
+        <button type="button" data-basculer-theme title="Mode clair / sombre" aria-label="Basculer entre mode clair et mode sombre"><Fragment set:html={iconeHTML("theme", 18)} /></button>
+      </div>
+    </header>
+
+    <main id="contenu">
+      <slot />
+    </main>
+
+    <footer class="pied">
+      <span>Cours et exercices rédigés d'après les programmes officiels de SNT et de NSI.</span>
+      <span>Ta progression reste sur cet appareil. Aucun compte, aucune donnée collectée.</span>
+    </footer>
+
+    <nav class="nav-mobile" aria-label="Niveaux">
+      {NIVEAUX.map(([id, nom]) => <a href={`/#${id}`} aria-current={courant(id)}>{nom}</a>)}
+    </nav>
+
+    <script>
+      import "../scripts/site";
+    </script>
+  </body>
+</html>

@@ -1,0 +1,28 @@
+---
+// Accueil : les trois niveaux et leurs chapitres.
+import Base from "../layouts/Base.astro";
+import CarteModule from "../components/CarteModule.astro";
+import { parties } from "../lib/parcours";
+
+const niveaux = await parties();
+---
+<Base titre="NSI Lycée">
+  <div class="page">
+    <header class="accueil-tete">
+      <h1>Cours et exercices de NSI et de SNT</h1>
+      <p>Ce qu'il faut savoir, expliqué simplement, et des exercices comme ceux que tu auras en contrôle et au bac.</p>
+    </header>
+
+    {niveaux.map((n) => (
+      <section class="niveau-bloc" id={n.id}>
+        <div class="niveau-tete">
+          <h2>{n.titre}</h2>
+          <p>{n.description}</p>
+        </div>
+        <div class="grille grille-3">
+          {n.modules.map((m) => <CarteModule module={m} />)}
+        </div>
+      </section>
+    ))}
+  </div>
+</Base>

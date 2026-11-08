@@ -1,0 +1,50 @@
+---
+// Page d'un chapitre : la liste de ses leçons.
+import Base from "../../../layouts/Base.astro";
+import { chargerParcours } from "../../../lib/parcours";
+import { PARTIES } from "../../../data/modules";
+
+export async function getStaticPaths() {
+  const modules = await chargerParcours();
+  return modules.filter((m) => m.ecrites.length > 0).map((m) => ({ params: { module: m.id }, props: { id: m.id } }));
+}
+
+const { id } = Astro.props;
+const module = (await chargerParcours()).find((m) => m.id === id)!;
+const partie = PARTIES.find((p) => p.id === module.partie);
+const duree = module.ecrites.reduce((n, l) => n + l.duree, 0);
+---
+<Base titre={module.titre} description={module.description} niveau={module.partie}>
+  <div class="page page-etroite" style={`--teinte: ${module.teinte}`}>
+    <nav class="fil-ariane" aria-label="Fil d'Ariane"><a href="/">Accueil</a><span aria-hidden="true">›</span><a href={`/#${module.partie}`}>{partie?.titre}</a></nav>
+    <header class="module-entete" data-progres={JSON.stringify(module.ecrites.map((l) => l.cle))}>
+      <div class="surtitre">Chapitre</div>
+      <h1>{module.titre}</h1>
+      <p class="chapeau">{module.description}</p>
+      <p style="color:var(--texte-3);font-size:.9rem">
+        {duree > 0 && `Environ ${Math.round(duree / 60 * 10) / 10} h de travail · `}<span data-progres-texte></span>
+      </p>
+      <div class="barre" aria-hidden="true"><span></span></div>
+    </header>
+
+    <ol class="lecons-module">
+      {module.lecons.map((l) => (
+        <li>
+          {l.ecrite ? (
+            <a class="carte carte-lien lecon-ligne" href={l.url}>
+              <span class="statut" data-statut-lecon={l.cle}><span class="numero">{l.numero}</span></span>
+              <span><h3>{l.titre}</h3><p>{l.resume}</p></span>
+              <span class="meta">{l.duree} min<br />{l.exercices.length} exercices</span>
+            </a>
+          ) : (
+            <div class="carte lecon-ligne a-venir">
+              <span class="statut"><span class="numero">{l.numero}</span></span>
+              <span><h3>{l.titre}</h3><p>Bientôt.</p></span>
+              <span class="meta"></span>
+            </div>
+          )}
+        </li>
+      ))}
+    </ol>
+  </div>
+</Base>
