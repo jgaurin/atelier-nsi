@@ -918,3 +918,4 @@ input.trou { font-family: var(--police-code); }
 .code-trous { margin: .4rem 0 .8rem; padding: .8rem 1rem; border-radius: var(--rayon-petit); background: var(--code-fond); border: 1px solid var(--bord); overflow-x: auto; font-family: var(--police-code); font-size: .9rem; line-height: 2; }
 .code-trous code { background: none; padding: 0; font: inherit; white-space: pre; }
 .encadre-histoire { background: var(--jaune-doux); }
+.contenu .code-trous code { background: none; border: 0; padding: 0; font-size: inherit; }

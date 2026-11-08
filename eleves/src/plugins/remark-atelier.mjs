@@ -34,13 +34,31 @@ function prefixeExercices(chemin) {
   return fichier || "ex";
 }
 
-const champ = (reponses, etiquette) => bloc("input", {
+const proprietesChamp = (reponses, etiquette) => ({
   className: ["trou"],
   type: "text",
   "data-reponses": reponses,
   "aria-label": etiquette,
   style: `width: ${Math.max(6, Math.max(...reponses.split(";").map((r) => r.length)) + 3)}ch`,
 });
+const champ = (reponses, etiquette) => bloc("input", proprietesChamp(reponses, etiquette));
+
+/** Du code avec des cases : écrit directement en HTML, car les nœuds texte perdent leurs espaces de début de ligne. */
+function codeATrous(source, debutNumero) {
+  const enfants = [];
+  let curseur = 0;
+  let n = debutNumero;
+  for (const c of casesDe(source)) {
+    if (c.debut > curseur) enfants.push({ type: "text", value: source.slice(curseur, c.debut) });
+    n += 1;
+    enfants.push({ type: "element", tagName: "input", properties: proprietesChamp(c.reponse, `Case ${n} à compléter`), children: [] });
+    curseur = c.fin;
+  }
+  if (curseur < source.length) enfants.push({ type: "text", value: source.slice(curseur) });
+  const noeud = bloc("div", { className: ["code-trous"] });
+  noeud.data.hChildren = [{ type: "element", tagName: "code", properties: {}, children: enfants }];
+  return { noeud, n };
+}
 
 /** Remplace chaque [[réponse]] de l'énoncé par une case à remplir. */
 function creuserTrous(noeuds) {
@@ -48,6 +66,12 @@ function creuserTrous(noeuds) {
   visit({ type: "root", children: noeuds }, (t, index, parent) => {
     const enCode = t.type === "code" && lireMeta(t.meta).drapeaux.has("trous");
     if ((t.type !== "text" && !enCode) || !parent || index == null || !t.value.includes("[[")) return;
+    if (enCode) {
+      const code = codeATrous(t.value, n);
+      n = code.n;
+      parent.children[index] = code.noeud;
+      return [SKIP, index + 1];
+    }
     const morceaux = [];
     let curseur = 0;
     for (const c of casesDe(t.value)) {
@@ -57,10 +81,6 @@ function creuserTrous(noeuds) {
       curseur = c.fin;
     }
     if (curseur < t.value.length) morceaux.push(texte(t.value.slice(curseur)));
-    if (enCode) {
-      parent.children[index] = bloc("pre", { className: ["code-trous"] }, [bloc("code", {}, morceaux)]);
-      return [SKIP, index + 1];
-    }
     parent.children.splice(index, 1, ...morceaux);
     return [SKIP, index + morceaux.length];
   });
