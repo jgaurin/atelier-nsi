@@ -23,6 +23,8 @@ Presque tous les ordinateurs suivent un même modèle, décrit en 1945.
 
 L'UAL, l'unité de contrôle et les registres forment le **processeur**.
 
+La **mémoire vive** (RAM) est rapide, mais elle s'efface à l'extinction. Le **disque** est plus lent, mais il conserve les données.
+
 :::retenir[L'idée de von Neumann]
 Le **programme est stocké en mémoire**, comme les données.
 :::
@@ -95,24 +97,6 @@ Une question à la fois : la correction s'affiche aussitôt.
 
    > On ne peut décoder qu'une instruction déjà lue.
 
-1. Où se trouve un registre ?
-
-   - [x] dans le processeur
-   - [ ] dans la RAM
-   - [ ] sur le disque
-   - [ ] dans le bus
-
-   > C'est la mémoire la plus rapide et la plus petite.
-
-1. Quelle mémoire est effacée quand on éteint l'ordinateur ?
-
-   - [ ] le disque SSD
-   - [x] la mémoire vive (RAM)
-   - [ ] une clé USB
-   - [ ] aucune
-
-   > La RAM est volatile ; le stockage (disque, SSD) est permanent.
-
 1. Pourquoi les processeurs ont-ils plusieurs cœurs depuis les années 2000 ?
 
    - [ ] pour consommer plus
@@ -155,4 +139,51 @@ Explique la différence entre la mémoire vive (RAM) et le disque, en parlant de
 :::corrige
 La mémoire vive est très rapide : le processeur y lit le programme en cours et ses données. Elle s'efface quand on éteint l'ordinateur. Le disque est bien plus lent, mais il conserve les données sans alimentation.
 :::
+::::
+
+::::exercice[Un ou deux cœurs]{niveau=3 type=reponses}
+Un logiciel d'images traite 4 photos. Chaque photo demande 3 secondes de calcul sur un cœur. Les photos sont indépendantes.
+
+1. Combien de secondes faut-il avec un processeur à un seul cœur ?
+
+   ```python calcul
+   print(4 * 3)
+   ```
+
+   - 12
+
+1. Combien de secondes faut-il au mieux avec deux cœurs ?
+
+   ```python calcul
+   print(2 * 3)
+   ```
+
+   - 6
+
+1. Chaque photo doit maintenant attendre le résultat de la précédente. Combien de secondes faut-il avec deux cœurs ?
+
+   - 12
+
+   > Les calculs ne peuvent plus se faire en même temps.
+
+1. Quelle architecture exécute plusieurs instructions en même temps : monoprocesseur ou multiprocesseur ?
+
+   - multiprocesseur
+
+1. Quel constituant du processeur réalise les additions de ce calcul ?
+
+   - UAL
+   - l'UAL
+   - unité arithmétique et logique
+
+1. L'UAL est faite de circuits qui réalisent des fonctions booléennes. Comment les appelle-t-on ?
+
+   - circuits combinatoires
+   - combinatoires
+
+1. Où se trouvent le programme et les photos pendant le calcul : en mémoire vive ou sur le disque ?
+
+   - mémoire vive
+   - en mémoire vive
+   - RAM
 ::::

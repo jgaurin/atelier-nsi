@@ -79,15 +79,6 @@ Une question à la fois : la correction s'affiche aussitôt.
 
    > On ajoute le chemin du répertoire courant devant le chemin relatif.
 
-1. On est dans `/home/lea/nsi`. Quel chemin relatif mène à `/home/tom` ?
-
-   - [ ] `tom`
-   - [ ] `../tom`
-   - [x] `../../tom`
-   - [ ] `/tom`
-
-   > `..` mène à `/home/lea`, `../..` à `/home`.
-
 1. Quelle commande renomme `brouillon.py` en `final.py` ?
 
    - [ ] `cp brouillon.py final.py`
@@ -96,15 +87,6 @@ Une question à la fois : la correction s'affiche aussitôt.
    - [ ] `rename final.py`
 
    > `mv` déplace ou renomme ; `cp` ferait une copie en gardant l'original.
-
-1. Que devient un fichier supprimé avec `rm` ?
-
-   - [ ] il va dans la corbeille
-   - [x] il est supprimé définitivement
-   - [ ] il est caché
-   - [ ] il est compressé
-
-   > Il n'y a pas de corbeille en ligne de commande.
 
 1. Dans `-rw-r-----`, que peut faire le groupe ?
 
@@ -123,25 +105,6 @@ Une question à la fois : la correction s'affiche aussitôt.
    - [ ] `r-xr-xr-x`
 
    > 7 = rwx, 5 = r-x.
-
-1. Quel nombre correspond à `rw-r--r--` ?
-
-   - [ ] 755
-   - [x] 644
-   - [ ] 600
-   - [ ] 466
-
-   > 6 = 4 + 2, puis 4 et 4.
-
-1. Que signifie le `d` au début de `drwxr-xr-x` ?
-
-   - [ ] droits du groupe
-   - [x] c'est un répertoire
-   - [ ] le fichier est supprimé
-   - [ ] le fichier est un document
-
-   > `-` pour un fichier ordinaire, `d` pour un répertoire.
-
 ::::
 
 ::::exercice[Quelle commande ?]{niveau=1 type=reponses}
@@ -179,7 +142,7 @@ Complète le tableau.
 | [[rw-------]] | 600 |
 ::::
 
-::::exercice[Une session au terminal]{niveau=1}
+::::exercice[Une session au terminal]{niveau=2}
 Lea est dans `/home/lea`, qui contient le seul fichier `photo.jpg`. Elle tape dans l'ordre : `mkdir nsi`, `cd nsi`, `touch tp1.py`,
 `cp tp1.py tp2.py`, `mv ../photo.jpg .`, `cd ..`, `ls`. Dessine l'arborescence de `/home/lea` à la fin et donne l'affichage de `ls`.
 Puis écris la commande qui retire aux autres tout droit sur `tp2.py`, sans toucher aux autres droits.
@@ -205,4 +168,49 @@ Puis écris la commande qui retire aux autres tout droit sur `tp2.py`, sans touc
 `ls` affiche seulement `nsi`. Pour retirer tous les droits aux autres : `chmod o-rwx nsi/tp2.py` (le chemin est relatif à `/home/lea`). La
 notation octale ne convient pas ici sans connaître les droits actuels, car elle fixe les trois catégories à la fois.
 :::
+::::
+
+::::exercice[Le dossier d'un projet]{niveau=3 type=reponses}
+Ana est dans `/home/ana/projet`. La commande `ls -l` affiche :
+
+```
+-rwxr-x---  ana  eleves  jeu.py
+-rw-r--r--  ana  eleves  notes.txt
+drwxr-xr-x  ana  eleves  images
+```
+
+Tom appartient au groupe `eleves`. Zoé n'y appartient pas.
+
+1. Tom peut-il exécuter `jeu.py` ? Réponds par oui ou par non.
+
+   - oui
+
+1. Tom peut-il modifier `notes.txt` ? Réponds par oui ou par non.
+
+   - non
+
+1. Zoé peut-elle lire `jeu.py` ? Réponds par oui ou par non.
+
+   - non
+
+1. Quel nombre correspond aux droits de `jeu.py` ?
+
+   - 750
+
+1. Écris la commande qui retire aux autres le droit de lire `notes.txt`, sans changer les autres droits.
+
+   - chmod 640 notes.txt
+
+1. Quel est le chemin absolu du dossier `images` ?
+
+   - /home/ana/projet/images
+
+1. Depuis le dossier `images`, quel chemin relatif mène à `jeu.py` ?
+
+   - ../jeu.py
+
+1. Depuis `projet`, écris la commande qui copie `notes.txt` dans `images`.
+
+   - cp notes.txt images
+   - cp notes.txt images/
 ::::

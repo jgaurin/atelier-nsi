@@ -84,15 +84,6 @@ Associe chaque élément à son rôle.
 ::::exercice[QCM : le réseau local]{niveau=1 type=quiz}
 Une question à la fois : la correction s'affiche aussitôt.
 
-1. Quel appareil relie le réseau du lycée à Internet ?
-
-   - [ ] le commutateur
-   - [x] le routeur
-   - [ ] la carte réseau
-   - [ ] l'imprimante
-
-   > Internet est un autre réseau : il faut un routeur.
-
 1. Quelle adresse est une adresse IP ?
 
    - [x] `192.168.1.17`
@@ -137,15 +128,6 @@ Une question à la fois : la correction s'affiche aussitôt.
    - [ ] le nom de la machine
 
    > Sans passerelle, la machine ne peut pas joindre un autre réseau.
-
-1. Que fait la commande `ping 192.168.1.20` ?
-
-   - [ ] elle éteint la machine
-   - [x] elle vérifie que la machine répond
-   - [ ] elle change son adresse
-   - [ ] elle copie un fichier
-
-   > C'est la façon la plus simple de tester une connexion.
 ::::
 
 ::::exercice[Lire une adresse]{niveau=1 type=reponses}
@@ -221,4 +203,47 @@ Note ce que tu observes à l'étape 4 et à l'étape 5, puis explique la différ
 :::corrige
 À l'étape 4, le `ping` réussit : les deux machines sont sur le réseau `192.168.1` et sont reliées par le commutateur. À l'étape 5, il échoue : la deuxième machine est maintenant sur le réseau `192.168.2`. Pour les faire communiquer, il faudrait ajouter un routeur et indiquer une passerelle à chaque machine.
 :::
+::::
+
+::::exercice[Dépanner le réseau du lycée]{niveau=3 type=reponses}
+Toutes les adresses sont en /24. Un routeur relie deux réseaux : celui des salles, où il a l'adresse `192.168.10.254`, et celui de l'administration, où il a l'adresse `192.168.20.254`.
+
+| Machine | Adresse IP | Branchée sur |
+| --- | --- | --- |
+| A | `192.168.10.5` | commutateur des salles |
+| B | `192.168.10.9` | commutateur des salles |
+| C | `192.168.20.7` | commutateur de l'administration |
+| D | `192.168.20.33` | commutateur des salles |
+
+1. Quel appareil transmet les données de A vers B : commutateur ou routeur ?
+
+   - commutateur
+   - le commutateur
+
+1. Quel appareil permet à A de joindre C : commutateur ou routeur ?
+
+   - routeur
+   - le routeur
+
+1. Quelle adresse faut-il indiquer comme passerelle sur A ?
+
+   - 192.168.10.254
+
+1. Quelle adresse faut-il indiquer comme passerelle sur C ?
+
+   - 192.168.20.254
+
+1. Combien de numéros différents le dernier nombre d'une adresse peut-il prendre ?
+
+   - 256
+
+1. D est mal configurée. `ping 192.168.20.33` lancé depuis A peut-il réussir directement par le commutateur ? Réponds par oui ou par non.
+
+   - non
+
+   > A voit D sur un autre réseau : elle envoie sa demande à sa passerelle.
+
+1. Par quels trois nombres l'adresse de D doit-elle commencer ?
+
+   - 192.168.10
 ::::

@@ -52,6 +52,8 @@ Quand ton navigateur demande une page :
 
 À l'arrivée, on fait le chemin inverse : chaque couche **retire son en-tête** et passe le reste à la couche du dessus. C'est la **désencapsulation**.
 
+Un routeur lit l'en-tête IP et refait l'en-tête Ethernet pour le tronçon suivant : les adresses **MAC changent** à chaque étape, les adresses **IP restent les mêmes**.
+
 ## 4. À quoi servent les couches ?
 
 Chaque couche ne s'occupe que de son travail. On peut donc en changer une **sans toucher aux autres**.
@@ -83,15 +85,6 @@ Associe chaque information au protocole qui l'ajoute.
 
 ::::exercice[QCM : protocoles et couches]{niveau=1 type=quiz}
 Une question à la fois : la correction s'affiche aussitôt.
-
-1. Un protocole est :
-
-   - [ ] un câble réseau
-   - [x] un ensemble de règles de communication
-   - [ ] un type d'ordinateur
-   - [ ] un fichier
-
-   > Les machines doivent suivre les mêmes règles pour se comprendre.
 
 1. Quel protocole sert à demander une page Web ?
 
@@ -129,15 +122,6 @@ Une question à la fois : la correction s'affiche aussitôt.
 
    > Chaque couche ajoute son enveloppe.
 
-1. À l'arrivée, quel en-tête est lu en premier ?
-
-   - [ ] celui de HTTP
-   - [ ] celui de TCP
-   - [ ] celui de IP
-   - [x] celui de Ethernet
-
-   > C'est l'enveloppe la plus extérieure, ajoutée en dernier.
-
 1. Tu passes du Wi-Fi à la 4G. Quelle couche change ?
 
    - [ ] Application
@@ -146,16 +130,6 @@ Une question à la fois : la correction s'affiche aussitôt.
    - [x] Accès réseau
 
    > Seul le moyen de transmission change.
-::::
-
-::::exercice[L'envoi d'une requête]{niveau=1 type=ordre}
-Remets dans l'ordre ce qui se passe quand ton navigateur demande une page.
-
-1. Le navigateur écrit la requête HTTP.
-1. TCP ajoute les ports et le numéro de séquence.
-1. IP ajoute les adresses IP.
-1. Ethernet ajoute les adresses MAC.
-1. La trame part sur le câble.
 ::::
 
 ::::exercice[À l'arrivée]{niveau=2 type=completer}
@@ -204,16 +178,43 @@ Un message HTTP de 1 000 octets est envoyé. TCP ajoute 20 octets, IP ajoute 20 
    > 58 ÷ 158 ≈ 0,367, soit environ 37 %. Pour un petit message, les en-têtes pèsent lourd.
 ::::
 
-::::exercice[À quoi servent les couches ?]{niveau=2}
-Explique, avec un exemple, pourquoi il est utile que les protocoles soient organisés en couches indépendantes.
+::::exercice[Analyser une trame]{niveau=3 type=reponses}
+Un ordinateur A (`192.168.1.10`) demande une page au serveur S (`93.184.216.34`). Il passe par sa passerelle R. Voici la trame qui quitte A.
 
-:::criteres
-- Tu dis que chaque couche a son propre travail.
-- Tu dis qu'on peut changer une couche sans modifier les autres.
-- Tu donnes un exemple correct, comme le passage du Wi-Fi à la 4G.
-:::
+| Couche | Informations |
+| --- | --- |
+| Ethernet | MAC source : celle de A ; MAC destination : celle de R |
+| IP | IP source : `192.168.1.10` ; IP destination : `93.184.216.34` |
+| TCP | port source : 49152 ; port destination : 80 ; numéro de séquence : 1 |
+| HTTP | `GET /index.html` |
 
-:::corrige
-Chaque couche s'occupe d'un seul travail, sans avoir besoin de savoir comment font les autres. On peut donc changer une couche sans modifier le reste. Par exemple, quand on passe du Wi-Fi à la 4G, seule la couche d'accès au réseau change : le navigateur continue d'utiliser HTTP comme avant.
-:::
+1. Quelle couche indique la page demandée ?
+
+   - application
+   - HTTP
+
+1. L'adresse MAC de destination est-elle celle du serveur ou celle de la passerelle ?
+
+   - passerelle
+   - la passerelle
+
+1. Pourquoi ne met-on pas directement la MAC du serveur ? Complète : le serveur n'est pas sur le même…
+
+   - réseau
+
+1. Après le passage par R, quelle adresse a changé : MAC ou IP ?
+
+   - MAC
+
+1. Quelle est l'adresse IP de destination après le passage par R ?
+
+   - 93.184.216.34
+
+1. Quel en-tête le serveur retire-t-il en premier ?
+
+   - Ethernet
+
+1. Quel protocole utilisera le numéro de séquence pour vérifier que tout arrive ?
+
+   - TCP
 ::::

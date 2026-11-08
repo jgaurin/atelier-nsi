@@ -117,16 +117,55 @@ document.getElementById("b").addEventListener("click", function () {
    - document.getElementById
 ::::
 
-::::exercice[Pourquoi le programme attend-il ?]{niveau=2}
-Explique en deux ou trois phrases la différence entre un programme Python qui s'exécute de haut en bas et le code JavaScript d'une page avec des boutons.
+::::exercice[Réserver des places]{niveau=3 type=reponses}
+Une page permet de réserver des places. Au chargement, 20 places sont disponibles.
 
-:::criteres
-- Le programme Python exécute ses instructions dans l'ordre, puis s'arrête.
-- Le code de la page associe des fonctions à des événements.
-- Ces fonctions s'exécutent seulement quand l'événement se produit, autant de fois qu'il se produit.
-:::
+```html
+<input type="text" id="nb">
+<button id="ok">Réserver</button>
+<p id="places">20</p>
+```
 
-:::corrige
-Un programme Python simple exécute ses instructions dans l'ordre, puis s'arrête. Dans une page, le JavaScript associe des fonctions à des événements, puis attend. Chaque fonction s'exécute seulement quand l'événement se produit, par exemple à chaque clic.
-:::
+```javascript
+let places = 20;
+document.getElementById("ok").addEventListener("click", function () {
+  const n = Number(document.getElementById("nb").value);
+  if (n <= places) {
+    places = places - n;
+  }
+  document.getElementById("places").textContent = places;
+});
+```
+
+1. Quelle balise HTML décrit le composant sur lequel on clique ?
+
+   - button
+   - <button>
+
+1. On saisit 5 et on clique. Que contient alors le paragraphe ?
+
+   - 15
+
+1. On saisit ensuite 30 et on clique. Que contient le paragraphe ?
+
+   - 15
+
+   > 30 est supérieur à 15 : la condition est fausse, rien n'est retiré.
+
+1. Le code s'exécute-t-il sur le client ou sur le serveur ?
+
+   - client
+   - sur le client
+
+1. On veut qu'un clic réserve toujours une seule place. Par quoi remplace-t-on `n` dans `places = places - n` ?
+
+   - 1
+
+1. On veut réagir à chaque modification du champ, sans bouton. Quel est l'`id` de l'élément à surveiller ?
+
+   - nb
+
+1. Quel événement faut-il alors écouter ?
+
+   - input
 ::::

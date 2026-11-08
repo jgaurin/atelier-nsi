@@ -121,7 +121,7 @@ On veut un formulaire de connexion qui envoie un identifiant et un mot de passe 
 ```
 ::::
 
-::::exercice[GET ou POST ?]{niveau=1}
+::::exercice[GET ou POST ?]{niveau=2}
 Pour chacun de ces formulaires, choisis GET ou POST et justifie en une phrase : (a) la barre de recherche d'un site de recettes ; (b) la
 connexion à l'ENT ; (c) le filtre « prix croissant » d'une boutique en ligne ; (d) l'envoi d'une photo de profil ; (e) le formulaire de
 commande avec adresse de livraison.
@@ -137,5 +137,39 @@ commande avec adresse de livraison.
 passe ne doit pas apparaître dans l'URL ni dans l'historique. (c) **GET** : un filtre est une simple consultation, on veut pouvoir partager le
 lien. (d) **POST** : une photo est trop volumineuse pour une URL. (e) **POST** (et HTTPS) : données personnelles, et l'action crée une commande
 sur le serveur. Règle simple : GET pour **consulter**, POST pour **envoyer** ou **modifier**, HTTPS dès qu'il y a des données personnelles.
+:::
+::::
+
+::::exercice[Corriger un formulaire de connexion]{niveau=3}
+Un site utilise ce formulaire :
+
+```html
+<form action="/connexion" method="get">
+  <input type="text" name="identifiant">
+  <input type="password" name="mdp">
+  <input type="submit" value="Entrer">
+</form>
+```
+
+1. On saisit `ana` et `1234`. Quelle adresse est demandée ?
+2. Donne deux problèmes de sécurité que cela pose.
+3. Quelle modification faut-il faire dans le code HTML ?
+4. Cette modification suffit-elle à protéger le mot de passe sur le réseau ? Justifie.
+5. Pourquoi GET reste-t-il adapté à une barre de recherche ?
+
+:::criteres
+- `/connexion?identifiant=ana&mdp=1234`.
+- Le mot de passe apparaît dans l'adresse, l'historique ou les journaux du serveur.
+- `method="post"`.
+- Non : POST ne chiffre rien, il faut HTTPS.
+- L'adresse d'une recherche peut être partagée ou mise en favori, et elle ne contient rien de sensible.
+:::
+
+:::corrige
+1. `/connexion?identifiant=ana&mdp=1234`.
+2. Le mot de passe s'affiche dans la barre d'adresse et reste dans l'historique du navigateur. Il peut aussi être enregistré dans les journaux du serveur.
+3. On remplace par `method="post"`.
+4. Non. POST place les données dans le corps de la requête, mais ne les chiffre pas. Il faut aussi utiliser **HTTPS**.
+5. Une recherche ne contient pas de données sensibles, et son adresse peut être partagée ou mise en favori.
 :::
 ::::

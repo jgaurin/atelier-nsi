@@ -110,33 +110,6 @@ Une question à la fois : la correction s'affiche aussitôt.
    - [ ] rien, la vidéo est perdue
 
    > C'est tout l'intérêt du découpage.
-
-1. Où trouve-t-on l'adresse du destinataire ?
-
-   - [x] dans l'en-tête du paquet
-   - [ ] dans les données du paquet
-   - [ ] à la fin du fichier
-   - [ ] sur le routeur
-
-   > Comme l'adresse écrite sur une enveloppe.
-
-1. Un fichier de 3 000 octets est envoyé dans des paquets de 1 500 octets de données. Combien faut-il de paquets ?
-
-   - [x] 2
-   - [ ] 3
-   - [ ] 1 500
-   - [ ] 4 500
-
-   > 3 000 ÷ 1 500 = 2.
-
-1. Grâce au découpage, plusieurs personnes peuvent utiliser le même câble :
-
-   - [x] car leurs paquets passent à tour de rôle
-   - [ ] car le câble se divise en deux
-   - [ ] car chacun a son propre câble
-   - [ ] ce n'est pas possible
-
-   > Les paquets des uns et des autres s'intercalent.
 ::::
 
 ::::exercice[Calculer des nombres de paquets]{niveau=1 type=reponses}
@@ -212,17 +185,54 @@ On trie les paquets selon leur numéro : 1, 2, 3, 4. On lit alors `BON`, `NE CHA
 :::
 ::::
 
-::::exercice[Expliquer à un camarade]{niveau=2}
-Un camarade te demande : « Pourquoi une vidéo n'est-elle pas envoyée d'un seul coup ? Ce serait plus simple ! »
+::::exercice[Envoyer une vidéo]{niveau=3 type=reponses}
+Une vidéo de 6 Mo (6 000 000 octets) est envoyée sur un réseau. Chaque paquet contient 1 500 octets de données et un en-tête de 40 octets.
 
-Réponds-lui en trois ou quatre phrases, en donnant au moins deux raisons.
+1. Combien de paquets faut-il ?
 
-:::criteres
-- Tu expliques que la vidéo est découpée en paquets.
-- Tu donnes au moins deux raisons parmi : partage du réseau, renvoi du seul paquet perdu, chemins différents possibles.
-:::
+   ```python calcul
+   print(6000000 // 1500)
+   ```
 
-:::corrige
-Une vidéo est découpée en petits paquets, car envoyée d'un seul bloc, elle bloquerait le réseau pour tout le monde. Avec des paquets, les données de plusieurs personnes passent à tour de rôle. De plus, si un morceau se perd, on renvoie seulement ce paquet au lieu de toute la vidéo. Enfin, si une route est coupée, les paquets peuvent passer par un autre chemin.
-:::
+   - 4000
+   - 4 000
+
+1. Combien d'octets d'en-têtes sont envoyés au total ?
+
+   ```python calcul
+   print(4000 * 40)
+   ```
+
+   - 160000
+   - 160 000
+
+1. Combien d'octets sont envoyés au total ?
+
+   ```python calcul
+   print(6000000 + 4000 * 40)
+   ```
+
+   - 6160000
+   - 6 160 000
+
+1. La ligne a un débit de 8 millions de bits par seconde. Combien de secondes dure l'envoi ?
+
+   ```python calcul
+   print(str(6160000 * 8 / 8000000).replace(".", ","))
+   ```
+
+   - 6,16
+
+1. Un paquet se perd. Combien d'octets faut-il renvoyer, en-tête compris ?
+
+   ```python calcul
+   print(1500 + 40)
+   ```
+
+   - 1540
+   - 1 540
+
+1. Les paquets 7, 5 et 6 arrivent dans cet ordre. Quel paquet est traité en premier une fois remis en ordre ?
+
+   - 5
 ::::

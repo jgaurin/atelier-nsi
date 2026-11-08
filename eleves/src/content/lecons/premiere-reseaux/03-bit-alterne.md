@@ -90,15 +90,6 @@ Ce protocole a une limite : l'émetteur attend chaque accusé avant de continuer
 ::::exercice[QCM : le bit alterné]{niveau=1 type=quiz}
 Une question à la fois : la correction s'affiche aussitôt.
 
-1. Que signifie un accusé de réception ?
-
-   - [ ] le destinataire est absent
-   - [x] la trame a bien été reçue
-   - [ ] la trame est perdue
-   - [ ] le réseau est en panne
-
-   > ACK vient de l'anglais *acknowledgment*.
-
 1. L'émetteur vient d'envoyer une trame avec le bit 1 et reçoit ACK 1. Quel bit porte la trame suivante ?
 
    - [x] 0
@@ -134,15 +125,6 @@ Une question à la fois : la correction s'affiche aussitôt.
    - [ ] il arrête la communication
 
    > Sans accusé, l'émetteur renverrait la trame sans fin.
-
-1. Une trame est perdue. Le récepteur :
-
-   - [x] n'envoie aucun accusé
-   - [ ] envoie un accusé
-   - [ ] garde la trame
-   - [ ] prévient l'émetteur de la perte
-
-   > Il ne peut pas réagir à ce qu'il n'a pas reçu.
 
 1. À quoi sert le bit ?
 

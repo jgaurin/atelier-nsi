@@ -128,37 +128,6 @@ print(a)
 | 3 | `STORE 22` | [[14]] |
 ::::
 
-::::exercice[Que contient la mémoire ?]{niveau=1 type=reponses}
-La case 30 contient 6, la case 31 contient 2, la case 32 contient 0.
-
-1. Après `LOAD 30`, `ADD 31`, `STORE 32`, `HALT`, que contient la case 32 ?
-
-   ```python calcul
-   print(6 + 2)
-   ```
-
-   - 8
-
-1. Après `LOAD 31`, `SUB 30`, `STORE 32`, `HALT`, que contient la case 32 ?
-
-   ```python calcul
-   print(2 - 6)
-   ```
-
-   - -4
-   - −4
-
-1. Après `LOAD 30`, `JUMPZ 3`, `ADD 31`, `STORE 32`, `HALT`, que contient la case 32 ?
-
-   ```python calcul
-   print(6 + 2)
-   ```
-
-   - 8
-
-   > A vaut 6, donc le saut n'est pas effectué.
-::::
-
 ::::exercice[Dérouler un programme avec une boucle]{niveau=2}
 La case 20 contient 3, la case 21 contient 1, la case 22 contient 0. Déroule ce programme instruction par instruction (CP, A, mémoire) et dis
 ce qu'il calcule dans la case 22.
@@ -212,4 +181,70 @@ Le calcul se fait dans le registre **A**, à l'intérieur du processeur. Sans `S
 sera réutilisé (et écrasé) par l'instruction `LOAD` suivante : il faut le recopier dans une case **mémoire** pour le conserver et que le reste du
 programme puisse s'en servir.
 :::
+::::
+
+::::exercice[Une multiplication sans multiplier]{niveau=3 type=reponses}
+La case 20 contient 4, la case 21 contient 3, la case 22 contient 0 et la case 23 contient 1.
+
+```
+0  LOAD 20
+1  JUMPZ 9
+2  LOAD 22
+3  ADD 21
+4  STORE 22
+5  LOAD 20
+6  SUB 23
+7  STORE 20
+8  JUMP 0
+9  HALT
+```
+
+1. Que contient la case 22 à la fin ?
+
+   ```python calcul
+   m = {20: 4, 21: 3, 22: 0, 23: 1}
+   p = 0
+   a = 0
+   code = [("LOAD", 20), ("JUMPZ", 9), ("LOAD", 22), ("ADD", 21), ("STORE", 22), ("LOAD", 20), ("SUB", 23), ("STORE", 20), ("JUMP", 0), ("HALT", 0)]
+   while code[p][0] != "HALT":
+       i, x = code[p]
+       p = p + 1
+       if i == "LOAD": a = m[x]
+       elif i == "ADD": a = a + m[x]
+       elif i == "SUB": a = a - m[x]
+       elif i == "STORE": m[x] = a
+       elif i == "JUMP": p = x
+       elif i == "JUMPZ" and a == 0: p = x
+   print(m[22])
+   ```
+
+   - 12
+
+1. Combien de fois l'instruction `ADD 21` est-elle exécutée ?
+
+   - 4
+
+1. Combien d'instructions sont exécutées au total, `HALT` compris ?
+
+   ```python calcul
+   print(9 * 4 + 3)
+   ```
+
+   - 39
+
+1. Quel est le numéro de l'instruction qui décide de sortir de la boucle ?
+
+   - 1
+
+1. Quelle valeur contient le registre A à la fin ?
+
+   - 0
+
+1. Si la case 20 contient 0 au départ, que contient la case 22 à la fin ?
+
+   - 0
+
+1. En Python, ce programme correspond à quelle boucle : `for` ou `while` ?
+
+   - while
 ::::

@@ -62,30 +62,6 @@ Associe chaque situation à ce que gère le système d'exploitation.
 | Une clé USB est reconnue | périphériques |
 ::::
 
-::::exercice[Vrai ou faux ?]{niveau=1 type=reponses}
-Réponds par vrai ou par faux.
-
-1. Un logiciel libre est forcément gratuit.
-
-   - faux
-
-   > « Libre » parle de libertés. Un logiciel libre peut être vendu.
-
-1. Le code source de Linux est accessible.
-
-   - vrai
-
-1. Une application parle directement au processeur, sans passer par le système.
-
-   - faux
-
-1. Plusieurs programmes peuvent sembler s'exécuter en même temps sur un seul cœur.
-
-   - vrai
-
-   > Le système les fait alterner très vite.
-::::
-
 ::::exercice[Libre ou propriétaire ?]{niveau=2}
 Ton lycée hésite entre un système libre et un système propriétaire pour ses ordinateurs. Donne un avantage du libre, et une raison qui peut pousser à choisir le propriétaire.
 
@@ -96,5 +72,28 @@ Ton lycée hésite entre un système libre et un système propriétaire pour ses
 
 :::corrige
 Avec un système libre, le code peut être étudié et adapté, et le lycée ne dépend pas d'un seul éditeur. Mais certains logiciels indispensables peuvent n'exister que sur un système propriétaire, et ce choix peut offrir une assistance commerciale.
+:::
+::::
+
+::::exercice[Les ordinateurs du lycée]{niveau=3}
+Dans une salle du lycée, chaque élève a un compte. Léa écoute de la musique en rédigeant un compte rendu, puis imprime son document. Tom tente d'ouvrir un fichier de Léa, et le système le refuse.
+
+1. Quelles ressources le système gère-t-il quand Léa écoute de la musique en rédigeant ? Explique son rôle pour chacune.
+2. Quel chemin suit la demande d'impression, du logiciel à l'imprimante ?
+3. Pourquoi Tom ne peut-il pas ouvrir ce fichier ? Quelle fonction du système est concernée ?
+4. Le lycée installe Linux. Un élève dit : « C'est libre, donc forcément gratuit, et personne ne peut le vendre. » Corrige cette phrase.
+
+:::criteres
+- Processeur partagé entre les programmes, mémoire attribuée à chacun.
+- L'application passe par le système, qui commande le périphérique.
+- Gestion des utilisateurs et des droits.
+- Libre parle de libertés : utiliser, étudier, modifier, redistribuer. Un logiciel libre peut être vendu.
+:::
+
+:::corrige
+1. Le **processeur** : le système fait alterner très vite les deux programmes. La **mémoire** : il attribue une zone à chacun.
+2. Le logiciel demande l'impression au **système d'exploitation**, qui commande l'imprimante. Une application ne parle pas directement au matériel.
+3. Le système gère les **utilisateurs** et leurs **droits d'accès** : Tom n'a pas le droit de lire ce fichier.
+4. « Libre » désigne des libertés : utiliser, étudier, modifier et redistribuer le logiciel. Un logiciel libre n'est donc pas forcément gratuit, et il peut être vendu.
 :::
 ::::

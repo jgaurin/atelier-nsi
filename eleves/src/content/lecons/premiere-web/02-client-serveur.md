@@ -102,15 +102,6 @@ Une question à la fois : la correction s'affiche aussitôt.
    - [ ] que les données ne sont pas stockées
 
    > Un site frauduleux peut avoir HTTPS : le cadenas ne dit rien de ses intentions.
-
-1. Combien de requêtes HTTP demande en général l'affichage d'une page avec une feuille de style, un script et trois images ?
-
-   - [ ] une seule
-   - [ ] deux
-   - [x] au moins six
-   - [ ] aucune si la page est statique
-
-   > Une pour le HTML, puis une par ressource (si elles ne sont pas déjà en cache).
 ::::
 
 ::::exercice[Client ou serveur ?]{niveau=1 type=associer}
@@ -162,16 +153,28 @@ Cookie: session=A81F
    - session=A81F
 ::::
 
-::::exercice[Pourquoi revérifier ?]{niveau=2}
-Un site vérifie en JavaScript qu'une note saisie est comprise entre 0 et 20, puis l'envoie au serveur. Pourquoi le serveur doit-il vérifier cette note à nouveau ?
+::::exercice[Une boutique en ligne]{niveau=3}
+Une boutique en ligne garde le panier du visiteur dans un cookie, sous la forme `article=velo; prix=300`. Au paiement, le serveur lit ce cookie pour connaître le montant à payer. Le site utilise l'adresse `http://boutique.exemple`.
+
+1. Pourquoi le site a-t-il besoin d'un cookie pour se souvenir du visiteur d'une page à l'autre ?
+2. Où ce cookie est-il stocké ? Quand est-il transmis ?
+3. Explique comment un utilisateur peut payer moins cher. Comment corriger ce problème ?
+4. Quel danger présente le paiement sur ce site ? Comment le supprimer ?
+5. Une page affiche le code 500, une autre le code 404. Dans chaque cas, qui faut-il corriger, et quoi ?
 
 :::criteres
-- Le JavaScript s'exécute sur le client.
-- L'utilisateur peut le modifier ou envoyer une requête directement.
-- Seul le serveur est sous le contrôle du site : c'est lui qui doit vérifier.
+- HTTP ne garde pas la mémoire des requêtes.
+- Le cookie est stocké par le client et renvoyé à chaque requête vers ce site.
+- Le client peut modifier le cookie : le prix doit venir du serveur.
+- Sans HTTPS, les données circulent en clair.
+- 500 : erreur du serveur. 404 : adresse introuvable.
 :::
 
 :::corrige
-Le JavaScript s'exécute dans le navigateur, sous le contrôle de l'utilisateur. Celui-ci peut le désactiver, le modifier ou envoyer directement une requête avec une note de 25. Le serveur ne peut donc pas faire confiance à ce qu'il reçoit et doit vérifier la note lui-même.
+1. HTTP ne garde pas la mémoire des requêtes précédentes.
+2. Il est stocké par le **navigateur**, qui le renvoie au serveur à chaque requête vers ce site.
+3. Tout ce qui est sur le client peut être modifié : il suffit de changer `prix=300` en `prix=1`. Le serveur doit retrouver lui-même le prix dans sa base de données, à partir de l'article.
+4. Sans chiffrement, quelqu'un qui écoute le réseau peut lire les données de paiement. Il faut utiliser **HTTPS**.
+5. 500 : une erreur du programme côté serveur, à corriger sur le site. 404 : la page demandée n'existe pas ; il faut corriger le lien ou l'adresse.
 :::
 ::::
