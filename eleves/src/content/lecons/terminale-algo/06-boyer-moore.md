@@ -31,7 +31,18 @@ Pour `DABRA` (m = 5) :
 | --- | --- | --- | --- | --- | --- |
 | décalage | 4 | 3 | 2 | 1 | 5 |
 
-C'est la version simplifiée, dite de **Horspool**.
+C'est la version simplifiée, dite de **Horspool**. Un caractère absent du motif ne peut correspondre à aucune case : on saute donc toute la longueur.
+
+## 4. L'algorithme
+
+```
+i = 0
+tant que i ≤ n − m :
+    comparer le motif à texte[i .. i+m−1], de droite à gauche
+    si tout correspond : noter la position i
+    c = texte[i+m−1]
+    i = i + décalage de c (m si c n'est pas dans la table)
+```
 
 ## L'essentiel
 
@@ -52,15 +63,6 @@ Une question à la fois : la correction s'affiche aussitôt.
    - [ ] cela dépend de la table
 
    > C'est ce qui la rend lente.
-
-1. Quel est le coût de la recherche naïve dans le pire cas (texte de longueur n, motif de longueur m) ?
-
-   - [ ] n
-   - [ ] m
-   - [x] n × m
-   - [ ] n + m
-
-   > Jusqu'à m comparaisons à chacune des n positions.
 
 1. Dans quel sens Boyer-Moore-Horspool compare-t-il le motif au texte ?
 
@@ -97,42 +99,6 @@ Une question à la fois : la correction s'affiche aussitôt.
    - [ ] 5
 
    > Dernière position de A hors la dernière case : 1 ; 5 − 1 − 1 = 3.
-
-1. Pourquoi ne tient-on pas compte du dernier caractère du motif dans la table ?
-
-   - [ ] pour économiser de la mémoire
-   - [x] son décalage vaudrait 0 et l'algorithme n'avancerait plus
-   - [ ] parce qu'il est toujours absent du texte
-   - [ ] c'est une convention sans importance
-
-   > m − 1 − (m − 1) = 0.
-
-1. Quel caractère du texte utilise Horspool pour choisir le décalage ?
-
-   - [ ] celui qui a provoqué l'échec
-   - [x] celui aligné avec la dernière position du motif
-   - [ ] le premier caractère du texte
-   - [ ] le caractère suivant la fenêtre
-
-   > C'est la simplification de Horspool.
-
-1. Quand Boyer-Moore-Horspool est-il particulièrement efficace ?
-
-   - [ ] avec un motif d'un seul caractère
-   - [x] avec un motif long et un grand alphabet
-   - [ ] avec un alphabet de deux lettres
-   - [ ] quand le motif est absent du texte seulement
-
-   > Les sauts de m positions sont alors fréquents.
-
-1. Qu'appelle-t-on prétraitement ici ?
-
-   - [ ] la lecture du texte
-   - [x] le calcul de la table des décalages avant la recherche
-   - [ ] le tri du texte
-   - [ ] la conversion en majuscules
-
-   > Un calcul fait une fois, qui sert à toute la recherche.
 ::::
 
 ::::exercice[Table des décalages]{niveau=1 type=completer}
@@ -151,61 +117,7 @@ print(t["C"]); print(t["H"]); print(t["A"]); print(len(m))
 | Décalage | [[3]] | [[2]] | [[1]] | [[4]] |
 ::::
 
-::::exercice[Recherche naïve]{niveau=1}
-Écris `recherche_naive(texte, motif)` qui renvoie la liste des positions de toutes les occurrences du motif (non vide) dans le texte, et
-`nb_comparaisons(texte, motif)` qui renvoie le nombre total de comparaisons de caractères effectuées.
-
-```python depart
-def recherche_naive(texte, motif):
-    ...
-
-def nb_comparaisons(texte, motif):
-    ...
-```
-
-```python tests
-assert recherche_naive("ABRACADABRA", "ABRA") == [0, 7], "deux occurrences"
-assert recherche_naive("AAAA", "AA") == [0, 1, 2], "occurrences qui se chevauchent"
-assert recherche_naive("NSI", "XYZ") == [], "absent"
-assert recherche_naive("AB", "ABC") == [], "motif plus long"
-assert nb_comparaisons("AAAAB", "AAB") == 9, "trois positions, trois comparaisons chacune"
-```
-
-:::corrige
-```python solution
-def recherche_naive(texte, motif):
-    n = len(texte)
-    m = len(motif)
-    positions = []
-    for i in range(n - m + 1):
-        j = 0
-        while j < m and texte[i + j] == motif[j]:
-            j = j + 1
-        if j == m:
-            positions.append(i)
-    return positions
-
-def nb_comparaisons(texte, motif):
-    n = len(texte)
-    m = len(motif)
-    total = 0
-    for i in range(n - m + 1):
-        j = 0
-        while j < m:
-            total = total + 1
-            if texte[i + j] != motif[j]:
-                break
-            j = j + 1
-    return total
-```
-
-Pour `"AAAAB"` et `"AAB"`, il y a trois positions : les fenêtres « AAA », « AAA » et « AAB ». Dans les deux premières, on
-compare A = A, A = A, puis A ≠ B : 3 comparaisons ; la troisième correspond entièrement : 3 comparaisons. Total : 9, pour un motif trouvé
-une seule fois. C'est le pire cas de la recherche naïve : on recompare des caractères déjà lus.
-:::
-::::
-
-::::exercice[La table des décalages]{niveau=1}
+::::exercice[La table des décalages]{niveau=2}
 Écris `table_decalages(motif)` qui renvoie le dictionnaire des décalages de Horspool pour les caractères de `motif[0..m−2]` (les caractères absents
 ne figurent pas dans le dictionnaire).
 
@@ -236,7 +148,37 @@ la dernière.
 :::
 ::::
 
-::::exercice[Boyer-Moore-Horspool]{niveau=2}
+::::exercice[Dérouler Horspool]{niveau=2}
+On cherche le motif `"CHAT"` dans le texte `"UN CHIEN ET UN CHAT"`. (a) Calcule la table des décalages. (b) Déroule l'algorithme : pour chaque
+position i examinée, donne la fenêtre, le résultat de la comparaison, le caractère sous la fin du motif et le décalage. (c) Combien de fenêtres
+la recherche naïve examinerait-elle au plus ?
+
+:::criteres
+- (a) C : 3, H : 2, A : 1 ; autres caractères : 4.
+- (b) Déroulé cohérent avec les règles, se terminant par l'occurrence en position 15.
+- (c) 19 − 4 + 1 = 16 fenêtres pour la recherche naïve.
+:::
+
+:::corrige
+(a) m = 4 ; sans le dernier caractère (T) : C en position 0 → 3, H en 1 → 2, A en 2 → 1 ; tout autre caractère → **4**.
+
+(b) Le texte compte 19 caractères (positions 0 à 18) :
+
+| i | fenêtre | comparaison | sous la fin | décalage |
+| --- | --- | --- | --- | --- |
+| 0 | `UN C` | C ≠ T | C | 3 |
+| 3 | `CHIE` | E ≠ T | E | 4 |
+| 7 | `N ET` | T = T, E ≠ A | T | 4 |
+| 11 | ` UN ` | espace ≠ T | espace | 4 |
+| 15 | `CHAT` | tout correspond : trouvé en 15 | T | 4 |
+
+Pour la fenêtre en 7, T n'est pas dans la table (il n'apparaît qu'en dernière position du motif) : décalage 4.
+
+(c) La recherche naïve examinerait jusqu'à 19 − 4 + 1 = **16** fenêtres ; Horspool en examine **5**.
+:::
+::::
+
+::::exercice[Boyer-Moore-Horspool]{niveau=3}
 Écris `horspool(texte, motif)` qui renvoie la liste des positions des occurrences du motif, avec l'algorithme de Boyer-Moore-Horspool, et
 `nb_fenetres(texte, motif)` qui renvoie le nombre de positions du motif examinées (le nombre de tours de la boucle principale).
 
@@ -302,35 +244,5 @@ def nb_fenetres(texte, motif):
 
 `table.get(c, m)` renvoie le décalage de c s'il est dans la table, m sinon. Sur un texte en français, la plupart des fenêtres se terminent par un
 caractère absent de « salon » : on saute 5 positions d'un coup.
-:::
-::::
-
-::::exercice[Dérouler Horspool]{niveau=2}
-On cherche le motif `"CHAT"` dans le texte `"UN CHIEN ET UN CHAT"`. (a) Calcule la table des décalages. (b) Déroule l'algorithme : pour chaque
-position i examinée, donne la fenêtre, le résultat de la comparaison, le caractère sous la fin du motif et le décalage. (c) Combien de fenêtres
-la recherche naïve examinerait-elle au plus ?
-
-:::criteres
-- (a) C : 3, H : 2, A : 1 ; autres caractères : 4.
-- (b) Déroulé cohérent avec les règles, se terminant par l'occurrence en position 15.
-- (c) 19 − 4 + 1 = 16 fenêtres pour la recherche naïve.
-:::
-
-:::corrige
-(a) m = 4 ; sans le dernier caractère (T) : C en position 0 → 3, H en 1 → 2, A en 2 → 1 ; tout autre caractère → **4**.
-
-(b) Le texte compte 19 caractères (positions 0 à 18) :
-
-| i | fenêtre | comparaison | sous la fin | décalage |
-| --- | --- | --- | --- | --- |
-| 0 | `UN C` | C ≠ T | C | 3 |
-| 3 | `CHIE` | E ≠ T | E | 4 |
-| 7 | `N ET` | T = T, E ≠ A | T | 4 |
-| 11 | ` UN ` | espace ≠ T | espace | 4 |
-| 15 | `CHAT` | tout correspond : trouvé en 15 | T | 4 |
-
-Pour la fenêtre en 7, T n'est pas dans la table (il n'apparaît qu'en dernière position du motif) : décalage 4.
-
-(c) La recherche naïve examinerait jusqu'à 19 − 4 + 1 = **16** fenêtres ; Horspool en examine **5**.
 :::
 ::::

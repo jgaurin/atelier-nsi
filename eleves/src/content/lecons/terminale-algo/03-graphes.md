@@ -35,7 +35,7 @@ Le parcours en largeur trouve les sommets par **distance croissante**.
 
 ## 2. Profondeur : en récursif
 
-On va le plus loin possible, puis on revient en arrière.
+On va le plus loin possible, puis on revient en arrière. Une version sans récursion utilise une **pile** à la place de la file.
 
 ```python exec
 def profondeur(g, s, visites):
@@ -67,49 +67,39 @@ Une question à la fois : la correction s'affiche aussitôt.
 
 1. Quelle structure utilise le parcours en largeur ?
 
-   - [ ] une pile
    - [x] une file
-   - [ ] un arbre binaire de recherche
-   - [ ] aucune
+   - [ ] une pile
+   - [ ] un arbre
+   - [ ] un dictionnaire trié
 
-   > Les sommets sont traités dans l'ordre de découverte.
+   > Les premiers sommets découverts sont traités en premier.
+
+1. Quelle structure remplace la récursivité dans un parcours en profondeur ?
+
+   - [ ] une file
+   - [x] une pile
+   - [ ] une matrice
+   - [ ] un tri
+
+   > On repart du dernier sommet découvert.
 
 1. Quel parcours donne le plus court chemin en nombre d'arêtes ?
 
    - [x] le parcours en largeur
    - [ ] le parcours en profondeur
-   - [ ] les deux
+   - [ ] les deux, toujours
    - [ ] aucun
 
    > Il découvre les sommets par distance croissante.
 
-1. Quel est le parcours en largeur depuis A (voisins dans l'ordre alphabétique) ?
-
-   - [x] A B C D E
-   - [ ] A B D C E
-   - [ ] A B D E C
-   - [ ] A B C D E F
-
-   > F n'est pas atteignable depuis A.
-
-1. Quel est le parcours en profondeur récursif depuis A (voisins dans l'ordre alphabétique) ?
-
-   - [ ] A B C D E
-   - [x] A B D C E
-   - [ ] A C D B E
-   - [ ] A B D E C
-
-   > A, puis B, puis D (voisin de B), puis C (premier voisin non visité de D), puis E.
-
 1. Pourquoi marquer les sommets visités ?
 
-   - [ ] pour les afficher
-   - [x] pour ne pas les traiter deux fois et éviter une boucle infinie
-   - [ ] pour trier le graphe
-   - [ ] ce n'est utile que pour les graphes orientés
+   - [ ] pour trier les sommets
+   - [x] pour ne pas les traiter deux fois, et éviter une boucle infinie
+   - [ ] pour économiser des arêtes
+   - [ ] pour rendre le graphe orienté
 
-   > Un graphe non orienté contient toujours des allers-retours.
-
+   > Sans marquage, un cycle ferait tourner le parcours sans fin.
 ::::
 
 ::::exercice[Dérouler les parcours]{niveau=1 type=completer}
@@ -291,5 +281,74 @@ def a_un_cycle(g):
 
 Le voisin `parent` est toujours déjà visité (c'est l'arête par laquelle on est arrivé) : il ne compte pas. La boucle finale relance le
 parcours depuis chaque sommet non visité, pour couvrir toutes les composantes.
+:::
+::::
+
+::::exercice[Sortir d'un labyrinthe]{niveau=3}
+Un labyrinthe est un tableau de chaînes : `#` désigne un mur et `.` une case libre. Une case est un couple `(ligne, colonne)`. On peut aller en haut, en bas, à gauche ou à droite.
+
+1. Écris `est_libre(l, c)`, qui renvoie `True` si la case existe et n'est pas un mur.
+2. Écris `voisins(l, c)`, qui renvoie la liste des cases libres voisines, dans l'ordre haut, bas, gauche, droite.
+3. Écris `nb_etapes(depart, arrivee)`, qui renvoie le nombre minimal de déplacements entre deux cases, ou -1 si l'arrivée est inaccessible.
+4. À l'écrit : pourquoi choisir un parcours en largeur plutôt qu'en profondeur ? Quel graphe ce labyrinthe définit-il ?
+
+```python depart
+class Labyrinthe:
+    def __init__(self, grille):
+        self.grille = grille
+
+    def est_libre(self, l, c):
+        ...
+
+    def voisins(self, l, c):
+        ...
+
+    def nb_etapes(self, depart, arrivee):
+        ...
+```
+
+```python tests
+lab = Labyrinthe(["..#", ".##", "..."])
+assert lab.est_libre(0, 0), "case libre"
+assert not lab.est_libre(0, 2), "mur"
+assert not lab.est_libre(-1, 0) and not lab.est_libre(0, 3) and not lab.est_libre(3, 0), "hors de la grille"
+assert lab.voisins(1, 0) == [(0, 0), (2, 0)], "voisins"
+assert lab.nb_etapes((0, 0), (2, 2)) == 4, "plus court chemin"
+assert lab.nb_etapes((0, 0), (0, 0)) == 0, "déjà arrivé"
+assert Labyrinthe([".#."]).nb_etapes((0, 0), (0, 2)) == -1, "inaccessible"
+```
+
+:::corrige
+```python solution
+class Labyrinthe:
+    def __init__(self, grille):
+        self.grille = grille
+
+    def est_libre(self, l, c):
+        if l < 0 or l >= len(self.grille):
+            return False
+        if c < 0 or c >= len(self.grille[0]):
+            return False
+        return self.grille[l][c] == "."
+
+    def voisins(self, l, c):
+        cases = [(l - 1, c), (l + 1, c), (l, c - 1), (l, c + 1)]
+        return [p for p in cases if self.est_libre(p[0], p[1])]
+
+    def nb_etapes(self, depart, arrivee):
+        distances = {depart: 0}
+        file = [depart]
+        while file != []:
+            s = file.pop(0)
+            if s == arrivee:
+                return distances[s]
+            for v in self.voisins(s[0], s[1]):
+                if v not in distances:
+                    distances[v] = distances[s] + 1
+                    file.append(v)
+        return -1
+```
+
+**Question 4.** Le parcours en largeur découvre les cases par distance croissante : la première fois qu'il atteint l'arrivée, le chemin est le plus court. Les sommets du graphe sont les cases libres, et une arête relie deux cases voisines.
 :::
 ::::

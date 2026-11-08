@@ -44,7 +44,9 @@ print(Serie(t).somme_carres_pairs())
 | **Fonctionnel** | des fonctions pures, sans effet de bord | transformations de données |
 | **Objet** | des objets avec attributs et méthodes | jeux, interfaces, grands logiciels |
 
-Une fonction **pure** donne toujours le même résultat pour les mêmes entrées et ne modifie rien autour d'elle.
+Une fonction **pure** donne toujours le même résultat pour les mêmes entrées et ne modifie rien autour d'elle. Elle est donc plus facile à tester.
+
+Dans le style fonctionnel, `map(f, t)` applique `f` à chaque élément, `filter(c, t)` garde les éléments qui vérifient `c`, et `lambda x: …` définit une petite fonction sans nom.
 
 ## L'essentiel
 
@@ -65,7 +67,7 @@ Associe chaque extrait au paradigme qu'il illustre.
 | `joueur.attaquer(ennemi)` | objet |
 ::::
 
-::::exercice[Pure ou pas ?]{niveau=2 type=reponses}
+::::exercice[Pure ou pas ?]{niveau=1 type=reponses}
 Réponds par oui ou par non : la fonction est-elle pure ?
 
 1. Fonction `f` :
@@ -170,5 +172,64 @@ qui se composent, sans état à gérer ; c'est aussi plus facile à parallélise
 qui s'enchaînent (lister, renommer) ; inutile de sortir des classes. Une fonction **pure** renvoie toujours le même résultat pour les mêmes
 entrées et ne modifie rien autour d'elle : un test suffit à vérifier son comportement, sans préparer d'état ni craindre qu'un appel précédent
 change le résultat.
+:::
+::::
+
+::::exercice[Un panier en trois styles]{niveau=3}
+Un panier est un tableau de couples `(article, prix)`.
+
+1. Style impératif : écris `total(panier)` avec une boucle.
+2. Style fonctionnel : écris `avec_remise(panier, taux)`, qui renvoie un **nouveau** panier où chaque prix est multiplié par `1 - taux`, sans modifier `panier`.
+3. Style objet : écris la classe `Panier`, avec un attribut `articles` (initialement vide) et les méthodes `ajouter(article, prix)` et `total()`.
+4. À l'écrit : un collègue écrit une version de `avec_remise` qui modifie directement `panier`. Quel problème cela pose-t-il pour celui qui appelle la fonction ?
+
+```python depart
+def total(panier):
+    ...
+
+def avec_remise(panier, taux):
+    ...
+
+class Panier:
+    ...
+```
+
+```python tests
+p = [("stylo", 2.0), ("cahier", 4.0)]
+assert total(p) == 6.0, "total"
+assert total([]) == 0, "panier vide"
+r = avec_remise(p, 0.5)
+assert r == [("stylo", 1.0), ("cahier", 2.0)], "remise"
+assert p == [("stylo", 2.0), ("cahier", 4.0)], "panier d'origine intact"
+q = Panier()
+assert q.articles == [] and q.total() == 0, "objet vide"
+q.ajouter("stylo", 2.0)
+q.ajouter("sac", 8.0)
+assert q.total() == 10.0, "total de l'objet"
+```
+
+:::corrige
+```python solution
+def total(panier):
+    s = 0
+    for article in panier:
+        s = s + article[1]
+    return s
+
+def avec_remise(panier, taux):
+    return [(a[0], a[1] * (1 - taux)) for a in panier]
+
+class Panier:
+    def __init__(self):
+        self.articles = []
+
+    def ajouter(self, article, prix):
+        self.articles.append((article, prix))
+
+    def total(self):
+        return total(self.articles)
+```
+
+**Question 4.** C'est un **effet de bord** : le panier de l'appelant change sans qu'il le demande. Par exemple, il perd les prix d'origine.
 :::
 ::::

@@ -36,7 +36,7 @@ fact(3) = 3 * fact(2)
 
 Chaque appel attend le résultat du suivant, dans la **pile d'appels**. Le dernier lancé est le premier terminé.
 
-Sans cas de base atteint, Python s'arrête avec une `RecursionError`.
+Sans cas de base atteint, Python s'arrête avec une `RecursionError`. Par défaut, il accepte environ 1 000 appels en attente : même une récursion correcte échoue si elle descend plus loin.
 
 ## 3. Méthode
 
@@ -54,15 +54,6 @@ Sans cas de base atteint, Python s'arrête avec une `RecursionError`.
 
 ::::exercice[QCM : récursivité]{niveau=1 type=quiz}
 Une question à la fois : la correction s'affiche aussitôt.
-
-1. Qu'est-ce qu'une fonction récursive ?
-
-   - [ ] une fonction qui contient une boucle
-   - [x] une fonction qui s'appelle elle-même
-   - [ ] une fonction sans paramètre
-   - [ ] une fonction qui renvoie une fonction
-
-   > Sur un problème plus petit, jusqu'au cas de base.
 
 1. À quoi sert le cas de base ?
 
@@ -108,42 +99,6 @@ Une question à la fois : la correction s'affiche aussitôt.
    - [ ] un dictionnaire
 
    > Le dernier appel lancé est le premier terminé.
-
-1. Que renvoie cette fonction pour n = 3 : `def f(n): if n == 0: return 0 ; f(n - 1)` (le cas récursif n'a pas de `return`) ?
-
-   - [ ] 0
-   - [ ] 3
-   - [x] `None`
-   - [ ] une erreur
-
-   > Le résultat de l'appel récursif est calculé puis perdu.
-
-1. Que vaut `inverse("abc")` avec la fonction du cours ?
-
-   - [x] `"cba"`
-   - [ ] `"abc"`
-   - [ ] `"bca"`
-   - [ ] `""`
-
-   > inverse("bc") + "a" = "cb" + "a".
-
-1. Combien de multiplications environ pour calculer a¹⁰²⁴ avec la puissance rapide ?
-
-   - [ ] 1 024
-   - [ ] 512
-   - [x] une dizaine
-   - [ ] 2
-
-   > 1 024 = 2¹⁰ : on élève au carré dix fois.
-
-1. Laquelle de ces affirmations est vraie ?
-
-   - [ ] une fonction récursive est toujours plus rapide que sa version itérative
-   - [x] tout programme récursif peut s'écrire de façon itérative
-   - [ ] une fonction récursive ne peut pas avoir deux cas de base
-   - [ ] la récursivité est interdite pour les tableaux
-
-   > Les deux styles sont équivalents en puissance.
 ::::
 
 ::::exercice[Dérouler]{niveau=1 type=reponses}
@@ -200,7 +155,7 @@ def somme(t, i):
 ```
 ::::
 
-::::exercice[Premières fonctions récursives]{niveau=1}
+::::exercice[Premières fonctions récursives]{niveau=2}
 Écris en **récursif** (sans boucle) : `somme_entiers(n)` qui renvoie 1 + 2 + … + n (0 si n = 0), `puissance(a, n)` et `compte(s, c)` qui
 renvoie le nombre d'occurrences du caractère `c` dans la chaîne `s`.
 
@@ -290,34 +245,75 @@ Pour le palindrome, il y a **deux** cas de base : longueur 0 ou 1 (vrai), premie
 :::
 ::::
 
-::::exercice[Les tours de Hanoï]{niveau=2}
-On doit déplacer n disques de la tour `"A"` vers la tour `"C"`, en s'aidant de `"B"`, sans jamais poser un disque sur un plus petit. La
-solution récursive : déplacer n − 1 disques de A vers B, déplacer le plus grand de A vers C, puis déplacer les n − 1 disques de B vers C.
-Écris `hanoi(n, depart, arrivee, aide)` qui renvoie la liste des mouvements, chacun sous la forme d'un couple `(depart, arrivee)`.
+::::exercice[L'arborescence d'un disque]{niveau=3}
+Un dossier est représenté par un objet `Dossier`. Il contient une liste de fichiers, chacun étant un couple `(nom, taille)`, et une liste de sous-dossiers.
+
+1. Écris `taille_totale(d)`, qui renvoie la taille de tous les fichiers de `d` et de ses sous-dossiers.
+2. Écris `contient(d, nom)`, qui renvoie `True` si un fichier portant ce nom se trouve dans `d` ou dans un de ses sous-dossiers.
+3. Écris `profondeur(d)`. Un dossier sans sous-dossier a une profondeur de 1.
+4. À l'écrit : où se trouve le cas de base de `taille_totale` ? Que peut-il se passer avec 5 000 dossiers imbriqués les uns dans les autres ?
 
 ```python depart
-def hanoi(n, depart, arrivee, aide):
+class Dossier:
+    def __init__(self, nom, fichiers, sous_dossiers):
+        self.nom = nom
+        self.fichiers = fichiers
+        self.sous_dossiers = sous_dossiers
+
+def taille_totale(d):
+    ...
+
+def contient(d, nom):
+    ...
+
+def profondeur(d):
     ...
 ```
 
 ```python tests
-assert hanoi(1, "A", "C", "B") == [("A", "C")], "un disque"
-assert hanoi(2, "A", "C", "B") == [("A", "B"), ("A", "C"), ("B", "C")], "deux disques"
-assert len(hanoi(3, "A", "C", "B")) == 7, "trois disques : 7 coups"
-assert len(hanoi(10, "A", "C", "B")) == 1023, "dix disques : 2^10 - 1 coups"
+photos = Dossier("photos", [("a.jpg", 300), ("b.jpg", 200)], [])
+cours = Dossier("cours", [("nsi.txt", 10)], [Dossier("vide", [], [])])
+racine = Dossier("racine", [("lisez.txt", 1)], [photos, cours])
+assert taille_totale(photos) == 500, "un seul dossier"
+assert taille_totale(racine) == 511, "tous les niveaux"
+assert contient(racine, "nsi.txt"), "fichier dans un sous-dossier"
+assert not contient(racine, "absent"), "fichier absent"
+assert profondeur(photos) == 1, "aucun sous-dossier"
+assert profondeur(racine) == 3, "trois niveaux"
 ```
 
 :::corrige
 ```python solution
-def hanoi(n, depart, arrivee, aide):
-    if n == 0:
-        return []
-    return (hanoi(n - 1, depart, aide, arrivee)
-            + [(depart, arrivee)]
-            + hanoi(n - 1, aide, arrivee, depart))
+class Dossier:
+    def __init__(self, nom, fichiers, sous_dossiers):
+        self.nom = nom
+        self.fichiers = fichiers
+        self.sous_dossiers = sous_dossiers
+
+def taille_totale(d):
+    total = 0
+    for f in d.fichiers:
+        total = total + f[1]
+    for s in d.sous_dossiers:
+        total = total + taille_totale(s)
+    return total
+
+def contient(d, nom):
+    for f in d.fichiers:
+        if f[0] == nom:
+            return True
+    for s in d.sous_dossiers:
+        if contient(s, nom):
+            return True
+    return False
+
+def profondeur(d):
+    maxi = 0
+    for s in d.sous_dossiers:
+        maxi = max(maxi, profondeur(s))
+    return 1 + maxi
 ```
 
-Le nombre de coups vérifie c(n) = 2 c(n − 1) + 1, donc c(n) = 2ⁿ − 1 : pour 64 disques, à un coup par seconde, il faudrait plus de 500
-milliards d'années.
+**Question 4.** Le cas de base est implicite : pour un dossier sans sous-dossier, la seconde boucle ne fait aucun appel. Avec 5 000 niveaux, le nombre d'appels en attente dépasse la limite de Python : on obtient une `RecursionError`.
 :::
 ::::

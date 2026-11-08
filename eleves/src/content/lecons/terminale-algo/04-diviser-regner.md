@@ -16,6 +16,8 @@ prerequis: [terminale-langages/recursivite, premiere-algo/tris]
 2. **Régner** : les résoudre, souvent récursivement.
 3. **Combiner** leurs solutions.
 
+La recherche dichotomique est un cas particulier : on ne garde qu'une moitié, il n'y a donc rien à combiner.
+
 ## 2. Le tri fusion
 
 On coupe le tableau en deux, on trie chaque moitié, puis on **fusionne**.
@@ -74,15 +76,6 @@ Une question à la fois : la correction s'affiche aussitôt.
 
    > On prend à chaque fois le plus petit des deux premiers éléments.
 
-1. Combien de comparaisons au plus pour fusionner deux tableaux triés de 5 éléments chacun ?
-
-   - [ ] 5
-   - [x] 9
-   - [ ] 25
-   - [ ] 100
-
-   > Chaque comparaison place un élément ; le dernier se place sans comparaison.
-
 1. Quel est le cas de base du tri fusion ?
 
    - [ ] un tableau de 2 éléments
@@ -100,42 +93,6 @@ Une question à la fois : la correction s'affiche aussitôt.
    - [ ] log₂ n
 
    > Contrairement au tri par insertion, il n'a pas de « mauvais cas ».
-
-1. Pour n = 1 000 000, combien d'opérations environ fait le tri fusion ?
-
-   - [ ] 1 000
-   - [x] 20 millions
-   - [ ] 500 milliards
-   - [ ] un million
-
-   > n × log₂ n ≈ 10⁶ × 20.
-
-1. Quel est l'inconvénient du tri fusion présenté ?
-
-   - [ ] il est quadratique
-   - [x] il utilise de la mémoire supplémentaire
-   - [ ] il ne trie pas les nombres négatifs
-   - [ ] il ne marche que pour des tailles paires
-
-   > Les moitiés et les fusions créent de nouveaux tableaux.
-
-1. Dans la dichotomie, combien de sous-problèmes résout-on à chaque étape ?
-
-   - [x] un seul
-   - [ ] deux
-   - [ ] quatre
-   - [ ] aucun
-
-   > L'autre moitié est éliminée.
-
-1. Pourquoi, dans la fusion, prend-on `a[i]` quand `a[i] == b[j]` ?
-
-   - [ ] c'est obligatoire en Python
-   - [x] pour garder l'ordre de départ des éléments égaux (stabilité)
-   - [ ] pour aller plus vite
-   - [ ] pour éviter une erreur
-
-   > Les éléments de la moitié gauche étaient avant dans le tableau.
 
 1. Pour faire tourner une image d'un quart de tour par diviser pour régner, on :
 
@@ -164,7 +121,7 @@ for x in r:
 | Élément ajouté | [[2]] | [[3]] | [[4]] | [[7]] | [[8]] | [[9]] |
 ::::
 
-::::exercice[Coût]{niveau=2 type=reponses}
+::::exercice[Coût]{niveau=1 type=reponses}
 Donne des ordres de grandeur.
 
 1. Pour n = 1 024, combien vaut log₂(n) ?
@@ -194,7 +151,7 @@ Donne des ordres de grandeur.
    - 1 048 576
 ::::
 
-::::exercice[Fusionner deux tableaux triés]{niveau=1}
+::::exercice[Fusionner deux tableaux triés]{niveau=2}
 Écris `fusion(a, b)` qui renvoie le tableau trié contenant les éléments des deux tableaux triés `a` et `b`, en un seul parcours (sans `sort` ni
 `sorted`).
 
@@ -283,5 +240,64 @@ def tri_fusion(t):
 ```
 
 Trois lignes après le cas de base : diviser (les tranches), régner (deux appels récursifs), combiner (la fusion).
+:::
+::::
+
+::::exercice[Faire tourner une image]{niveau=3}
+Une image carrée de côté 2ᵏ est une matrice `im` de pixels. On veut la faire tourner d'un quart de tour dans le sens des aiguilles d'une montre, **sans créer de nouvelle matrice**.
+
+1. Écris `echanger(im, l1, c1, l2, c2, n)`, qui échange les deux blocs carrés de côté `n` dont les coins supérieurs gauches sont `(l1, c1)` et `(l2, c2)`.
+2. Écris `tourner(im, l, c, n)`, qui fait tourner le bloc de côté `n` et de coin `(l, c)`. Si `n` vaut 1, il n'y a rien à faire. Sinon, tourne récursivement les quatre quarts, puis déplace-les : haut-gauche vers haut-droit, haut-droit vers bas-droit, bas-droit vers bas-gauche, bas-gauche vers haut-gauche.
+3. À l'écrit : identifie les étapes diviser, régner et combiner. Pourquoi la mémoire utilisée pour l'image reste-t-elle constante ?
+
+:::indice
+Trois échanges suffisent : haut-gauche avec bas-gauche, puis bas-gauche avec bas-droit, puis bas-droit avec haut-droit.
+:::
+
+```python depart
+def echanger(im, l1, c1, l2, c2, n):
+    ...
+
+def tourner(im, l, c, n):
+    ...
+```
+
+```python tests
+im = [[1, 2], [3, 4]]
+echanger(im, 0, 0, 1, 1, 1)
+assert im == [[4, 2], [3, 1]], "échange de deux pixels"
+im = [[1, 2], [3, 4]]
+tourner(im, 0, 0, 2)
+assert im == [[3, 1], [4, 2]], "image 2 × 2"
+im = [[i * 4 + j for j in range(4)] for i in range(4)]
+attendu = [list(x) for x in zip(*im[::-1])]
+tourner(im, 0, 0, 4)
+assert im == attendu, "image 4 × 4"
+im = [[7]]
+tourner(im, 0, 0, 1)
+assert im == [[7]], "un pixel"
+```
+
+:::corrige
+```python solution
+def echanger(im, l1, c1, l2, c2, n):
+    for i in range(n):
+        for j in range(n):
+            im[l1 + i][c1 + j], im[l2 + i][c2 + j] = im[l2 + i][c2 + j], im[l1 + i][c1 + j]
+
+def tourner(im, l, c, n):
+    if n == 1:
+        return
+    m = n // 2
+    tourner(im, l, c, m)
+    tourner(im, l, c + m, m)
+    tourner(im, l + m, c, m)
+    tourner(im, l + m, c + m, m)
+    echanger(im, l, c, l + m, c, m)
+    echanger(im, l + m, c, l + m, c + m, m)
+    echanger(im, l + m, c + m, l, c + m, m)
+```
+
+**Question 3.** **Diviser** : couper en quatre quarts. **Régner** : tourner chaque quart. **Combiner** : déplacer les quarts. Les pixels sont échangés sur place : on ne crée aucune copie de l'image.
 :::
 ::::

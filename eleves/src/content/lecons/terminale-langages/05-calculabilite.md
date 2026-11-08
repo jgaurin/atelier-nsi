@@ -25,7 +25,7 @@ print(appliquer(len, ["NSI", "bac"]))
 
 ## 2. La calculabilité ne dépend pas du langage
 
-Python, C, Java ou JavaScript calculent exactement les **mêmes** choses. Ils diffèrent par leur confort et leur rapidité, pas par ce qu'ils peuvent calculer.
+Une **machine de Turing** est un modèle théorique d'ordinateur, décrit par Alan Turing. Python, C, Java ou JavaScript calculent exactement les **mêmes** choses que ce modèle. Ils diffèrent par leur confort et leur rapidité, pas par ce qu'ils peuvent calculer.
 
 ## 3. Le problème de l'arrêt
 
@@ -69,24 +69,6 @@ Une question à la fois : la correction s'affiche aussitôt.
 
    > Interpréteur, compilateur, système d'exploitation, antivirus.
 
-1. Que fait un interpréteur Python ?
-
-   - [ ] il traduit du français en Python
-   - [x] il lit le texte d'un programme Python et l'exécute
-   - [ ] il corrige les bugs
-   - [ ] il compresse le programme
-
-   > Le programme est la donnée de l'interpréteur.
-
-1. Qui a inventé le modèle de la machine de Turing ?
-
-   - [ ] John von Neumann
-   - [x] Alan Turing
-   - [ ] Ada Lovelace
-   - [ ] Edsger Dijkstra
-
-   > En 1936, avant les premiers ordinateurs.
-
 1. Un problème calculable en C l'est-il aussi en Python ?
 
    - [x] oui, les langages usuels calculent les mêmes fonctions
@@ -105,15 +87,6 @@ Une question à la fois : la correction s'affiche aussitôt.
 
    > Oui ou non, toujours, et en un temps fini.
 
-1. « Ce nombre est-il premier ? » est un problème :
-
-   - [x] décidable
-   - [ ] indécidable
-   - [ ] ni l'un ni l'autre
-   - [ ] impossible à poser
-
-   > On peut tester les diviseurs.
-
 1. Que signifie « le problème de l'arrêt est indécidable » ?
 
    - [ ] aucun programme ne s'arrête
@@ -131,35 +104,6 @@ Une question à la fois : la correction s'affiche aussitôt.
    - [ ] une expérience sur ordinateur
 
    > On suppose que `arret` existe et on aboutit à une contradiction.
-
-1. Dans la preuve, que reçoit `paradoxe` comme argument ?
-
-   - [ ] un nombre entier
-   - [x] son propre code
-   - [ ] la fonction `arret`
-   - [ ] rien
-
-   > C'est possible parce qu'un programme est une donnée.
-
-1. Peut-on écrire un antivirus qui détecte parfaitement tous les virus ?
-
-   - [ ] oui, avec assez de mémoire
-   - [x] non, c'est un problème indécidable du même type que l'arrêt
-   - [ ] oui, en Python
-   - [ ] oui, si on connaît tous les virus existants
-
-   > Les antivirus réels font des compromis (signatures, comportements suspects).
-::::
-
-::::exercice[La preuve dans l'ordre]{niveau=2 type=ordre}
-Remets dans l'ordre le raisonnement de Turing.
-
-1. On suppose qu'une fonction `arret` répond toujours correctement.
-1. On écrit `paradoxe`, qui boucle si `arret(P, P)` est vrai et s'arrête sinon.
-1. On étudie `paradoxe(paradoxe)`.
-1. S'il s'arrête, `arret` a répondu faux : c'est contradictoire.
-1. S'il ne s'arrête pas, `arret` a répondu vrai : c'est contradictoire.
-1. Donc `arret` ne peut pas exister.
 ::::
 
 ::::exercice[Décidable ?]{niveau=1 type=reponses}
@@ -178,7 +122,18 @@ Réponds par oui ou par non : ce problème est-il décidable ?
    - non
 ::::
 
-::::exercice[Des fonctions comme données]{niveau=1}
+::::exercice[La preuve dans l'ordre]{niveau=2 type=ordre}
+Remets dans l'ordre le raisonnement de Turing.
+
+1. On suppose qu'une fonction `arret` répond toujours correctement.
+1. On écrit `paradoxe`, qui boucle si `arret(P, P)` est vrai et s'arrête sinon.
+1. On étudie `paradoxe(paradoxe)`.
+1. S'il s'arrête, `arret` a répondu faux : c'est contradictoire.
+1. S'il ne s'arrête pas, `arret` a répondu vrai : c'est contradictoire.
+1. Donc `arret` ne peut pas exister.
+::::
+
+::::exercice[Des fonctions comme données]{niveau=2}
 Écris `appliquer_n_fois(f, n, x)` qui renvoie f(f(…f(x))) avec n applications de f (x si n = 0), et `meilleur(t, critere)` qui renvoie l'élément
 du tableau non vide `t` qui donne la plus grande valeur de `critere` (une fonction).
 
@@ -219,7 +174,7 @@ def meilleur(t, critere):
 :::
 ::::
 
-::::exercice[Expliquer l'indécidabilité de l'arrêt]{niveau=2}
+::::exercice[Expliquer l'indécidabilité de l'arrêt]{niveau=3}
 Un camarade affirme : « Avec un ordinateur assez puissant, on pourra un jour écrire un programme qui détecte toutes les boucles infinies. » Réponds-
 lui en expliquant la preuve de Turing avec tes mots, et en précisant ce que l'on peut quand même faire en pratique.
 

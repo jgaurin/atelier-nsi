@@ -32,7 +32,9 @@ from geometrie import distance
 print(distance((1, 1), (4, 5)))
 ```
 
-Le bloc `if __name__ == "__main__":` ne s'exécute que si on lance le fichier directement, pas lors d'un import.
+Le texte entre triples guillemets est une **docstring** : elle documente le module ou la fonction.
+
+Le bloc `if __name__ == "__main__":` ne s'exécute que si on lance le fichier directement, pas lors d'un import. On y place les tests.
 
 ## 2. Une API
 
@@ -170,5 +172,65 @@ def jour_semaine(annee, mois, jour):
 ```
 
 On n'a pas eu à programmer le calendrier (années bissextiles, longueur des mois) : la bibliothèque le fait, il suffit de lire son API.
+:::
+::::
+
+::::exercice[Une API météo]{niveau=3}
+Un module fournit une seule fonction, dont voici la documentation :
+
+> `releves(ville)` : renvoie le tableau des températures mesurées dans `ville`, ou un tableau vide si la ville est inconnue.
+
+Tu dois l'utiliser sans regarder son code.
+
+1. Écris `moyenne_ville(ville)`, qui renvoie la température moyenne, ou `None` si la ville est inconnue.
+2. Écris `plus_chaude(villes)`, qui renvoie le nom de la ville dont la moyenne est la plus élevée, en ignorant les villes inconnues. S'il n'y en a aucune, elle renvoie `None`.
+3. À l'écrit : rédige la docstring de `moyenne_ville`. Si le service change sa façon de stocker les données sans changer `releves`, faut-il modifier tes fonctions ?
+
+```python depart
+def releves(ville):
+    donnees = {"Lyon": [10, 20], "Nice": [18, 22], "Brest": [12, 14]}
+    return donnees.get(ville, [])
+
+def moyenne_ville(ville):
+    ...
+
+def plus_chaude(villes):
+    ...
+```
+
+```python tests
+assert moyenne_ville("Lyon") == 15, "moyenne"
+assert moyenne_ville("Atlantide") is None, "ville inconnue"
+assert plus_chaude(["Lyon", "Nice", "Brest"]) == "Nice", "la plus chaude"
+assert plus_chaude(["Atlantide", "Brest"]) == "Brest", "ville inconnue ignorée"
+assert plus_chaude(["Atlantide"]) is None, "aucune ville connue"
+assert plus_chaude([]) is None, "liste vide"
+```
+
+:::corrige
+```python solution
+def releves(ville):
+    donnees = {"Lyon": [10, 20], "Nice": [18, 22], "Brest": [12, 14]}
+    return donnees.get(ville, [])
+
+def moyenne_ville(ville):
+    """Renvoie la température moyenne de ville, ou None si elle est inconnue."""
+    t = releves(ville)
+    if len(t) == 0:
+        return None
+    return sum(t) / len(t)
+
+def plus_chaude(villes):
+    meilleure = None
+    meilleure_moyenne = None
+    for v in villes:
+        m = moyenne_ville(v)
+        if m is not None and (meilleure is None or m > meilleure_moyenne):
+            meilleure = v
+            meilleure_moyenne = m
+    return meilleure
+```
+
+**Question 3.** Non : ces fonctions dépendent seulement de ce que `releves` promet dans sa documentation.
 :::
 ::::

@@ -43,7 +43,7 @@ print(taille(arbre), hauteur(arbre))
 
 ## 3. Le parcours en largeur
 
-On visite **niveau par niveau**, à l'aide d'une **file** : A B C D E F.
+On visite **niveau par niveau** : A B C D E F. On utilise une **file** : on y place la racine, puis, tant que la file n'est pas vide, on défile un nœud, on le visite et on enfile ses enfants.
 
 ## L'essentiel
 
@@ -54,8 +54,7 @@ On visite **niveau par niveau**, à l'aide d'une **file** : A B C D E F.
 ## Exercices
 
 ::::exercice[QCM : parcours d'arbres]{niveau=1 type=quiz}
-Une question à la fois : la correction s'affiche aussitôt.
-enfant droit F.
+On reprend l'arbre du cours : A a pour enfants B et C, B a pour enfants D et E, C a pour seul enfant F, à droite.
 
 1. Quel est le parcours préfixe ?
 
@@ -101,7 +100,6 @@ enfant droit F.
    - [ ] un tableau trié
 
    > Les nœuds sont traités dans l'ordre où on les découvre.
-
 ::::
 
 ::::exercice[Écrire les parcours]{niveau=1 type=completer}
@@ -129,7 +127,7 @@ print("1 2 3 4 5 6")
 | Largeur | [[1 2 3 4 5 6]] |
 ::::
 
-::::exercice[Mesures d'un arbre]{niveau=1}
+::::exercice[Mesures d'un arbre]{niveau=2}
 Avec la classe `Noeud` fournie, écris `taille(a)`, `hauteur(a)` (arbre vide : 0, racine seule : 1) et `somme(a)`, la somme des valeurs (des
 nombres) de l'arbre.
 
@@ -295,30 +293,78 @@ On traite les nœuds niveau par niveau : la liste `courant` joue le rôle de la 
 :::
 ::::
 
-::::exercice[Reconstituer un arbre]{niveau=2}
-Un arbre binaire a pour parcours préfixe `R A C D B E` et pour parcours infixe `C A D R E B`. (a) Dessine-le en expliquant ta démarche.
-(b) Donne son parcours suffixe et sa hauteur.
+::::exercice[Une expression arithmétique]{niveau=3}
+L'expression `(3 + 4) * 2` peut se représenter par un arbre binaire : la racine est `"*"`, son enfant gauche est un nœud `"+"` dont les enfants sont 3 et 4, et son enfant droit est la feuille 2. Les feuilles contiennent des nombres, les autres nœuds un opérateur : `"+"`, `"-"` ou `"*"`.
 
-:::criteres
-- Démarche : le premier élément du préfixe est la racine ; dans l'infixe, ce qui est à sa gauche forme le sous-arbre gauche, le reste le
-  sous-arbre droit ; on recommence.
-- Arbre correct : R ; à gauche A (enfants C et D) ; à droite B (enfant gauche E).
-- Suffixe : C D A E B R ; hauteur 3 (en comptant les nœuds).
-:::
+1. Affecte à `expr` l'arbre de l'expression `(3 + 4) * 2`.
+2. Écris `evaluer(a)`, qui renvoie la valeur de l'expression.
+3. Écris `nb_operations(a)`, qui renvoie le nombre d'opérateurs.
+4. Écris `ecrire(a)`, qui renvoie l'expression sous forme de texte, entièrement parenthésée : `"((3 + 4) * 2)"`. Une feuille s'écrit sans parenthèses.
+5. À l'écrit : quel parcours `ecrire` réalise-t-il ? Quel parcours donne `* + 3 4 2` ?
+
+```python depart
+class Noeud:
+    def __init__(self, valeur, gauche=None, droit=None):
+        self.valeur = valeur
+        self.gauche = gauche
+        self.droit = droit
+
+expr = ...
+
+def evaluer(a):
+    ...
+
+def nb_operations(a):
+    ...
+
+def ecrire(a):
+    ...
+```
+
+```python tests
+assert expr.valeur == "*" and expr.gauche.valeur == "+" and expr.droit.valeur == 2, "arbre construit"
+assert evaluer(expr) == 14, "valeur"
+assert evaluer(Noeud(5)) == 5, "une feuille"
+autre = Noeud("-", Noeud(10), Noeud("*", Noeud(2), Noeud(3)))
+assert evaluer(autre) == 4, "soustraction"
+assert nb_operations(expr) == 2, "deux opérateurs"
+assert nb_operations(Noeud(5)) == 0, "aucun opérateur"
+assert ecrire(expr) == "((3 + 4) * 2)", "texte"
+assert ecrire(Noeud(5)) == "5", "feuille sans parenthèses"
+```
 
 :::corrige
-(a) Le préfixe commence par la racine : **R**. Dans l'infixe `C A D | R | E B`, les nœuds à gauche de R (C, A, D) forment le sous-arbre gauche,
-ceux à droite (E, B) le sous-arbre droit. Sous-arbre gauche : dans le préfixe, le suivant est **A**, c'est sa racine ; dans l'infixe `C A D`,
-C est à gauche de A et D à droite. Sous-arbre droit : le préfixe donne **B** comme racine ; dans l'infixe `E B`, E est à gauche de B.
+```python solution
+class Noeud:
+    def __init__(self, valeur, gauche=None, droit=None):
+        self.valeur = valeur
+        self.gauche = gauche
+        self.droit = droit
 
-```
-        R
-      /   \
-     A     B
-    / \   /
-   C   D E
+expr = Noeud("*", Noeud("+", Noeud(3), Noeud(4)), Noeud(2))
+
+def evaluer(a):
+    if a.gauche is None:
+        return a.valeur
+    g = evaluer(a.gauche)
+    d = evaluer(a.droit)
+    if a.valeur == "+":
+        return g + d
+    if a.valeur == "-":
+        return g - d
+    return g * d
+
+def nb_operations(a):
+    if a.gauche is None:
+        return 0
+    return 1 + nb_operations(a.gauche) + nb_operations(a.droit)
+
+def ecrire(a):
+    if a.gauche is None:
+        return str(a.valeur)
+    return "(" + ecrire(a.gauche) + " " + a.valeur + " " + ecrire(a.droit) + ")"
 ```
 
-(b) Suffixe : **C D A E B R**. Hauteur : **3** (chemin R, A, C par exemple).
+**Question 5.** `ecrire` réalise un parcours **infixe** : gauche, racine, droit. `* + 3 4 2` correspond au parcours **préfixe**.
 :::
 ::::

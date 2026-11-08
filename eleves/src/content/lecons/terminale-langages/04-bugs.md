@@ -31,6 +31,14 @@ print(ajouter_bonus(mes_notes))
 print(mes_notes)
 ```
 
+## Une méthode
+
+1. **Reproduire** le bug avec un exemple précis.
+2. **Isoler** la ligne fautive, avec des tests ou des `print`.
+3. **Corriger**, puis relancer tous les tests.
+
+Tester les cas limites est essentiel : tableau vide, valeur frontière, valeurs négatives.
+
 ## L'essentiel
 
 - Typage, effets de bord, débordements, cas oubliés, inégalités, flottants, nommage.
@@ -79,7 +87,7 @@ def mention(n):
    - exhaustive
 ::::
 
-::::exercice[Corriger les bugs typiques]{niveau=1}
+::::exercice[Corriger les bugs typiques]{niveau=2}
 Chacune des fonctions ci-dessous contient un bug typique. Corrige-les.
 
 ```python depart
@@ -142,5 +150,76 @@ def moyenne_sans_modifier(t):
 Trois bugs typiques : **inégalité** stricte au lieu de large (16 donnait « B ») et **conditionnelle non exhaustive** (8 donnait `None`) ;
 **comparaison de flottants** avec `==` ; **effet de bord** (`sort` et `pop` modifiaient le tableau de l'appelant) corrigé avec `sorted`, qui
 renvoie une copie.
+:::
+::::
+
+::::exercice[Un carnet de températures]{niveau=3}
+Ces trois fonctions respectent mal leur spécification. Chacune contient au moins un bug typique : corrige-les.
+
+À l'écrit : quel bug un test de `maximum` avec seulement `[1, 5, 3]` n'aurait-il pas détecté ? Qu'en déduis-tu sur les jeux de tests ?
+
+```python depart
+def maximum(t):
+    """Renvoie la plus grande valeur du tableau non vide t."""
+    m = 0
+    for i in range(len(t) + 1):
+        if t[i] > m:
+            m = t[i]
+    return m
+
+def corriger(t, ecart):
+    """Renvoie un nouveau tableau où ecart est ajouté à chaque valeur. t n'est pas modifié."""
+    for i in range(len(t)):
+        t[i] = t[i] + ecart
+    return t
+
+def niveau(temp):
+    """Renvoie 'froid' si temp < 10, 'doux' si 10 <= temp <= 25, 'chaud' si temp > 25."""
+    if temp < 10:
+        return "froid"
+    elif temp > 10 and temp < 25:
+        return "doux"
+    elif temp > 25:
+        return "chaud"
+```
+
+```python tests
+assert maximum([1, 5, 3]) == 5, "cas général"
+assert maximum([-4, -2, -9]) == -2, "valeurs négatives"
+t = [10, 20]
+assert corriger(t, 1) == [11, 21], "nouveau tableau"
+assert t == [10, 20], "t n'est pas modifié"
+assert niveau(9) == "froid", "froid"
+assert niveau(10) == "doux", "frontière 10"
+assert niveau(25) == "doux", "frontière 25"
+assert niveau(26) == "chaud", "chaud"
+```
+
+:::corrige
+```python solution
+def maximum(t):
+    """Renvoie la plus grande valeur du tableau non vide t."""
+    m = t[0]
+    for i in range(len(t)):
+        if t[i] > m:
+            m = t[i]
+    return m
+
+def corriger(t, ecart):
+    """Renvoie un nouveau tableau où ecart est ajouté à chaque valeur. t n'est pas modifié."""
+    return [x + ecart for x in t]
+
+def niveau(temp):
+    """Renvoie 'froid' si temp < 10, 'doux' si 10 <= temp <= 25, 'chaud' si temp > 25."""
+    if temp < 10:
+        return "froid"
+    elif temp <= 25:
+        return "doux"
+    return "chaud"
+```
+
+`maximum` avait un débordement et une mauvaise initialisation. `corriger` avait un effet de bord. `niveau` oubliait les frontières 10 et 25, et renvoyait alors `None`.
+
+**À l'écrit.** Ce test ne détecte pas l'initialisation à 0 : il faut essayer un tableau de valeurs négatives. Réussir des tests ne prouve pas qu'un programme est correct.
 :::
 ::::

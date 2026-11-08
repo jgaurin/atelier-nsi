@@ -13,7 +13,7 @@ Dans un **arbre binaire de recherche** (ABR), pour **chaque** nœud : les clés 
 
 ## 1. Rechercher
 
-À chaque nœud, la comparaison indique une seule direction.
+À chaque nœud, la comparaison indique une seule direction : on écarte tout un sous-arbre.
 
 ```python exec
 class Noeud:
@@ -88,33 +88,6 @@ Une question à la fois : la correction s'affiche aussitôt.
 
    > Par définition, à gauche plus petit, à droite plus grand.
 
-1. Combien de comparaisons pour trouver 11 ?
-
-   - [ ] 1
-   - [ ] 2
-   - [x] 3
-   - [ ] 7
-
-   > 15 (à gauche), 8 (à droite), 11 (trouvé).
-
-1. Où sera insérée la clé 20 ?
-
-   - [ ] enfant gauche de 19
-   - [x] enfant droit de 19
-   - [ ] enfant gauche de 30
-   - [ ] à la racine
-
-   > 20 > 15 à droite, 20 < 22 à gauche, 20 > 19 à droite.
-
-1. Que donne le parcours infixe de cet arbre ?
-
-   - [ ] 15 8 4 11 22 19 30
-   - [x] 4 8 11 15 19 22 30
-   - [ ] 4 11 8 19 30 22 15
-   - [ ] 15 8 22 4 11 19 30
-
-   > Les clés triées.
-
 1. Où se trouve le minimum d'un ABR ?
 
    - [ ] à la racine
@@ -150,24 +123,6 @@ Une question à la fois : la correction s'affiche aussitôt.
    - [ ] impossible à dire
 
    > La propriété porte sur tout le sous-arbre.
-
-1. Un ABR équilibré contient un million de clés. Combien de comparaisons environ pour une recherche ?
-
-   - [ ] un million
-   - [ ] 1 000
-   - [x] 20
-   - [ ] 1
-
-   > Sa hauteur est d'environ log₂(10⁶) ≈ 20.
-
-1. Dans `inserer`, pourquoi écrire `a.gauche = inserer(a.gauche, x)` ?
-
-   - [ ] pour aller plus vite
-   - [x] pour rattacher le nouveau nœud quand `a.gauche` était vide
-   - [ ] pour supprimer le sous-arbre gauche
-   - [ ] ce n'est pas nécessaire
-
-   > Si `a.gauche` vaut `None`, l'appel renvoie le nouveau nœud, qu'il faut accrocher.
 ::::
 
 ::::exercice[Dérouler une insertion]{niveau=1 type=reponses}
@@ -214,7 +169,7 @@ def rechercher(a, x):
 ```
 ::::
 
-::::exercice[Rechercher et insérer]{niveau=1}
+::::exercice[Rechercher et insérer]{niveau=2}
 Écris `rechercher(a, x)` et `inserer(a, x)` pour un ABR représenté avec la classe `Noeud` fournie. `inserer` renvoie l'arbre et ne fait rien si
 x est déjà présent.
 
@@ -323,5 +278,75 @@ def est_abr(a):
 ```
 
 Comparer chaque nœud à ses seuls enfants ne suffirait pas : l'arbre `piege` passerait ce test (12 > 5) alors que ce n'est pas un ABR.
+:::
+::::
+
+::::exercice[Le classement d'un jeu]{niveau=3}
+Un jeu range les joueurs dans un ABR selon leur score. Chaque nœud contient un `score` (tous différents) et un `pseudo`.
+
+1. Écris `meilleur(a)`, qui renvoie le pseudo du meilleur score, ou `None` si l'arbre est vide. Ta fonction doit suivre une seule branche.
+2. Écris `classement(a)`, qui renvoie la liste des pseudos, du score le plus **élevé** au plus faible.
+3. Écris `nb_superieurs(a, x)`, qui renvoie le nombre de scores strictement supérieurs à `x`.
+4. À l'écrit : les joueurs sont insérés par scores croissants. Quelle est la forme de l'arbre ? Quel est le coût de `meilleur` ?
+
+```python depart
+class Noeud:
+    def __init__(self, score, pseudo, gauche=None, droit=None):
+        self.score = score
+        self.pseudo = pseudo
+        self.gauche = gauche
+        self.droit = droit
+
+def meilleur(a):
+    ...
+
+def classement(a):
+    ...
+
+def nb_superieurs(a, x):
+    ...
+```
+
+```python tests
+a = Noeud(50, "Ana", Noeud(20, "Bo", None, Noeud(30, "Cy")), Noeud(80, "Di"))
+assert meilleur(a) == "Di", "le plus à droite"
+assert meilleur(None) is None, "arbre vide"
+assert classement(a) == ["Di", "Ana", "Cy", "Bo"], "ordre décroissant"
+assert classement(None) == [], "classement vide"
+assert nb_superieurs(a, 25) == 3, "trois scores"
+assert nb_superieurs(a, 80) == 0, "aucun"
+assert nb_superieurs(None, 1) == 0, "arbre vide"
+```
+
+:::corrige
+```python solution
+class Noeud:
+    def __init__(self, score, pseudo, gauche=None, droit=None):
+        self.score = score
+        self.pseudo = pseudo
+        self.gauche = gauche
+        self.droit = droit
+
+def meilleur(a):
+    if a is None:
+        return None
+    while a.droit is not None:
+        a = a.droit
+    return a.pseudo
+
+def classement(a):
+    if a is None:
+        return []
+    return classement(a.droit) + [a.pseudo] + classement(a.gauche)
+
+def nb_superieurs(a, x):
+    if a is None:
+        return 0
+    if a.score <= x:
+        return nb_superieurs(a.droit, x)
+    return 1 + nb_superieurs(a.gauche, x) + nb_superieurs(a.droit, x)
+```
+
+**Question 4.** Chaque nouvelle clé part à droite : l'arbre est **filiforme**. Sa hauteur est n, et `meilleur` a un coût **linéaire**.
 :::
 ::::

@@ -21,7 +21,7 @@ def fibo(n):
 print(fibo(20))
 ```
 
-`fibo(n - 1)` et `fibo(n - 2)` recalculent les mêmes valeurs : le nombre d'appels explose.
+`fibo(n - 1)` et `fibo(n - 2)` recalculent les mêmes valeurs : le nombre d'appels explose. Pour `fibo(5)`, `fibo(3)` est calculé 2 fois et `fibo(2)` 3 fois.
 
 ## 2. Mémoïser
 
@@ -59,7 +59,7 @@ def rendu(somme, pieces):
 print(rendu(6, [1, 3, 4]))
 ```
 
-Le résultat est optimal, même là où le glouton échoue. En échange, on utilise un **tableau en mémoire**.
+On remplit le tableau **de bas en haut** : chaque case utilise des cases déjà calculées. Le résultat est optimal, même là où le glouton échoue. En échange, on utilise un **tableau en mémoire**.
 
 ## L'essentiel
 
@@ -108,33 +108,6 @@ Une question à la fois : la correction s'affiche aussitôt.
 
    > Chaque terme est calculé une fois.
 
-1. Avec des pièces de 1, 3 et 4, combien de pièces au minimum pour rendre 6 ?
-
-   - [ ] 1
-   - [x] 2
-   - [ ] 3
-   - [ ] 6
-
-   > 3 + 3. Le glouton en rend 3.
-
-1. Dans le rendu de monnaie dynamique, que vaut nb(0) ?
-
-   - [x] 0
-   - [ ] 1
-   - [ ] l'infini
-   - [ ] la plus petite pièce
-
-   > Rendre 0 ne demande aucune pièce.
-
-1. Combien de chemins (droite ou bas) dans une grille de 2 lignes et 2 colonnes, d'un coin à l'autre ?
-
-   - [ ] 1
-   - [x] 2
-   - [ ] 3
-   - [ ] 4
-
-   > Droite puis bas, ou bas puis droite.
-
 1. Quelle est la différence avec « diviser pour régner » ?
 
    - [ ] il n'y en a pas
@@ -143,24 +116,6 @@ Une question à la fois : la correction s'affiche aussitôt.
    - [ ] diviser pour régner n'est jamais récursif
 
    > D'où l'intérêt de stocker les solutions.
-
-1. Que coûte la programmation dynamique en échange du gain de temps ?
-
-   - [ ] de la précision
-   - [x] de la mémoire
-   - [ ] des résultats faux
-   - [ ] rien du tout
-
-   > Il faut stocker les solutions des sous-problèmes.
-
-1. Dans l'approche de bas en haut, dans quel ordre remplit-on le tableau ?
-
-   - [x] des plus petits sous-problèmes aux plus grands
-   - [ ] des plus grands aux plus petits
-   - [ ] au hasard
-   - [ ] l'ordre n'a pas d'importance
-
-   > Chaque case utilise des cases déjà calculées.
 ::::
 
 ::::exercice[Remplir le tableau]{niveau=1 type=completer}
@@ -181,7 +136,7 @@ for s in range(1, 8):
 | Pièces | 0 | [[1]] | [[2]] | [[1]] | [[1]] | [[2]] | [[2]] | [[2]] |
 ::::
 
-::::exercice[Compléter]{niveau=2 type=completer}
+::::exercice[Compléter]{niveau=1 type=completer}
 Complète la version mémoïsée.
 
 ```python trous
@@ -199,7 +154,7 @@ def f(n):
 ```
 ::::
 
-::::exercice[Fibonacci, trois versions]{niveau=1}
+::::exercice[Fibonacci, trois versions]{niveau=2}
 Écris `fibo_memo(n)` (récursive avec un dictionnaire de mémoïsation) et `fibo_iter(n)` (de bas en haut, avec seulement deux variables). On a
 F(0) = 0, F(1) = 1.
 
@@ -284,24 +239,63 @@ Pour 30 avec des pièces de 1, 15 et 25, le glouton rend 25 + 1 + 1 + 1 + 1 + 1 
 :::
 ::::
 
-::::exercice[Glouton ou dynamique ?]{niveau=2}
-Explique à un camarade, sur l'exemple du rendu de 6 avec des pièces de 1, 3 et 4, pourquoi l'algorithme glouton se trompe et pourquoi la
-programmation dynamique ne peut pas se tromper. Dis aussi ce que coûte la programmation dynamique de plus.
+::::exercice[Le robot collecteur]{niveau=3}
+Un robot part de la case en haut à gauche d'une grille de gains et doit arriver en bas à droite. Il se déplace seulement vers la droite ou vers le bas. Il veut maximiser la somme des gains des cases traversées, départ et arrivée compris.
 
-:::criteres
-- Glouton : prend 4 (meilleur choix immédiat), puis 1 et 1 : 3 pièces ; il ne revient jamais sur son premier choix.
-- Dynamique : pour 6, elle compare tous les premiers choix possibles (1, 3 ou 4) en utilisant les meilleures solutions déjà calculées pour 5, 3
-  et 2 ; elle trouve 3 + 3.
-- Coût : remplir un tableau de toutes les sommes de 0 à 6, en temps et en mémoire.
+1. Écris `max_recursif(g, l, c)`, récursive, qui renvoie le gain maximal à partir de la case `(l, c)`.
+2. Écris `max_tableau(g)`, qui renvoie le gain maximal du trajet complet, en remplissant un tableau de bas en haut.
+3. À l'écrit : pourquoi `max_recursif` devient-elle très lente sur une grande grille ? Quel est le coût de `max_tableau` en temps et en mémoire, pour une grille de n lignes et m colonnes ?
+
+:::indice
+Dans le tableau, `m[l][c]` est le gain maximal pour **arriver** à la case `(l, c)` : on vient soit de la case du dessus, soit de celle de gauche.
 :::
 
+```python depart
+def max_recursif(g, l, c):
+    ...
+
+def max_tableau(g):
+    ...
+```
+
+```python tests
+g = [[1, 3, 1], [1, 5, 1], [4, 2, 1]]
+assert max_recursif(g, 0, 0) == 12, "1 + 3 + 5 + 2 + 1"
+assert max_recursif(g, 2, 2) == 1, "case d'arrivée"
+assert max_tableau(g) == 12, "même résultat"
+assert max_tableau([[7]]) == 7, "une seule case"
+assert max_tableau([[1, 2, 3]]) == 6, "une seule ligne"
+grande = [[1] * 60 for i in range(60)]
+assert max_tableau(grande) == 119, "grande grille, résultat immédiat"
+```
+
 :::corrige
-Le **glouton** prend la plus grande pièce possible, 4, parce que c'est le meilleur choix **sur le moment** ; il reste 2, qu'il rend avec 1 + 1 :
-3 pièces. Il ne revient jamais en arrière, et ne découvre donc pas que commencer par 3 était mieux. La **programmation dynamique** calcule
-d'abord la meilleure façon de rendre **chaque** somme plus petite (0, 1, 2, …, 5). Pour 6, elle **essaie tous les premiers choix** : 1 puis le
-meilleur rendu de 5 (2 pièces) ; 3 puis le meilleur rendu de 3 (1 pièce) ; 4 puis le meilleur rendu de 2 (2 pièces). Le minimum est 1 + 1 =
-**2 pièces** (3 + 3). Elle ne peut pas se tromper car elle envisage tous les cas, mais sans les recalculer. En contrepartie, elle fait plus de
-travail que le glouton et utilise un **tableau** de taille 7 (toutes les sommes jusqu'à 6) : pour une grande somme, c'est plus de temps et de
-mémoire.
+```python solution
+def max_recursif(g, l, c):
+    if l == len(g) - 1 and c == len(g[0]) - 1:
+        return g[l][c]
+    if l == len(g) - 1:
+        return g[l][c] + max_recursif(g, l, c + 1)
+    if c == len(g[0]) - 1:
+        return g[l][c] + max_recursif(g, l + 1, c)
+    return g[l][c] + max(max_recursif(g, l + 1, c), max_recursif(g, l, c + 1))
+
+def max_tableau(g):
+    n, p = len(g), len(g[0])
+    m = [[0] * p for i in range(n)]
+    for l in range(n):
+        for c in range(p):
+            if l == 0 and c == 0:
+                m[l][c] = g[l][c]
+            elif l == 0:
+                m[l][c] = m[l][c - 1] + g[l][c]
+            elif c == 0:
+                m[l][c] = m[l - 1][c] + g[l][c]
+            else:
+                m[l][c] = max(m[l - 1][c], m[l][c - 1]) + g[l][c]
+    return m[n - 1][p - 1]
+```
+
+**Question 3.** La version récursive recalcule les mêmes cases un très grand nombre de fois : le nombre d'appels explose. `max_tableau` calcule chaque case une seule fois : son coût en temps est proportionnel à n × m, et elle utilise un tableau de n × m cases.
 :::
 ::::
