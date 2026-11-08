@@ -149,9 +149,4 @@ export const MODULES: Module[] = [
     titre: "Algorithmique", description: "Arbres, graphes, diviser pour régner, programmation dynamique, Boyer-Moore.",
     plan: [["arbres", "Algorithmes sur les arbres"], ["abr", "Arbres binaires de recherche"], ["graphes", "Algorithmes sur les graphes"], ["diviser-regner", "Diviser pour régner"], ["prog-dynamique", "Programmation dynamique"], ["boyer-moore", "Recherche textuelle"], CONTROLE],
   },
-  {
-    id: "terminale-bac", partie: "terminale", teinte: TERMINALE, programmation: true,
-    titre: "Préparer le bac", description: "Le format de l'épreuve et des sujets d'entraînement.",
-    plan: [["epreuve", "Comment se passe l'épreuve"], ["ecrit-1", "Sujet d'écrit n° 1"], ["pratique-1", "Sujet pratique n° 1"], ["pratique-2", "Sujet pratique n° 2"]],
-  },
 ];

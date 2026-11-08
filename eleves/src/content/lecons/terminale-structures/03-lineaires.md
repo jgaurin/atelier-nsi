@@ -19,6 +19,8 @@ Opérations : `empiler`, `depiler`, `sommet`, `est_vide`.
 
 Usages : annuler une action, retour en arrière, parenthèses, appels de fonctions.
 
+En Python, un tableau suffit : `append` empile, `pop()` dépile. Ces deux opérations sont immédiates.
+
 ## 2. La file : FIFO
 
 *First In, First Out* : le premier entré est le premier sorti, comme une file d'attente.
@@ -26,6 +28,8 @@ Usages : annuler une action, retour en arrière, parenthèses, appels de fonctio
 Opérations : `enfiler`, `defiler`, `est_vide`.
 
 Usages : impression, requêtes d'un serveur, processus en attente.
+
+On ne voit que le bout de ces structures. Pour lire tous les éléments sans les perdre, on les retire dans une structure auxiliaire, puis on les remet.
 
 ## 3. La liste chaînée
 
@@ -74,15 +78,6 @@ Une question à la fois : la correction s'affiche aussitôt.
 
    > Dernier entré, premier sorti.
 
-1. On empile 1, 2, 3 puis on dépile une fois. Quel élément obtient-on ?
-
-   - [ ] 1
-   - [ ] 2
-   - [x] 3
-   - [ ] la pile entière
-
-   > Le sommet est le dernier élément empilé.
-
 1. On enfile A, B, C dans une file puis on défile une fois. Quel élément obtient-on ?
 
    - [x] A
@@ -91,24 +86,6 @@ Une question à la fois : la correction s'affiche aussitôt.
    - [ ] rien
 
    > Premier entré, premier sorti.
-
-1. Quelle structure pour la fonction « annuler » d'un traitement de texte ?
-
-   - [x] une pile
-   - [ ] une file
-   - [ ] un dictionnaire
-   - [ ] un tableau trié
-
-   > On annule d'abord la dernière action.
-
-1. Quelle structure pour une file d'impression ?
-
-   - [ ] une pile
-   - [x] une file
-   - [ ] un arbre
-   - [ ] un ensemble
-
-   > Les documents sont imprimés dans l'ordre d'arrivée.
 
 1. Que contient un maillon d'une liste chaînée ?
 
@@ -136,33 +113,6 @@ Une question à la fois : la correction s'affiche aussitôt.
    - [ ] connaître la longueur
 
    > Dans un tableau, il faut décaler tous les éléments.
-
-1. Qu'appelle-t-on l'interface d'une structure de données ?
-
-   - [ ] son code Python
-   - [x] l'ensemble de ses opérations et de leur effet
-   - [ ] son affichage à l'écran
-   - [ ] la mémoire qu'elle occupe
-
-   > L'implémentation, elle, est le code.
-
-1. Quelle structure sert à vérifier qu'une expression est bien parenthésée ?
-
-   - [x] une pile
-   - [ ] une file
-   - [ ] un dictionnaire
-   - [ ] une liste triée
-
-   > Chaque parenthèse fermante doit correspondre à la dernière ouvrante.
-
-1. Que provoque `m.valeur` si `m` vaut `None` ?
-
-   - [ ] `None`
-   - [ ] 0
-   - [x] une `AttributeError`
-   - [ ] une `IndexError`
-
-   > Il faut tester `m is not None` avant d'accéder au maillon.
 ::::
 
 ::::exercice[Dérouler une pile et une file]{niveau=1 type=reponses}
@@ -189,26 +139,7 @@ Réponds à chaque question.
    - 2
 ::::
 
-::::exercice[Compléter une pile]{niveau=1 type=completer}
-Complète cette implémentation d'une pile.
-
-```python trous
-class Pile:
-    def __init__(self):
-        self.contenu = [[[]]]
-
-    def est_vide(self):
-        return len(self.contenu) == [[0]]
-
-    def empiler(self, x):
-        self.contenu.[[append]](x)
-
-    def depiler(self):
-        return self.contenu.[[pop()]]
-```
-::::
-
-::::exercice[Pile ou file ?]{niveau=1}
+::::exercice[Pile ou file ?]{niveau=2}
 Pour chaque situation, indique s'il faut une pile ou une file, et justifie : (a) l'historique du bouton « précédent » d'un navigateur ; (b) les
 requêtes reçues par un serveur Web ; (c) les appels de fonctions en cours d'un programme ; (d) les messages envoyés à une imprimante partagée ;
 (e) l'exploration d'un labyrinthe en revenant au dernier carrefour quand on est bloqué.
@@ -226,44 +157,7 @@ d'un graphe. Règle : le plus récent d'abord, pile ; le plus ancien d'abord, fi
 :::
 ::::
 
-::::exercice[Bien parenthésé ?]{niveau=2}
-Écris `bien_parenthese(texte)` qui renvoie `True` si les parenthèses `()`, crochets `[]` et accolades `{}` du texte sont correctement
-appariés et imbriqués. Utilise une pile (un tableau avec `append` et `pop` suffit). Les autres caractères sont ignorés.
-
-```python depart
-def bien_parenthese(texte):
-    ...
-```
-
-```python tests
-assert bien_parenthese("(a + [b * c]) - {d}"), "correct"
-assert not bien_parenthese("(a + b]"), "mauvais type"
-assert not bien_parenthese("([)]"), "mauvaise imbrication"
-assert not bien_parenthese("((a)"), "ouvrante en trop"
-assert not bien_parenthese("a)"), "fermante en trop"
-assert bien_parenthese(""), "vide"
-```
-
-:::corrige
-```python solution
-def bien_parenthese(texte):
-    paires = {")": "(", "]": "[", "}": "{"}
-    pile = []
-    for c in texte:
-        if c in "([{":
-            pile.append(c)
-        elif c in ")]}":
-            if len(pile) == 0 or pile.pop() != paires[c]:
-                return False
-    return len(pile) == 0
-```
-
-Chaque fermante doit correspondre à la **dernière** ouvrante encore ouverte : c'est le sommet de la pile. À la fin, la pile doit être vide
-(sinon une ouvrante n'a jamais été fermée).
-:::
-::::
-
-::::exercice[Fonctions sur une liste chaînée]{niveau=1}
+::::exercice[Fonctions sur une liste chaînée]{niveau=2}
 Avec la classe `Maillon` fournie, écris `somme(m)` (somme des valeurs), `contient(m, x)` et `vers_tableau(m)` qui renvoie le tableau Python des
 valeurs dans l'ordre. `m` est le premier maillon, ou `None` pour une liste vide.
 
@@ -322,5 +216,115 @@ def vers_tableau(m):
 ```
 
 Le schéma est toujours le même : `while m is not None:` … `m = m.suivant`. On modifie la variable locale `m`, pas la liste.
+:::
+::::
+
+::::exercice[Bien parenthésé ?]{niveau=2}
+Écris `bien_parenthese(texte)` qui renvoie `True` si les parenthèses `()`, crochets `[]` et accolades `{}` du texte sont correctement
+appariés et imbriqués. Utilise une pile (un tableau avec `append` et `pop` suffit). Les autres caractères sont ignorés.
+
+```python depart
+def bien_parenthese(texte):
+    ...
+```
+
+```python tests
+assert bien_parenthese("(a + [b * c]) - {d}"), "correct"
+assert not bien_parenthese("(a + b]"), "mauvais type"
+assert not bien_parenthese("([)]"), "mauvaise imbrication"
+assert not bien_parenthese("((a)"), "ouvrante en trop"
+assert not bien_parenthese("a)"), "fermante en trop"
+assert bien_parenthese(""), "vide"
+```
+
+:::corrige
+```python solution
+def bien_parenthese(texte):
+    paires = {")": "(", "]": "[", "}": "{"}
+    pile = []
+    for c in texte:
+        if c in "([{":
+            pile.append(c)
+        elif c in ")]}":
+            if len(pile) == 0 or pile.pop() != paires[c]:
+                return False
+    return len(pile) == 0
+```
+
+Chaque fermante doit correspondre à la **dernière** ouvrante encore ouverte : c'est le sommet de la pile. À la fin, la pile doit être vide
+(sinon une ouvrante n'a jamais été fermée).
+:::
+::::
+
+::::exercice[Annuler et rétablir]{niveau=3}
+Un éditeur de texte garde les mots saisis dans une pile `mots`, et les mots annulés dans une pile `annules`.
+
+1. Écris `saisir(mot)`, qui empile `mot` sur `mots` et vide `annules`.
+2. Écris `annuler()`, qui déplace le sommet de `mots` vers `annules`, et ne fait rien si `mots` est vide.
+3. Écris `retablir()`, qui fait le déplacement inverse, et ne fait rien si `annules` est vide.
+4. Écris `texte()`, qui renvoie les mots dans l'ordre de saisie, séparés par une espace.
+5. À l'écrit : pourquoi `saisir` doit-il vider `annules` ? Donne un exemple.
+
+```python depart
+class Editeur:
+    def __init__(self):
+        self.mots = []
+        self.annules = []
+
+    def saisir(self, mot):
+        ...
+
+    def annuler(self):
+        ...
+
+    def retablir(self):
+        ...
+
+    def texte(self):
+        ...
+```
+
+```python tests
+e = Editeur()
+e.annuler()
+e.retablir()
+assert e.texte() == "", "éditeur vide"
+e.saisir("le"); e.saisir("chat"); e.saisir("dort")
+e.annuler()
+assert e.texte() == "le chat", "annuler"
+e.annuler()
+e.retablir()
+assert e.texte() == "le chat", "rétablir"
+e.annuler()
+e.saisir("chien")
+assert e.texte() == "le chien", "nouvelle saisie"
+e.retablir()
+assert e.texte() == "le chien", "plus rien à rétablir"
+```
+
+:::corrige
+```python solution
+class Editeur:
+    def __init__(self):
+        self.mots = []
+        self.annules = []
+
+    def saisir(self, mot):
+        self.mots.append(mot)
+        self.annules = []
+
+    def annuler(self):
+        if len(self.mots) > 0:
+            self.annules.append(self.mots.pop())
+
+    def retablir(self):
+        if len(self.annules) > 0:
+            self.mots.append(self.annules.pop())
+
+    def texte(self):
+        return " ".join(self.mots)
+```
+
+**Question 5.** Après une nouvelle saisie, les mots annulés ne font plus partie de la suite du texte. Si on saisit « le chat », qu'on annule « chat », puis qu'on saisit « chien », « rétablir » ne doit pas ajouter « chat » après « chien ».
 :::
 ::::

@@ -7,7 +7,7 @@ import { visit } from "unist-util-visit";
 export const NIVEAUX = {
   1: "Pour commencer",
   2: "Entraînement",
-  3: "Type contrôle",
+  3: "Type bac",
 };
 
 export const TYPES = {

@@ -47,12 +47,16 @@ a = Noeud("A", Noeud("B"), Noeud("C"))
 print(a.gauche.valeur)
 ```
 
+`None` représente un arbre vide.
+
 ## 3. Encadrer la hauteur
 
 Pour un arbre binaire de hauteur h (en comptant les nœuds), le nombre de nœuds n vérifie : **h ≤ n ≤ 2ʰ − 1**.
 
 - Arbre **filiforme** (une seule branche) : n = h.
 - Arbre **complet** (tous les niveaux remplis) : n = 2ʰ − 1.
+
+Un arbre bien rempli reste donc très peu haut : 1 000 nœuds tiennent sur 10 niveaux, car 2¹⁰ − 1 = 1 023. On dit que sa hauteur est de l'ordre de log₂(n).
 
 ## L'essentiel
 
@@ -63,17 +67,7 @@ Pour un arbre binaire de hauteur h (en comptant les nœuds), le nombre de nœuds
 ## Exercices
 
 ::::exercice[QCM : arbres]{niveau=1 type=quiz}
-Une question à la fois : la correction s'affiche aussitôt.
-enfant droit F.
-
-1. Quelle est la racine de l'arbre ?
-
-   - [x] A
-   - [ ] B
-   - [ ] F
-   - [ ] il n'y en a pas
-
-   > Le seul nœud sans parent.
+On reprend l'arbre du cours : A a pour enfants B et C, B a pour enfants D et E, C a pour seul enfant F.
 
 1. Quelles sont les feuilles ?
 
@@ -110,15 +104,6 @@ enfant droit F.
    - [ ] 16
 
    > 2⁴ − 1 = 1 + 2 + 4 + 8.
-
-1. Que vaut `taille(None)` avec la fonction du cours ?
-
-   - [x] 0
-   - [ ] 1
-   - [ ] `None`
-   - [ ] une erreur
-
-   > C'est le cas de base.
 
 1. Dans un arbre binaire, chaque nœud a :
 
@@ -195,5 +180,28 @@ Pour chaque situation, dis si un arbre convient, et justifie : (a) les dossiers 
 
 :::corrige
 (a) Oui : chaque dossier est contenu dans un seul dossier parent. (b) Non : plusieurs amis peuvent former un cycle, il faut un graphe. (c) Oui : chaque match envoie son vainqueur vers un seul match suivant.
+:::
+::::
+
+::::exercice[Un tournoi]{niveau=3}
+Un tournoi à élimination directe oppose 16 équipes. On le représente par un arbre binaire : les feuilles sont les équipes, chaque autre nœud est un match, et la racine est la finale. La hauteur compte les nœuds.
+
+1. Combien l'arbre a-t-il de feuilles ? Combien de matchs faut-il jouer ? Justifie à partir du nombre d'équipes éliminées.
+2. Quelle est la taille de l'arbre ? Quelle est sa hauteur ?
+3. Montre que cet arbre atteint la borne maximale de l'encadrement du cours.
+4. On organise maintenant un tournoi de 1 000 équipes, en donnant un match de moins à certaines. Quel est le nombre minimal de tours ? Justifie.
+
+:::criteres
+- 16 feuilles et 15 matchs, car chaque match élimine une équipe et il faut en éliminer 15.
+- Taille 31, hauteur 5.
+- 31 = 2⁵ − 1, donc n atteint 2ʰ − 1.
+- 10 tours, car 2⁹ = 512 est insuffisant et 2¹⁰ = 1 024 suffit.
+:::
+
+:::corrige
+1. Il y a **16 feuilles**. Chaque match élimine exactement une équipe, et il doit rester un seul vainqueur : il faut **15 matchs**.
+2. La taille vaut 16 + 15 = **31**. Les niveaux contiennent 16, 8, 4, 2 et 1 nœuds : la hauteur vaut **5**.
+3. Pour h = 5, on a 2ʰ − 1 = 31, ce qui est exactement la taille : l'arbre est complet.
+4. En t tours, on peut départager au plus 2ᵗ équipes. Comme 2⁹ = 512 < 1 000 ≤ 1 024 = 2¹⁰, il faut au moins **10 tours**.
 :::
 ::::

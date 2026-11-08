@@ -42,11 +42,30 @@ print(rex.nom, rex.age)
 Sans `self.`, `nom = nom` crée une simple variable locale, et l'attribut n'existe pas.
 :::
 
+## 3. Plusieurs objets
+
+On range souvent des objets dans un tableau, puis on lit leurs attributs.
+
+```python exec
+class Eleve:
+    def __init__(self, nom, note):
+        self.nom = nom
+        self.note = note
+
+classe = [Eleve("Ana", 14), Eleve("Bo", 9)]
+print([e.nom for e in classe if e.note >= 10])
+```
+
+:::attention
+`b = a` ne copie pas l'objet : `a` et `b` désignent alors le **même** objet.
+:::
+
 ## L'essentiel
 
 - Une classe définit des attributs et des méthodes ; `__init__` crée les attributs.
 - `self` est l'objet courant.
 - On écrit `objet.attribut` et `objet.methode()`.
+- `b = a` ne crée pas de copie de l'objet.
 
 ## Exercices
 
@@ -80,15 +99,6 @@ Une question à la fois : la correction s'affiche aussitôt.
 
    > `self` est l'objet sur lequel on appelle la méthode.
 
-1. Comment accède-t-on à l'attribut `age` de l'objet `rex` ?
-
-   - [ ] `rex["age"]`
-   - [x] `rex.age`
-   - [ ] `age(rex)`
-   - [ ] `Chien.age`
-
-   > Notation pointée.
-
 1. Que se passe-t-il avec `def __init__(self, nom): nom = nom` ?
 
    - [ ] l'attribut nom est créé
@@ -106,81 +116,6 @@ Une question à la fois : la correction s'affiche aussitôt.
    - [ ] une erreur
 
    > Chaque objet a ses propres attributs.
-
-1. Quel est le premier paramètre de toute méthode d'une classe ?
-
-   - [ ] `this`
-   - [x] `self`
-   - [ ] le nom de la classe
-   - [ ] aucun
-
-   > Par convention `self`, qui reçoit l'objet.
-
-1. Que renvoie `rex.aboyer` (sans parenthèses) ?
-
-   - [ ] le texte « Rex : Wouf ! »
-   - [x] la méthode elle-même, sans l'exécuter
-   - [ ] une erreur
-   - [ ] `None`
-
-   > Il faut des parenthèses pour appeler la méthode.
-
-1. À quoi sert la méthode `__str__` ?
-
-   - [ ] à créer l'objet
-   - [x] à définir le texte affiché par `print(objet)`
-   - [ ] à comparer deux objets
-   - [ ] à supprimer l'objet
-
-   > Sans elle, `print` affiche une adresse peu lisible.
-
-1. Quel est l'intérêt de séparer interface et implémentation ?
-
-   - [ ] le programme est plus court
-   - [x] on peut changer l'implémentation sans modifier le code qui utilise la classe
-   - [ ] le programme est plus rapide
-   - [ ] on n'a plus besoin de tests
-
-   > L'utilisateur ne dépend que des méthodes et de leur spécification.
-
-::::
-
-::::exercice[Lire une classe]{niveau=1 type=reponses}
-Donne ce que le programme affiche.
-
-1. Que s'affiche-t-il ?
-
-   ```python verifier
-   class Compteur:
-       def __init__(self):
-           self.n = 0
-       def plus(self):
-           self.n = self.n + 1
-
-   c = Compteur()
-   c.plus()
-   c.plus()
-   print(c.n)
-   ```
-
-   - 2
-
-1. Que s'affiche-t-il ?
-
-   ```python verifier
-   class Compteur:
-       def __init__(self):
-           self.n = 0
-       def plus(self):
-           self.n = self.n + 1
-
-   a = Compteur()
-   b = Compteur()
-   a.plus()
-   print(b.n)
-   ```
-
-   - 0
 ::::
 
 ::::exercice[Compléter une classe]{niveau=1 type=completer}
@@ -197,7 +132,7 @@ class Rectangle:
 ```
 ::::
 
-::::exercice[Une classe Point]{niveau=1}
+::::exercice[Une classe Point]{niveau=2}
 Écris une classe `Point` dont le constructeur reçoit `x` et `y`, avec les méthodes `distance_origine()` (distance à (0, 0)), `translater(dx,
 dy)` qui déplace le point, et `distance(autre)` qui renvoie la distance à un autre point.
 
@@ -283,5 +218,72 @@ class Compte:
 ```
 
 L'historique est créé **dans** `__init__` : chaque compte a ainsi son propre tableau. Le dernier test le vérifie.
+:::
+::::
+
+::::exercice[Une médiathèque]{niveau=3}
+Une médiathèque représente chaque livre par un objet `Livre`. Le début de la classe est fourni.
+
+1. Écris la méthode `emprunter()`. Si le livre est déjà emprunté, elle renvoie `False` et ne change rien. Sinon, elle le marque comme emprunté et renvoie `True`.
+2. Écris `disponibles(livres)`, qui renvoie le tableau des titres des livres non empruntés.
+3. Écris `plus_long_disponible(livres)`, qui renvoie l'**objet** `Livre` disponible ayant le plus de pages, ou `None` s'il n'y en a pas.
+4. À l'écrit : on exécute `a = Livre("X", 10)`, `b = a`, `c = Livre("X", 10)`, puis `b.emprunter()`. Que valent `a.emprunte` et `c.emprunte` ? Justifie.
+
+```python depart
+class Livre:
+    def __init__(self, titre, pages):
+        self.titre = titre
+        self.pages = pages
+        self.emprunte = False
+
+    def emprunter(self):
+        ...
+
+def disponibles(livres):
+    ...
+
+def plus_long_disponible(livres):
+    ...
+```
+
+```python tests
+a = Livre("A", 100)
+assert a.emprunter() is True, "premier emprunt"
+assert a.emprunte is True, "marqué emprunté"
+assert a.emprunter() is False, "déjà emprunté"
+b = Livre("B", 300)
+c = Livre("C", 200)
+assert disponibles([a, b, c]) == ["B", "C"], "titres disponibles"
+assert plus_long_disponible([a, b, c]) is b, "le plus long disponible"
+assert plus_long_disponible([a]) is None, "aucun disponible"
+assert plus_long_disponible([]) is None, "tableau vide"
+```
+
+:::corrige
+```python solution
+class Livre:
+    def __init__(self, titre, pages):
+        self.titre = titre
+        self.pages = pages
+        self.emprunte = False
+
+    def emprunter(self):
+        if self.emprunte:
+            return False
+        self.emprunte = True
+        return True
+
+def disponibles(livres):
+    return [l.titre for l in livres if not l.emprunte]
+
+def plus_long_disponible(livres):
+    meilleur = None
+    for l in livres:
+        if not l.emprunte and (meilleur is None or l.pages > meilleur.pages):
+            meilleur = l
+    return meilleur
+```
+
+**Question 4.** `a.emprunte` vaut `True` : `a` et `b` désignent le même objet. `c.emprunte` vaut `False` : `c` est un autre objet, même s'il a les mêmes valeurs.
 :::
 ::::

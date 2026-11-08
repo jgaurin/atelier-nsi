@@ -69,6 +69,8 @@ print(f.defiler())
 
 Le programme qui **utilise** la file n'a pas à changer : il n'utilise que l'interface.
 
+Pourquoi changer ? `pop(0)` décale tous les éléments à chaque retrait : son coût est linéaire. Avec deux piles, chaque élément n'est déplacé qu'une seule fois.
+
 ## L'essentiel
 
 - **Interface** : les opérations disponibles et leur effet.
@@ -88,7 +90,7 @@ Classe chaque affirmation.
 | « on utilise deux piles » | implémentation |
 ::::
 
-::::exercice[Dérouler une file à deux piles]{niveau=2 type=completer}
+::::exercice[Dérouler une file à deux piles]{niveau=1 type=completer}
 On part d'une file vide. Complète le contenu des piles, le sommet étant à droite. Écris `vide` pour une pile vide.
 
 ```python calcul
@@ -161,15 +163,87 @@ implémentation avec **deux piles**, sans changer l'interface.
 :::
 ::::
 
-::::exercice[Pourquoi séparer ?]{niveau=2}
-Explique l'intérêt de séparer l'interface de l'implémentation, avec l'exemple de la file.
+::::exercice[Une imprimante partagée]{niveau=3}
+Une imprimante range les documents à imprimer dans une file. Un document est un couple `(nom, pages)`. La classe `File` est fournie : utilise **seulement** `est_vide()`, `enfiler(x)` et `defiler()`.
 
-:::criteres
-- Les programmes qui utilisent la file ne dépendent que des opérations.
-- On peut remplacer l'implémentation, par exemple pour aller plus vite, sans les modifier.
+1. Écris `total_pages(f)`, qui renvoie le nombre total de pages en attente. À la fin, la file doit être comme au départ.
+2. Écris `retirer_gros(f, limite)`, qui retire les documents de plus de `limite` pages, garde les autres dans le même ordre et renvoie le nombre de documents retirés.
+3. À l'écrit : on remplace `File` par une version à deux piles. Faut-il modifier tes fonctions ? Justifie.
+
+:::indice
+Pour parcourir une file sans la perdre, défile tout dans une file auxiliaire, puis remets tout en place.
 :::
 
+```python depart
+class File:
+    def __init__(self):
+        self.contenu = []
+    def est_vide(self):
+        return len(self.contenu) == 0
+    def enfiler(self, x):
+        self.contenu.append(x)
+    def defiler(self):
+        return self.contenu.pop(0)
+
+def total_pages(f):
+    ...
+
+def retirer_gros(f, limite):
+    ...
+```
+
+```python tests
+f = File()
+for d in [("a", 3), ("b", 50), ("c", 2)]:
+    f.enfiler(d)
+assert total_pages(f) == 55, "somme des pages"
+assert f.defiler() == ("a", 3), "la file n'a pas changé"
+f = File()
+for d in [("a", 3), ("b", 50), ("c", 2), ("d", 40)]:
+    f.enfiler(d)
+assert retirer_gros(f, 10) == 2, "deux documents retirés"
+assert f.defiler() == ("a", 3) and f.defiler() == ("c", 2), "ordre conservé"
+assert f.est_vide(), "plus rien"
+assert total_pages(File()) == 0, "file vide"
+```
+
 :::corrige
-Un programme qui utilise une file n'appelle que `enfiler` et `defiler`. On peut donc remplacer le tableau par deux piles, plus efficaces, sans toucher à ce programme : il suffit que les opérations gardent le même effet.
+```python solution
+class File:
+    def __init__(self):
+        self.contenu = []
+    def est_vide(self):
+        return len(self.contenu) == 0
+    def enfiler(self, x):
+        self.contenu.append(x)
+    def defiler(self):
+        return self.contenu.pop(0)
+
+def total_pages(f):
+    aux = File()
+    total = 0
+    while not f.est_vide():
+        d = f.defiler()
+        total = total + d[1]
+        aux.enfiler(d)
+    while not aux.est_vide():
+        f.enfiler(aux.defiler())
+    return total
+
+def retirer_gros(f, limite):
+    aux = File()
+    retires = 0
+    while not f.est_vide():
+        d = f.defiler()
+        if d[1] > limite:
+            retires = retires + 1
+        else:
+            aux.enfiler(d)
+    while not aux.est_vide():
+        f.enfiler(aux.defiler())
+    return retires
+```
+
+**Question 3.** Non : ces fonctions n'utilisent que l'interface. Si les méthodes gardent le même effet, le code qui les appelle fonctionne sans changement.
 :::
 ::::

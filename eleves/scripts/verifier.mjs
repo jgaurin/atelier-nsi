@@ -79,6 +79,7 @@ function verifierCorps(fichier, corps, { estLecon, controle = false, programmati
   // Exercices.
   let nombre = 0;
   const parNiveau = [0, 0, 0, 0, 0];
+  const niveaux = [];
   visit(arbre, "containerDirective", (noeud) => {
     if (noeud.name !== "exercice") return;
     nombre += 1;
@@ -88,6 +89,8 @@ function verifierCorps(fichier, corps, { estLecon, controle = false, programmati
     if (!(ex.niveau >= 1 && ex.niveau <= 3)) erreur(fichier, `${nom} : niveau ${ex.niveau} invalide (1 à 3)`);
     if (!programmation && (ex.type === "python" || ex.type === "sql")) erreur(fichier, `${nom} : pas de programmation ici, ce chapitre n'en demande pas au programme`);
     parNiveau[ex.niveau] = (parNiveau[ex.niveau] ?? 0) + 1;
+    niveaux.push(ex.niveau);
+    if (ex.type === "quiz" && !controle && (ex.questions?.children.length ?? 0) > 6) avertir(fichier, `${nom} : QCM trop long`);
     if (ex.id) {
       if (idsExercices.has(ex.id)) erreur(fichier, `${nom} : identifiant #${ex.id} déjà utilisé dans ${idsExercices.get(ex.id)}`);
       idsExercices.set(ex.id, fichier);
@@ -147,7 +150,12 @@ function verifierCorps(fichier, corps, { estLecon, controle = false, programmati
     }
   });
   if (estLecon) {
-    if (nombre < 4) avertir(fichier, `seulement ${nombre} exercice(s)`);
+    if (nombre < 3) avertir(fichier, `seulement ${nombre} exercice(s)`);
+    if (!controle) {
+      if (nombre > 7) avertir(fichier, `${nombre} exercices : trop pour une leçon`);
+      if (!niveaux.includes(3)) avertir(fichier, "aucun exercice type bac (niveau 3)");
+      if (niveaux.some((n, i) => i > 0 && n < niveaux[i - 1])) avertir(fichier, "les exercices doivent aller du plus simple au plus difficile");
+    }
   }
 
   // Exemples exécutables.
