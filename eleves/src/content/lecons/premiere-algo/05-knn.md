@@ -39,55 +39,6 @@ Avec k = 3, les trois voisins les plus proches sont de classes A, B, A : on pré
 
 ## Exercices
 
-::::exercice[QCM : k plus proches voisins]{niveau=1 type=quiz}
-Une question à la fois : la correction s'affiche aussitôt.
-
-1. À quoi sert l'algorithme des k plus proches voisins ?
-
-   - [ ] à trier un tableau
-   - [x] à prédire la classe d'une donnée nouvelle
-   - [ ] à chercher un élément dans un tableau trié
-   - [ ] à compresser des données
-
-   > C'est un algorithme de classification.
-
-1. Que vaut la distance euclidienne entre (1, 2) et (4, 6) ?
-
-   - [ ] 7
-   - [x] 5
-   - [ ] 25
-   - [ ] 3
-
-   > √(3² + 4²) = √25 = 5.
-
-1. Avec k = 3, les trois plus proches voisins sont de classes A, B, A. Quelle classe prédit-on ?
-
-   - [x] A
-   - [ ] B
-   - [ ] aucune, il y a égalité
-   - [ ] la classe du plus lointain
-
-   > Vote majoritaire : 2 contre 1.
-
-1. Pourquoi choisir k impair quand il y a deux classes ?
-
-   - [ ] pour aller plus vite
-   - [x] pour éviter les égalités au vote
-   - [ ] parce que k pair provoque une erreur
-   - [ ] pour avoir plus de voisins
-
-   > Avec k = 4, on pourrait avoir 2 contre 2.
-
-1. Quel est le défaut de k = 1 ?
-
-   - [ ] il est trop lent
-   - [x] une seule donnée mal étiquetée peut fausser la prédiction
-   - [ ] il donne toujours la même classe
-   - [ ] il ne marche pas
-
-   > On ne se fie qu'à un seul exemple.
-::::
-
 ::::exercice[Dérouler à la main]{niveau=1 type=completer}
 On veut classer le point P = (2, 2) avec k = 3. Complète le tableau en donnant le **carré** de la distance à P, puis la réponse.
 
@@ -129,6 +80,82 @@ def majoritaire(classes):
             gagnant = [[c]]
     return gagnant
 ```
+::::
+
+::::exercice[QCM : les pièges des k plus proches voisins]{niveau=2 type=quiz}
+Le résultat dépend de k et de l'ordre des distances. La correction s'affiche aussitôt.
+
+1. Dans quel ordre se déroule l'algorithme ?
+
+   - [ ] trier les classes, calculer les distances, voter
+   - [x] calculer les distances, trier par distance, garder les k premiers, voter
+   - [ ] garder k données au hasard, puis calculer les distances
+   - [ ] voter, puis calculer les distances
+
+   > On ne peut trier qu'après avoir calculé les distances.
+
+1. Quelle est la distance euclidienne entre (1, 2) et (4, 6) ?
+
+   - [ ] 7
+   - [ ] 25
+   - [x] 5
+   - [ ] 3
+
+   > √(3² + 4²) = √25 = 5. 7 oublie les carrés, 25 oublie la racine.
+
+1. Les données, triées par distance croissante, ont pour classes : A, B, B, A, A. Que prédit-on avec k = 3 ?
+
+   - [ ] A
+   - [x] B
+   - [ ] égalité
+   - [ ] on ne peut pas répondre
+
+   > Les trois premiers votent A, B, B.
+
+1. Avec les mêmes données, que prédit-on avec k = 5 ?
+
+   - [x] A
+   - [ ] B
+   - [ ] égalité
+   - [ ] on ne peut pas répondre
+
+   > A obtient 3 voix sur 5. La prédiction dépend bien de k.
+
+1. Avec **trois** classes et k = 3, les voisins sont A, B et C. Que peut-on dire ?
+
+   - [ ] k impair évite toujours les égalités
+   - [x] il y a égalité, car k impair ne suffit qu'avec deux classes
+   - [ ] on prédit A, car il est le premier de l'alphabet
+   - [ ] l'algorithme ne s'applique pas
+
+   > Il faut prévoir une règle pour départager, par exemple le voisin le plus proche.
+
+1. Il y a 20 données de classe A et 3 de classe B. Que se passe-t-il avec k = 23 ?
+
+   - [ ] on prédit la classe du voisin le plus proche
+   - [x] on prédit toujours A
+   - [ ] on prédit toujours B
+   - [ ] il y a toujours égalité
+
+   > Tout le monde vote : la position du nouveau point n'a plus d'effet.
+
+1. Pourquoi k = 1 est-il risqué ?
+
+   - [ ] il est trop lent
+   - [x] une seule donnée erronée suffit à tromper la prédiction
+   - [ ] il donne toujours une égalité
+   - [ ] il oblige à trier deux fois
+
+   > Un seul voisin décide.
+
+1. Que faut-il connaître pour utiliser cet algorithme ?
+
+   - [ ] la classe du nouvel élément
+   - [x] la classe des éléments déjà connus
+   - [ ] la formule qui sépare les classes
+   - [ ] le résultat du vote à l'avance
+
+   > Il s'appuie sur des exemples déjà classés : c'est ce qui en fait un algorithme d'apprentissage.
 ::::
 
 ::::exercice[Distance et plus proche voisin]{niveau=2}

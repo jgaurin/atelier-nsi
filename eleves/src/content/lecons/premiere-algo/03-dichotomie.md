@@ -52,55 +52,6 @@ La zone est divisée par 2 à chaque étape : le coût est **logarithmique**. Po
 
 ## Exercices
 
-::::exercice[QCM : dichotomie]{niveau=1 type=quiz}
-Une question à la fois : la correction s'affiche aussitôt.
-
-1. Quelle condition est indispensable pour la recherche dichotomique ?
-
-   - [ ] le tableau a une taille paire
-   - [x] le tableau est trié
-   - [ ] l'élément est présent
-   - [ ] le tableau contient des entiers
-
-   > Sinon, on ne sait pas de quel côté chercher.
-
-1. Avec `debut = 0` et `fin = 9`, que vaut `milieu` ?
-
-   - [ ] 4,5
-   - [x] 4
-   - [ ] 5
-   - [ ] 9
-
-   > Division entière : 9 // 2 = 4.
-
-1. `t[milieu]` vaut 40 et on cherche 25. Que fait-on ?
-
-   - [x] `fin = milieu - 1`
-   - [ ] `debut = milieu + 1`
-   - [ ] `fin = milieu`
-   - [ ] on s'arrête
-
-   > 25 < 40 : on cherche à gauche.
-
-1. Combien d'étapes au plus pour un tableau trié de 1 000 éléments ?
-
-   - [ ] 1 000
-   - [ ] 500
-   - [ ] 100
-   - [x] environ 10
-
-   > 2¹⁰ = 1 024.
-
-1. Quel est le variant qui prouve la terminaison ?
-
-   - [ ] milieu
-   - [x] fin − debut
-   - [ ] x
-   - [ ] len(t)
-
-   > Il décroît strictement à chaque tour.
-::::
-
 ::::exercice[Dérouler]{niveau=1 type=completer}
 On cherche 23 dans `[2, 5, 8, 12, 16, 23, 38, 56]`, d'indices 0 à 7. Complète.
 
@@ -140,6 +91,91 @@ def dichotomie(t, x):
             debut = [[milieu + 1]]
     return -1
 ```
+::::
+
+::::exercice[QCM : les pièges de la dichotomie]{niveau=2 type=quiz}
+Une borne fausse d'une unité suffit à tout casser. La correction s'affiche aussitôt.
+
+1. Avec la fonction du cours, que renvoie la recherche de 5 dans `[5, 1, 9, 3]` ?
+
+   - [ ] 0
+   - [x] -1
+   - [ ] 3
+   - [ ] une erreur
+
+   > Le tableau n'est pas trié : on part à droite après avoir vu 1, et on ne voit jamais le 5. Il n'y a pas d'erreur, juste un résultat faux.
+
+1. Avec `debut = 3` et `fin = 8`, que vaut `milieu = (debut + fin) // 2` ?
+
+   - [ ] 5.5
+   - [x] 5
+   - [ ] 6
+   - [ ] 4
+
+   > `//` donne un quotient entier. Un indice ne peut pas valoir 5.5.
+
+1. On écrit `debut = milieu` au lieu de `debut = milieu + 1`. Que se passe-t-il en cherchant 3 dans `[1, 3]` ?
+
+   - [ ] on renvoie 1
+   - [ ] on renvoie -1
+   - [x] la boucle ne s'arrête jamais
+   - [ ] une `IndexError`
+
+   > `milieu` vaut 0, donc `debut` reste à 0 : la zone ne rétrécit plus.
+
+1. On écrit `while debut < fin:`. Que renvoie la recherche de 4 dans `[4]` ?
+
+   - [ ] 0
+   - [x] -1
+   - [ ] 4
+   - [ ] une erreur
+
+   > `debut` et `fin` valent 0 : la boucle ne s'exécute pas. Une zone d'une seule case doit encore être examinée.
+
+1. On écrit `fin = len(t)` au départ. Que provoque la recherche de 9 dans `[2, 4]` ?
+
+   - [ ] -1
+   - [ ] 1
+   - [x] une `IndexError`
+   - [ ] une boucle infinie
+
+   > `milieu` finit par valoir 2, mais la dernière case a l'indice 1.
+
+1. Combien de comparaisons environ pour un tableau trié d'un milliard d'éléments ?
+
+   - [x] 30
+   - [ ] 1 000
+   - [ ] 500 millions
+   - [ ] 1 milliard
+
+   > 2³⁰ dépasse le milliard. Diviser par deux à chaque étape va très vite.
+
+1. Si la taille du tableau double, le nombre maximal d'étapes :
+
+   - [ ] double
+   - [ ] est multiplié par 4
+   - [x] augmente d'environ 1
+   - [ ] ne change pas
+
+   > Une étape supplémentaire suffit à revenir à la moitié.
+
+1. Quelle quantité est un variant de la boucle ?
+
+   - [ ] `milieu`
+   - [ ] `x`
+   - [x] `fin - debut`
+   - [ ] `t[milieu]`
+
+   > `milieu` peut monter ou descendre. `fin - debut` diminue strictement à chaque tour.
+
+1. On doit faire **une seule** recherche dans un tableau **non trié** d'un million de valeurs. Que choisir ?
+
+   - [x] une recherche séquentielle
+   - [ ] trier, puis faire une dichotomie
+   - [ ] une dichotomie directement
+   - [ ] un tri par sélection, puis un parcours
+
+   > Trier coûte plus cher qu'un seul parcours. Trier devient rentable si les recherches sont nombreuses.
 ::::
 
 ::::exercice[Écrire la dichotomie]{niveau=2}

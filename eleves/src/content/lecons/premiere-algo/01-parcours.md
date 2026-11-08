@@ -65,55 +65,6 @@ Pour la recherche, le **pire cas** est l'élément absent.
 
 ## Exercices
 
-::::exercice[QCM : parcours séquentiel]{niveau=1 type=quiz}
-Une question à la fois : la correction s'affiche aussitôt.
-
-1. Combien de comparaisons fait la recherche d'un élément **absent** dans un tableau de 50 éléments ?
-
-   - [ ] 1
-   - [ ] 25
-   - [x] 50
-   - [ ] 2 500
-
-   > Il faut tout examiner pour conclure à l'absence.
-
-1. Quel est le coût de la recherche du maximum dans un tableau de taille n ?
-
-   - [ ] constant
-   - [x] linéaire
-   - [ ] quadratique
-   - [ ] logarithmique
-
-   > n − 1 comparaisons.
-
-1. Pourquoi initialise-t-on le maximum avec `t[0]` plutôt qu'avec 0 ?
-
-   - [ ] pour aller plus vite
-   - [x] parce que 0 serait faux si tous les nombres sont négatifs
-   - [ ] parce que 0 provoque une erreur
-   - [ ] c'est une convention sans importance
-
-   > Le résultat serait 0, qui n'est même pas dans le tableau.
-
-1. Si le tableau est 3 fois plus grand, le temps d'un algorithme linéaire est environ :
-
-   - [ ] le même
-   - [x] 3 fois plus grand
-   - [ ] 9 fois plus grand
-   - [ ] 3 fois plus petit
-
-   > Coût proportionnel à n.
-
-1. Quel est le meilleur cas pour la recherche d'une occurrence ?
-
-   - [x] l'élément est en première position
-   - [ ] l'élément est absent
-   - [ ] l'élément est au milieu
-   - [ ] le tableau est trié
-
-   > Une seule comparaison suffit.
-::::
-
 ::::exercice[Compléter la recherche du minimum]{niveau=1 type=completer}
 Complète cette fonction, qui renvoie l'**indice** du plus petit élément.
 
@@ -125,6 +76,109 @@ def indice_min(t):
             i_min = [[i]]
     return i_min
 ```
+::::
+
+::::exercice[QCM : les pièges du parcours]{niveau=2 type=quiz}
+Lis bien le code : un seul détail change tout. La correction s'affiche aussitôt.
+
+1. Que renvoie `indice([4, 8, 1], 8)` ?
+
+   ```python
+   def indice(t, x):
+       for i in range(len(t)):
+           if t[i] == x:
+               return i
+           else:
+               return -1
+   ```
+
+   - [ ] 1
+   - [x] -1
+   - [ ] 0
+   - [ ] une erreur
+
+   > Dès le premier tour, 4 est différent de 8 : le `else` renvoie -1. On ne peut conclure à l'absence qu'après la boucle.
+
+1. On initialise le maximum avec `m = 0`. Que renvoie la fonction pour `[-4, -1, -7]` ?
+
+   - [ ] -1
+   - [ ] -7
+   - [x] 0
+   - [ ] une erreur
+
+   > Aucune valeur ne dépasse 0 : `m` ne change jamais. Il faut partir de `t[0]`.
+
+1. Que renvoie cette fonction pour `[5, 5, 5]` ?
+
+   ```python
+   def compte(t):
+       n = 0
+       for x in t:
+           if x == 5:
+               n = n + 1
+           return n
+   ```
+
+   - [ ] 3
+   - [x] 1
+   - [ ] 0
+   - [ ] `None`
+
+   > Le `return` est dans la boucle : la fonction s'arrête à la fin du premier tour.
+
+1. Que renvoie `indice_max([7, 3, 7])` ?
+
+   ```python
+   def indice_max(t):
+       i_max = 0
+       for i in range(len(t)):
+           if t[i] >= t[i_max]:
+               i_max = i
+       return i_max
+   ```
+
+   - [ ] 0
+   - [ ] 1
+   - [x] 2
+   - [ ] 7
+
+   > Avec `>=`, une valeur égale remplace la précédente : on obtient la dernière position. La fonction renvoie un indice, pas une valeur.
+
+1. On écrit `m = t[0]`, puis `for i in range(1, len(t)):`. Cette boucle est-elle correcte pour chercher le maximum ?
+
+   - [x] oui, `t[0]` est déjà pris en compte
+   - [ ] non, elle oublie `t[0]`
+   - [ ] non, elle provoque une `IndexError`
+   - [ ] non, elle est fausse pour les nombres négatifs
+
+   > Commencer à l'indice 1 évite seulement une comparaison inutile.
+
+1. Que provoque `moyenne([])`, avec une fonction qui termine par `return s / len(t)` ?
+
+   - [ ] elle renvoie 0
+   - [ ] elle renvoie `None`
+   - [ ] une `IndexError`
+   - [x] une `ZeroDivisionError`
+
+   > La boucle ne fait aucun tour, puis on divise par 0. Aucune case n'est lue : ce n'est pas une `IndexError`.
+
+1. Dans quel cas une recherche séquentielle fait-elle n comparaisons sur un tableau de taille n ?
+
+   - [ ] l'élément est au milieu
+   - [x] l'élément est absent ou en dernière position
+   - [ ] l'élément est en première position
+   - [ ] jamais
+
+   > C'est le pire cas. En première position, une seule comparaison suffit.
+
+1. Un parcours linéaire prend 2 ms sur 1 000 éléments. Combien de temps prend-il environ sur 4 000 éléments ?
+
+   - [ ] 4 ms
+   - [x] 8 ms
+   - [ ] 16 ms
+   - [ ] 32 ms
+
+   > La taille est multipliée par 4, le temps aussi. 32 ms serait le résultat d'un coût quadratique.
 ::::
 
 ::::exercice[Minimum et maximum en un seul parcours]{niveau=2}

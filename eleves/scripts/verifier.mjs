@@ -90,7 +90,7 @@ function verifierCorps(fichier, corps, { estLecon, controle = false, programmati
     if (!programmation && (ex.type === "python" || ex.type === "sql")) erreur(fichier, `${nom} : pas de programmation ici, ce chapitre n'en demande pas au programme`);
     parNiveau[ex.niveau] = (parNiveau[ex.niveau] ?? 0) + 1;
     niveaux.push(ex.niveau);
-    if (ex.type === "quiz" && !controle && (ex.questions?.children.length ?? 0) > 6) avertir(fichier, `${nom} : QCM trop long`);
+    if (ex.type === "quiz" && !controle && (ex.questions?.children.length ?? 0) > 10) avertir(fichier, `${nom} : QCM trop long`);
     if (ex.id) {
       if (idsExercices.has(ex.id)) erreur(fichier, `${nom} : identifiant #${ex.id} déjà utilisé dans ${idsExercices.get(ex.id)}`);
       idsExercices.set(ex.id, fichier);

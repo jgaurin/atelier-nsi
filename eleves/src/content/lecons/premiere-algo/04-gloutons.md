@@ -48,55 +48,6 @@ Sac de 6 kg. A : 5 kg, 11 €, rapport 2,2. B : 3 kg, 6 €, rapport 2. C : 3 kg
 
 ## Exercices
 
-::::exercice[QCM : algorithmes gloutons]{niveau=1 type=quiz}
-Une question à la fois : la correction s'affiche aussitôt.
-
-1. Qu'est-ce qui caractérise un algorithme glouton ?
-
-   - [ ] il essaie toutes les solutions
-   - [x] il fait à chaque étape le meilleur choix immédiat, sans revenir en arrière
-   - [ ] il est toujours optimal
-   - [ ] il utilise la récursivité
-
-   > Choix localement optimal, jamais remis en cause.
-
-1. Avec des pièces de 1, 3 et 4, combien de pièces le glouton rend-il pour 6 ?
-
-   - [ ] 2
-   - [x] 3
-   - [ ] 4
-   - [ ] 6
-
-   > 4 + 1 + 1, alors que 3 + 3 suffit.
-
-1. Le glouton du rendu de monnaie est-il optimal pour l'euro ?
-
-   - [x] oui
-   - [ ] non
-   - [ ] seulement pour les sommes paires
-   - [ ] seulement sous 100 €
-
-   > Le système euro est dit canonique.
-
-1. Pour le sac à dos, quel critère glouton est en général le plus efficace ?
-
-   - [ ] les objets les plus lourds d'abord
-   - [ ] les objets les plus légers d'abord
-   - [x] le meilleur rapport valeur/masse d'abord
-   - [ ] l'ordre alphabétique
-
-   > Il privilégie la valeur par kilo.
-
-1. Un glouton donne la bonne réponse sur 10 exemples. On peut conclure :
-
-   - [ ] qu'il est optimal
-   - [x] rien de définitif : il faut une preuve ou chercher un contre-exemple
-   - [ ] qu'il est faux
-   - [ ] qu'il est rapide
-
-   > Un seul contre-exemple suffit à montrer qu'un glouton n'est pas optimal.
-::::
-
 ::::exercice[Rendre la monnaie]{niveau=1 type=reponses}
 On dispose de pièces de 50, 20, 10, 5, 2 et 1. Donne le nombre de pièces rendues par l'algorithme glouton.
 
@@ -135,6 +86,82 @@ On dispose de pièces de 50, 20, 10, 5, 2 et 1. Donne le nombre de pièces rendu
    ```
 
    - 2
+::::
+
+::::exercice[QCM : les pièges des gloutons]{niveau=2 type=quiz}
+Le meilleur choix immédiat n'est pas toujours le meilleur choix tout court. La correction s'affiche aussitôt.
+
+1. Combien de pièces le glouton rend-il pour 63, avec 50, 20, 10, 5, 2 et 1 ?
+
+   - [ ] 3
+   - [x] 4
+   - [ ] 5
+   - [ ] 6
+
+   > 50 + 10 + 2 + 1. Il n'y a pas de pièce de 3.
+
+1. Avec la fonction `rendu` du cours, sans tri préalable, combien de pièces obtient-on pour `rendu(6, [1, 3, 4])` ?
+
+   - [ ] 2
+   - [ ] 3
+   - [x] 6
+   - [ ] une erreur
+
+   > La fonction suit l'ordre donné : elle rend d'abord six pièces de 1. Il faut lui donner les pièces de la plus grande à la plus petite.
+
+1. Avec des pièces de 4, 3 et 1, pour rendre 6, le glouton est-il optimal ?
+
+   - [ ] oui, il rend 2 pièces
+   - [x] non, il en rend 3 alors que 2 suffisent
+   - [ ] non, il ne trouve aucune solution
+   - [ ] oui, car il commence par la plus grande
+
+   > Il rend 4 + 1 + 1, alors que 3 + 3 suffit.
+
+1. Dans `rendu`, on remplace `while somme >= p:` par `if somme >= p:`. Que devient `rendu(40, [20, 10, 5])` ?
+
+   - [ ] `[20, 20]`
+   - [x] `[20, 10, 5]`, et il reste 5 à rendre
+   - [ ] `[20, 10, 10]`
+   - [ ] une erreur
+
+   > Avec `if`, chaque pièce est utilisée au plus une fois.
+
+1. Quels objets choisir en premier ? A : 2 kg, 10 €. B : 5 kg, 20 €. C : 1 kg, 3 €.
+
+   - [x] A, car son rapport valeur / masse est le plus élevé
+   - [ ] B, car il vaut le plus cher
+   - [ ] C, car il est le plus léger
+   - [ ] peu importe
+
+   > Les rapports valent 5, 4 et 3. Le plus cher n'est pas le plus rentable.
+
+1. Sac de 10 kg. A : 6 kg, 12 €. B : 5 kg, 9 €. C : 5 kg, 9 €. Que rapporte le glouton selon le rapport valeur / masse ?
+
+   - [x] 12 €
+   - [ ] 18 €
+   - [ ] 21 €
+   - [ ] 30 €
+
+   > Il prend A, de rapport 2, puis il reste 4 kg : plus rien ne rentre. Pourtant, B et C rapporteraient 18 €.
+
+1. Un programme essaie toutes les combinaisons d'objets et garde la meilleure. Est-il glouton ?
+
+   - [ ] oui, car il cherche le maximum
+   - [x] non, car un glouton fait un seul choix à chaque étape, sans revenir en arrière
+   - [ ] oui, car il utilise un sac à dos
+   - [ ] non, car il est plus rapide
+
+   > C'est une recherche exhaustive : elle donne l'optimum, mais elle est bien plus lente.
+
+1. Un glouton donne la bonne réponse sur 10 exemples. Que peut-on conclure ?
+
+   - [ ] il est toujours optimal
+   - [ ] il est optimal pour les petites valeurs
+   - [x] rien de général : un contre-exemple peut exister
+   - [ ] il est forcément faux
+
+   > Des exemples réussis ne constituent pas une preuve.
 ::::
 
 ::::exercice[Le sac à dos à la main]{niveau=2 type=completer}

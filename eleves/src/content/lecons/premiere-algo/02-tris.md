@@ -91,55 +91,6 @@ Pour la sélection, à la fin, les n − 1 premières cases contiennent les n �
 
 ## Exercices
 
-::::exercice[QCM : les tris]{niveau=1 type=quiz}
-Une question à la fois : la correction s'affiche aussitôt.
-
-1. Dans le tri par sélection, que fait-on à chaque tour ?
-
-   - [ ] on insère l'élément suivant dans la partie triée
-   - [x] on cherche le minimum de la partie non triée et on l'échange avec son premier élément
-   - [ ] on échange deux voisins mal rangés
-   - [ ] on coupe le tableau en deux
-
-   > Une sélection, un échange.
-
-1. Combien de comparaisons fait le tri par sélection sur 10 éléments ?
-
-   - [ ] 10
-   - [ ] 20
-   - [x] 45
-   - [ ] 100
-
-   > 9 + 8 + … + 1 = 10 × 9 / 2 = 45.
-
-1. Si on double la taille du tableau, le temps d'un tri quadratique est multiplié par :
-
-   - [ ] 2
-   - [x] 4
-   - [ ] 8
-   - [ ] il ne change pas
-
-   > (2n)² = 4n².
-
-1. Quel invariant correspond au tri par sélection ?
-
-   - [ ] la partie gauche est triée mais peut encore changer
-   - [x] la partie gauche contient les plus petits éléments, triés, à leur place définitive
-   - [ ] la partie droite est triée
-   - [ ] le tableau est toujours trié
-
-   > Les éléments placés par la sélection ne bougent plus.
-
-1. Quel élément justifie la terminaison du `while` dans le tri par insertion ?
-
-   - [ ] le tableau est fini
-   - [x] j diminue de 1 à chaque tour et reste positif ou nul
-   - [ ] valeur diminue
-   - [ ] la boucle `for` extérieure
-
-   > j est un variant de boucle.
-::::
-
 ::::exercice[Dérouler le tri par sélection]{niveau=1 type=completer}
 Complète l'état du tableau après chaque tour.
 
@@ -183,6 +134,96 @@ for i in range(1, len(t)):
 | 1 | [[2 7 9 4]] |
 | 2 | [[2 7 9 4]] |
 | 3 | [[2 4 7 9]] |
+::::
+
+::::exercice[QCM : les pièges des tris]{niveau=2 type=quiz}
+Ne confonds pas les deux tris : c'est là que se cachent la plupart des pièges. La correction s'affiche aussitôt.
+
+1. Que devient `[4, 2, 7, 1]` après le **premier** tour du tri par sélection ?
+
+   - [ ] `[2, 4, 7, 1]`
+   - [x] `[1, 2, 7, 4]`
+   - [ ] `[1, 4, 2, 7]`
+   - [ ] `[1, 2, 4, 7]`
+
+   > Le minimum 1 est **échangé** avec 4. Il n'y a pas de décalage : `[1, 4, 2, 7]` serait une insertion. `[2, 4, 7, 1]` est un tour d'insertion.
+
+1. Que devient `[5, 3, 8, 1]` après **deux** tours du tri par insertion ?
+
+   - [x] `[3, 5, 8, 1]`
+   - [ ] `[1, 3, 8, 5]`
+   - [ ] `[3, 5, 1, 8]`
+   - [ ] `[1, 3, 5, 8]`
+
+   > On insère 3, puis 8, déjà à sa place. Le 1 n'a pas encore été regardé. `[1, 3, 8, 5]` serait deux tours de sélection.
+
+1. Au début du tour i du tri par **insertion**, que sait-on des i premières cases ?
+
+   - [ ] elles contiennent les i plus petites valeurs du tableau
+   - [ ] elles sont à leur place définitive
+   - [x] elles sont triées, mais une valeur plus petite peut encore s'y insérer
+   - [ ] on ne sait rien
+
+   > Les deux premières réponses décrivent l'invariant de la **sélection**.
+
+1. Pour échanger deux cases, on écrit `t[0] = t[1]` puis `t[1] = t[0]`. Que devient `t = [3, 1]` ?
+
+   - [ ] `[1, 3]`
+   - [x] `[1, 1]`
+   - [ ] `[3, 3]`
+   - [ ] `[3, 1]`
+
+   > La première ligne efface le 3. Il faut écrire `t[0], t[1] = t[1], t[0]`.
+
+1. Le tableau de 100 éléments est **déjà trié**. Combien de comparaisons fait le tri par **sélection** ?
+
+   - [ ] 0
+   - [ ] 99
+   - [x] 4 950
+   - [ ] 10 000
+
+   > La sélection cherche toujours le minimum du reste : 99 + 98 + … + 1 = 4 950. Être déjà trié ne l'aide pas.
+
+1. Même tableau déjà trié. Combien de comparaisons fait le tri par **insertion** ?
+
+   - [ ] 0
+   - [x] 99
+   - [ ] 4 950
+   - [ ] 10 000
+
+   > Chaque élément est comparé une fois à son voisin de gauche, puis il reste en place. C'est le meilleur cas.
+
+1. Un tri quadratique prend 3 s sur 1 000 valeurs. Combien de temps prend-il environ sur 3 000 valeurs ?
+
+   - [ ] 9 s
+   - [x] 27 s
+   - [ ] 3 000 s
+   - [ ] 6 s
+
+   > La taille est multipliée par 3, le temps par 3² = 9. 9 s est le piège : c'est le coefficient, pas le résultat.
+
+1. Dans le `while` du tri par insertion, quelle quantité est un **variant** ?
+
+   - [ ] `valeur`
+   - [x] `j`
+   - [ ] `t[j]`
+   - [ ] `len(t)`
+
+   > `j` est un entier qui diminue à chaque tour et ne descend pas sous 0. `valeur` ne change pas.
+
+1. La fonction du cours n'a pas de `return`. Qu'affiche ce code ?
+
+   ```python
+   t2 = tri_selection([3, 1, 2])
+   print(t2)
+   ```
+
+   - [ ] `[1, 2, 3]`
+   - [ ] `[3, 1, 2]`
+   - [x] `None`
+   - [ ] une erreur
+
+   > Le tri modifie le tableau reçu, en place, et ne renvoie rien.
 ::::
 
 ::::exercice[Écrire le tri par sélection]{niveau=2}
