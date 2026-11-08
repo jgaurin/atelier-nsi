@@ -96,7 +96,7 @@ function verifierCorps(fichier, corps, { estLecon, controle = false, programmati
     if (ex.enonce.length === 0) erreur(fichier, `${nom} : énoncé vide`);
     if (ex.type === "quiz") {
       const questions = ex.questions?.children ?? [];
-      if (questions.length < 5) erreur(fichier, `${nom} : un grand QCM compte au moins 5 questions (liste numérotée)`);
+      if (questions.length < 4) erreur(fichier, `${nom} : un QCM compte au moins 4 questions (liste numérotée)`);
       questions.forEach((item, i) => {
         const q = analyserQuestion(item);
         const options = q.options?.children ?? [];
