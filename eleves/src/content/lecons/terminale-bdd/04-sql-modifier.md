@@ -38,6 +38,8 @@ Les contraintes de référence imposent un ordre :
 - on insère un élève **avant** ses notes ;
 - on supprime ses notes **avant** l'élève.
 
+Une requête qui viole une contrainte est **refusée** : la base ne change pas. Pour changer une clé déjà référencée, on insère la nouvelle ligne, on met à jour les références, puis on supprime l'ancienne ligne.
+
 ## L'essentiel
 
 - `INSERT INTO t (c1, c2) VALUES (v1, v2);`
@@ -68,15 +70,6 @@ Complète ces requêtes.
 
 [[DELETE]] [[FROM]] classe WHERE id_classe = '2D4';
 ```
-::::
-
-::::exercice[Dans quel ordre ?]{niveau=2 type=ordre}
-On veut supprimer un élève et enregistrer un nouvel élève avec une note. Remets ces opérations dans un ordre accepté par le SGBD.
-
-1. Supprimer les notes de l'ancien élève.
-1. Supprimer l'ancien élève.
-1. Insérer le nouvel élève.
-1. Insérer la note du nouvel élève.
 ::::
 
 ::::exercice[Rattrapage]{niveau=2 base=lycee}
@@ -110,5 +103,23 @@ WHERE n.id_note = 50;
 ```
 
 L'élève doit exister **avant** sa note, qui la référence par une clé étrangère.
+:::
+::::
+
+::::exercice[Renommer une classe]{niveau=3 base=lycee}
+La classe `1G2` s'appelle désormais `1G5`. Elle est de niveau `'Première'` et reste en salle `'C203'`. Le SGBD refuse `UPDATE classe SET id_classe = '1G5' WHERE id_classe = '1G2';`.
+
+1. À l'écrit : pourquoi cette requête est-elle refusée ?
+2. Écris les trois requêtes qui font ce changement en respectant les contraintes, puis une requête qui affiche le nom des élèves de `1G5`, triés par nom.
+
+:::corrige
+```sql solution
+INSERT INTO classe (id_classe, niveau, salle) VALUES ('1G5', 'Première', 'C203');
+UPDATE eleve SET id_classe = '1G5' WHERE id_classe = '1G2';
+DELETE FROM classe WHERE id_classe = '1G2';
+SELECT nom FROM eleve WHERE id_classe = '1G5' ORDER BY nom;
+```
+
+**Question 1.** `id_classe` est référencée par la clé étrangère de `eleve`. La modifier laisserait des élèves rattachés à une classe qui n'existe plus : la contrainte de référence l'interdit.
 :::
 ::::

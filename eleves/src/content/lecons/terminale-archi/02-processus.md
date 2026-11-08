@@ -26,6 +26,8 @@ kill 4321       # arrêter le processus 4321
 - **Élu** : il s'exécute.
 - **Bloqué** : il attend une ressource, comme une lecture sur le disque.
 
+Un processus passe de prêt à élu quand l'ordonnanceur le choisit, d'élu à bloqué quand il attend une ressource, puis de bloqué à prêt quand la ressource arrive.
+
 ## 3. L'ordonnancement
 
 L'**ordonnanceur** choisit quel processus prêt s'exécute. Trois processus : P1 (arrivé à 0, durée 5), P2 (arrivé à 1, durée 2), P3 (arrivé à 2, durée 1).
@@ -98,35 +100,6 @@ Une question à la fois : la correction s'affiche aussitôt.
    - [ ] il garde le processeur
 
    > Chacun son tour.
-
-1. Quel est le défaut de la stratégie « plus court d'abord » ?
-
-   - [ ] elle est toujours plus lente
-   - [x] un long processus peut attendre indéfiniment (famine)
-   - [ ] elle provoque des interblocages
-   - [ ] elle ne marche qu'avec deux processus
-
-   > S'il arrive sans cesse des processus courts.
-
-1. Trois processus de durées 6, 1 et 1 arrivent ensemble dans cet ordre. En FIFO, quand finit le dernier ?
-
-   - [ ] à 1
-   - [ ] à 6
-   - [x] à 8
-   - [ ] à 2
-
-   > 6 + 1 + 1 ; les deux courts attendent derrière le long.
-
-::::
-
-::::exercice[Quel état ?]{niveau=1 type=associer}
-Dans quel état se trouve le processus ?
-
-| Situation | État |
-| --- | --- |
-| Il s'exécute sur le processeur | élu |
-| Il attend que le processeur se libère | prêt |
-| Il attend la fin d'une lecture sur le disque | bloqué |
 ::::
 
 ::::exercice[Premier arrivé, premier servi]{niveau=1 type=completer}
@@ -193,4 +166,71 @@ l'attente moyenne, mais il faut connaître les durées et le long P1 peut subir 
 **tourniquet** (avec priorités) : chaque programme obtient régulièrement le processeur, la souris et le clavier restent réactifs même si un
 calcul long tourne, et il n'est pas nécessaire de connaître les durées à l'avance.
 :::
+::::
+
+::::exercice[Observer une machine]{niveau=3 type=reponses}
+La commande `ps -ef` affiche ce tableau, simplifié.
+
+| PID | PPID | Commande |
+| --- | --- | --- |
+| 1 | 0 | init |
+| 420 | 1 | bash |
+| 512 | 420 | python jeu.py |
+| 530 | 512 | python son.py |
+| 600 | 1 | serveur |
+
+Ensuite, on applique le tourniquet avec un quantum de 2 aux processus P1 (arrivée 0, durée 3), P2 (arrivée 1, durée 4) et P3 (arrivée 4, durée 1). Un processus qui arrive à la fin d'un quantum entre dans la file **avant** le processus interrompu.
+
+1. Quel est le PID du parent de `python son.py` ?
+
+   - 512
+
+1. Quelle commande a créé `bash` ?
+
+   - init
+
+1. Combien de processus descendent de `bash`, en comptant les enfants et les petits-enfants ?
+
+   - 2
+
+1. À quel instant P1 se termine-t-il ?
+
+   ```python calcul
+   print(5)
+   ```
+
+   - 5
+
+1. À quel instant P3 se termine-t-il ?
+
+   ```python calcul
+   arrivees = {"P1": 0, "P2": 1, "P3": 4}
+   reste = {"P1": 3, "P2": 4, "P3": 1}
+   file, fins, t, attente = ["P1"], {}, 0, ["P2", "P3"]
+   while file:
+       p = file.pop(0)
+       d = min(2, reste[p])
+       t2 = t + d
+       for q in list(attente):
+           if arrivees[q] <= t2:
+               file.append(q)
+               attente.remove(q)
+       reste[p] -= d
+       t = t2
+       if reste[p] > 0:
+           file.append(p)
+       else:
+           fins[p] = t
+   print(fins["P3"])
+   ```
+
+   - 6
+
+1. Quel est le temps de séjour de P2 ?
+
+   ```python calcul
+   print(8 - 1)
+   ```
+
+   - 7
 ::::

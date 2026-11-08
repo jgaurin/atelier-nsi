@@ -25,6 +25,8 @@ Quand les données deviennent nombreuses et partagées, on utilise une **base de
 - La **clé primaire** identifie **de façon unique** chaque ligne. On la souligne.
 - Une **clé étrangère** fait référence à la clé primaire d'une autre relation. On la note avec `#`.
 
+Une clé primaire doit rester unique pour **toutes** les lignes possibles. Un nom ne convient donc pas : deux personnes peuvent le porter. On ajoute souvent un identifiant.
+
 Exemple :
 
 - classe(<u>id_classe</u>, niveau, salle)
@@ -51,24 +53,6 @@ Le **schéma** est la **structure** de la base. Les lignes en sont le **contenu*
 
 ::::exercice[QCM : modèle relationnel]{niveau=1 type=quiz}
 Une question à la fois : la correction s'affiche aussitôt.
-
-1. Dans le modèle relationnel, une relation est :
-
-   - [ ] un lien entre deux tables
-   - [x] une table
-   - [ ] une ligne
-   - [ ] une requête
-
-   > Le vocabulaire est trompeur : « relation » désigne la table elle-même.
-
-1. Un enregistrement est :
-
-   - [ ] une colonne
-   - [x] une ligne
-   - [ ] la base entière
-   - [ ] une clé
-
-   > On dit aussi n-uplet.
 
 1. Quel attribut convient comme clé primaire de `eleve` ?
 
@@ -106,15 +90,6 @@ Une question à la fois : la correction s'affiche aussitôt.
 
    > La clé primaire doit être unique et non vide.
 
-1. Une note de 25 sur 20 viole une contrainte :
-
-   - [x] de domaine
-   - [ ] d'entité
-   - [ ] de référence
-   - [ ] de redondance
-
-   > La base impose `valeur BETWEEN 0 AND 20`.
-
 1. Que décrit le schéma relationnel ?
 
    - [ ] les données contenues dans la base
@@ -123,15 +98,6 @@ Une question à la fois : la correction s'affiche aussitôt.
    - [ ] les utilisateurs
 
    > Le contenu (les lignes) change sans cesse ; le schéma rarement.
-
-1. Comment note-t-on une clé étrangère dans un schéma relationnel ?
-
-   - [ ] en la soulignant
-   - [x] avec un # devant
-   - [ ] en majuscules
-   - [ ] entre parenthèses
-
-   > La clé primaire, elle, est soulignée.
 ::::
 
 ::::exercice[Quelle contrainte ?]{niveau=1 type=associer}
@@ -164,31 +130,35 @@ On considère film(<u>id_film</u>, titre, annee, #id_realisateur) et realisateur
    - non
 ::::
 
-::::exercice[Lire un schéma]{niveau=1}
-Voici le schéma de la base d'une médiathèque :
+::::exercice[Une application de covoiturage]{niveau=3}
+Une application utilise le schéma suivant :
 
-- auteur(<u>id_auteur</u>, nom, prenom, naissance, nationalite)
-- livre(<u>id_livre</u>, titre, #id_auteur, annee, genre, pages)
-- adherent(<u>id_adherent</u>, nom, prenom, email, ville, inscription)
-- emprunt(<u>id_emprunt</u>, #id_livre, #id_adherent, date_emprunt, date_retour)
+- conducteur(<u>id_conducteur</u>, nom, telephone)
+- trajet(<u>id_trajet</u>, depart, arrivee, jour, #id_conducteur)
+- reservation(<u>id_reservation</u>, #id_trajet, passager, places)
 
-(a) Donne les clés primaires et étrangères de chaque relation. (b) Un livre peut-il avoir deux auteurs dans ce schéma ? (c) Pourquoi ne pas
-mettre le nom de l'auteur directement dans `livre` ? (d) Quelles opérations le SGBD refusera-t-il si l'on veut supprimer l'adhérent n° 3 qui a
-des emprunts en cours ?
+1. Quelles sont les clés étrangères ? Que référencent-elles ?
+2. Pourrait-on choisir `nom` comme clé primaire de `conducteur` ? Justifie.
+3. Propose une contrainte de domaine pertinente pour l'attribut `places`.
+4. On ajoute une réservation pour le trajet 99, qui n'existe pas. Que se passe-t-il ? Quelle contrainte est en jeu ?
+5. On veut supprimer un conducteur qui a des trajets. Pourquoi est-ce refusé ? Que faut-il faire avant ?
+6. Ajouter une colonne `prix` et ajouter une nouvelle réservation : laquelle de ces actions modifie le schéma ?
 
 :::criteres
-- (a) Clés primaires : les id ; clés étrangères : `livre.id_auteur`, `emprunt.id_livre`, `emprunt.id_adherent`.
-- (b) Non : un seul `id_auteur` par livre ; il faudrait une relation d'association écrit(#id_livre, #id_auteur).
-- (c) Redondance : le nom serait répété pour chaque livre de l'auteur, avec risque d'incohérence.
-- (d) La suppression est refusée (contrainte de référence) tant que des emprunts le référencent.
+- `id_conducteur` référence `conducteur`, `id_trajet` référence `trajet`.
+- Non : deux conducteurs peuvent avoir le même nom.
+- `places` est un entier strictement positif.
+- Refus, à cause de la contrainte de référence.
+- Il faut d'abord supprimer ce qui dépend de ce conducteur : réservations, puis trajets.
+- Ajouter une colonne modifie le schéma ; ajouter une ligne modifie le contenu.
 :::
 
 :::corrige
-(a) **Clés primaires** : `id_auteur`, `id_livre`, `id_adherent`, `id_emprunt`. **Clés étrangères** : `livre.id_auteur` (vers `auteur`),
-`emprunt.id_livre` (vers `livre`) et `emprunt.id_adherent` (vers `adherent`). (b) **Non** : chaque livre n'a qu'**un** `id_auteur`. Pour
-plusieurs auteurs, on supprimerait cet attribut et on créerait une relation d'association `ecrit(#id_livre, #id_auteur)`, dont la clé
-primaire est le couple. (c) Le nom de l'auteur serait **répété** pour chacun de ses livres (redondance) : une faute corrigée sur un seul livre
-rendrait la base incohérente. (d) Le SGBD **refuse** de supprimer l'adhérent tant que des lignes de `emprunt` le référencent (contrainte de
-**référence**) : il faut d'abord traiter ses emprunts.
+1. `id_conducteur`, dans `trajet`, référence la clé primaire de `conducteur`. `id_trajet`, dans `reservation`, référence celle de `trajet`.
+2. Non. Une clé primaire doit être unique, or deux conducteurs peuvent avoir le même nom.
+3. `places` doit être un entier strictement positif.
+4. Le SGBD refuse l'insertion : la **contrainte de référence** impose que `id_trajet` désigne un trajet existant.
+5. Des trajets référencent ce conducteur : le supprimer violerait la contrainte de référence. Il faut d'abord supprimer les réservations de ses trajets, puis ses trajets, puis le conducteur.
+6. Ajouter une colonne modifie le **schéma**, donc la structure. Ajouter une réservation ne change que le **contenu**.
 :::
 ::::

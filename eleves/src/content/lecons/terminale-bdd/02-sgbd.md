@@ -23,7 +23,7 @@ Une seule grande table répète les mêmes informations : c'est de la **redondan
 - **Anomalie d'insertion** : impossible d'enregistrer une classe sans élève.
 - **Anomalie de suppression** : supprimer le dernier élève d'une classe fait disparaître sa salle.
 
-La solution : découper en plusieurs relations reliées par des **clés étrangères**.
+La solution : découper en plusieurs relations reliées par des **clés étrangères**. Ici, une relation `classe` garde la salle une seule fois, et chaque élève référence sa classe.
 
 ## 2. Les services d'un SGBD
 
@@ -93,22 +93,26 @@ qu'une fois à une activité.
 :::
 ::::
 
-::::exercice[Pourquoi un SGBD ?]{niveau=2}
-Le lycée gère les réservations de salles dans un fichier tableur partagé, ouvert par plusieurs professeurs en même temps. Explique trois
-problèmes qui peuvent survenir et comment un SGBD les résout.
+::::exercice[La billetterie d'un festival]{niveau=3}
+Un festival enregistre tout dans une seule table : billet(spectateur, email, concert, date_concert, salle, capacite_salle).
+
+1. Donne un exemple précis de chaque anomalie : mise à jour, insertion, suppression.
+2. Propose un schéma relationnel sans ces anomalies, avec les clés primaires et étrangères.
+3. Deux guichets vendent au même instant la dernière place d'un concert. Quel service du SGBD évite une double vente ?
+4. Une coupure de courant survient juste après une vente. Quel service garantit que la vente n'est pas perdue ?
+5. Seul le personnel doit pouvoir modifier les concerts. Quel service est concerné ?
 
 :::criteres
-- Accès concurrents : deux professeurs réservent la même salle au même moment, l'un écrase l'autre ; le SGBD gère les transactions.
-- Intégrité : rien n'empêche une salle inexistante ou un créneau incohérent ; le SGBD vérifie les contraintes.
-- Sécurité et persistance : n'importe qui peut tout effacer, pas de reprise après panne ; le SGBD gère les droits et les sauvegardes.
+- Trois anomalies illustrées avec les colonnes du sujet.
+- Des relations séparées pour spectateur, salle, concert, billet, reliées par des clés étrangères.
+- Accès concurrents, persistance, sécurisation des accès.
 :::
 
 :::corrige
-1. **Accès concurrents** : deux professeurs réservent la salle C201 au même créneau, chacun sur sa copie ouverte ; le dernier qui enregistre
-   **écrase** l'autre. Un SGBD traite les modifications comme des **transactions** : la seconde voit la salle déjà prise et est refusée.
-2. **Intégrité** : le tableur accepte une salle qui n'existe pas, une date mal écrite, une réservation sans professeur. Un SGBD impose des
-   **contraintes** (domaine, clé étrangère vers la table des salles, unicité du couple salle-créneau).
-3. **Sécurité et persistance** : n'importe qui peut supprimer toutes les lignes, et un fichier corrompu fait tout perdre. Un SGBD gère des
-   **droits** (un professeur ne modifie que ses réservations), journalise les opérations et permet la **reprise** après panne.
+1. **Mise à jour** : si une salle change de capacité, il faut modifier toutes les lignes de ses billets. **Insertion** : on ne peut pas enregistrer un concert sans billet vendu. **Suppression** : supprimer le dernier billet d'un concert efface les informations sur ce concert.
+2. spectateur(<u>id_spectateur</u>, nom, email) ; salle(<u>id_salle</u>, nom, capacite) ; concert(<u>id_concert</u>, titre, date_concert, #id_salle) ; billet(<u>id_billet</u>, #id_spectateur, #id_concert).
+3. La gestion des **accès concurrents**.
+4. La **persistance**.
+5. La **sécurisation des accès**.
 :::
 ::::

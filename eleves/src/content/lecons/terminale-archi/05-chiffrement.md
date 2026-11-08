@@ -26,7 +26,7 @@ Deux clés liées :
 
 Pour écrire à Bob, Alice chiffre avec la **clé publique de Bob**. Seul Bob peut lire.
 
-C'est plus sûr pour démarrer un échange, mais **beaucoup plus lent**.
+La clé privée ne circule jamais : c'est plus sûr pour démarrer un échange. En revanche, c'est **beaucoup plus lent**.
 
 ## 3. HTTPS
 
@@ -56,15 +56,6 @@ Une question à la fois : la correction s'affiche aussitôt.
    - [ ] seul le destinataire a une clé
 
    > Émetteur et destinataire partagent le même secret.
-
-1. Quel est le principal problème du chiffrement symétrique ?
-
-   - [ ] il est trop lent
-   - [x] il faut partager la clé secrètement au préalable
-   - [ ] il ne marche que sur du texte
-   - [ ] il est toujours facile à casser
-
-   > Comment partager un secret à travers un réseau espionné ?
 
 1. Alice veut envoyer un message secret à Bob avec un chiffrement asymétrique. Elle chiffre avec :
 
@@ -101,53 +92,6 @@ Une question à la fois : la correction s'affiche aussitôt.
    - [ ] à choisir le routeur
 
    > Ensuite, l'échange se fait en symétrique.
-
-1. À quoi sert le certificat d'un site ?
-
-   - [ ] à prouver que le site est honnête
-   - [x] à prouver que la clé publique appartient bien à ce nom de domaine
-   - [ ] à accélérer la connexion
-   - [ ] à stocker les mots de passe
-
-   > Il est signé par une autorité de certification.
-
-1. Contre quelle attaque protège le certificat ?
-
-   - [ ] le déni de service
-   - [x] l'homme du milieu
-   - [ ] le virus
-   - [ ] l'hameçonnage par courriel
-
-   > Un intermédiaire ne peut pas se faire passer pour le serveur.
-
-1. Combien de clés faut-il essayer au plus pour casser un chiffrement de César ?
-
-   - [x] 25
-   - [ ] 26 × 26
-   - [ ] 2¹²⁸
-   - [ ] une infinité
-
-   > Il n'y a que 25 décalages utiles.
-
-1. Retrouver un message sans connaître la clé, c'est :
-
-   - [ ] chiffrer
-   - [ ] déchiffrer
-   - [x] décrypter
-   - [ ] crypter
-
-   > « Crypter » n'existe pas en cryptographie.
-::::
-
-::::exercice[Symétrique ou asymétrique ?]{niveau=1 type=associer}
-Classe chaque affirmation.
-
-| Affirmation | Type |
-| --- | --- |
-| Une seule clé, partagée à l'avance | symétrique |
-| Une clé publique et une clé privée | asymétrique |
-| Le chiffre de César | symétrique |
-| Sert, dans HTTPS, à transmettre la clé de session | asymétrique |
 ::::
 
 ::::exercice[Chiffrer à la main]{niveau=1 type=reponses}
@@ -174,7 +118,7 @@ On utilise le chiffre de César.
    - 25
 ::::
 
-::::exercice[Les étapes de HTTPS]{niveau=1 type=ordre}
+::::exercice[Les étapes de HTTPS]{niveau=2 type=ordre}
 Remets dans l'ordre l'établissement d'une connexion HTTPS.
 
 1. Le serveur envoie son certificat, avec sa clé publique.
@@ -206,5 +150,28 @@ aléatoire (la clé de session), le met dans une boîte, la ferme avec le cadena
 ne peut pas l'ouvrir. Maintenant, ton navigateur et le serveur connaissent tous les deux ce code secret, et l'utilisent pour chiffrer tout le
 reste de l'échange en **symétrique**, dont ton **mot de passe**. Pourquoi ne pas tout faire avec le cadenas ? Parce que le chiffrement
 asymétrique est environ **mille fois plus lent** : on ne l'utilise que pour s'échanger le code secret.
+:::
+::::
+
+::::exercice[Alice, Bob et Ève]{niveau=3}
+Alice veut envoyer un message secret à Bob, qu'elle n'a jamais rencontré. Ève écoute tout ce qui passe sur le réseau.
+
+1. Alice et Bob utilisent le chiffre de César. Pourquoi ce choix est-il doublement mauvais ?
+2. Alice chiffre maintenant avec la clé publique de Bob. Ève intercepte le message et connaît cette clé publique. Peut-elle lire le message ? Justifie.
+3. Ève réussit à donner à Alice sa propre clé publique, en la faisant passer pour celle de Bob. Que peut-elle faire ? Quel élément de HTTPS empêche cette attaque ?
+4. Pourquoi Alice et Bob ne chiffrent-ils pas toute leur conversation en asymétrique ? Que font-ils à la place ?
+
+:::criteres
+- César : clé à partager au préalable, et seulement 25 décalages utiles à essayer.
+- Non : seule la clé privée de Bob déchiffre.
+- Attaque de l'homme du milieu, évitée par le certificat.
+- L'asymétrique est trop lent : il sert à échanger une clé symétrique.
+:::
+
+:::corrige
+1. Il faut partager la clé au préalable, ce qu'Alice et Bob ne peuvent pas faire en secret. De plus, il n'y a que 25 décalages utiles : on les essaie tous très vite.
+2. Non. La clé publique sert seulement à chiffrer ; seule la **clé privée** de Bob déchiffre, et elle ne circule jamais.
+3. Ève lit le message avec sa clé privée, puis le chiffre avec la vraie clé de Bob et le transmet : c'est l'attaque de l'**homme du milieu**. Le **certificat** permet de vérifier que la clé appartient bien au serveur annoncé.
+4. L'asymétrique est beaucoup plus lent. Il sert seulement à échanger une **clé de session**, puis toute la conversation est chiffrée en **symétrique**.
 :::
 ::::

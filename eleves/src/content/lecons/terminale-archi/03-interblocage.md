@@ -83,3 +83,33 @@ Deux processus ont besoin d'un fichier et d'une imprimante. Propose une règle q
 Les deux processus doivent demander les ressources dans le même ordre, par exemple toujours l'imprimante avant le fichier. Celui qui obtient l'imprimante peut ensuite obtenir le fichier, pendant que l'autre attend l'imprimante sans rien détenir. Il n'y a plus d'attente circulaire.
 :::
 ::::
+
+::::exercice[Trois processus, trois ressources]{niveau=3}
+Trois processus utilisent des ressources A, B et C. Chacun garde la première ressource pendant qu'il demande la seconde.
+
+- P1 demande A, puis B.
+- P2 demande B, puis C.
+- P3 demande C, puis A.
+
+1. Décris une suite d'événements qui mène à un interblocage.
+2. Écris le cycle d'attente correspondant.
+3. On impose à tous de demander les ressources dans l'ordre A, B, C. Que devient la demande de P3 ?
+4. Explique pourquoi aucun cycle d'attente ne peut alors se former.
+5. Le schéma d'attente est un graphe orienté. Quelle propriété de ce graphe faut-il rechercher pour détecter un interblocage ?
+
+:::criteres
+- P1 tient A, P2 tient B, P3 tient C, puis chacun demande la suivante.
+- P1 attend P2, P2 attend P3, P3 attend P1.
+- P3 demande A, puis C.
+- Chacun n'attend qu'une ressource plus loin dans l'ordre : la chaîne d'attente ne peut pas revenir en arrière.
+- La présence d'un cycle.
+:::
+
+:::corrige
+1. P1 obtient A, P2 obtient B, P3 obtient C. Ensuite, P1 demande B, P2 demande C et P3 demande A : tous sont bloqués.
+2. P1 attend P2, qui attend P3, qui attend P1.
+3. P3 doit demander **A, puis C**.
+4. Un processus qui attend une ressource détient seulement des ressources situées avant elle dans l'ordre. Les attentes vont donc toujours vers une ressource plus loin : on ne peut pas revenir au point de départ.
+5. Il faut rechercher un **cycle** dans ce graphe.
+:::
+::::

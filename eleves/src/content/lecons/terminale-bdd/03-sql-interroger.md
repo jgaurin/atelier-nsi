@@ -51,6 +51,16 @@ WHERE note.id_matiere = 2;
 
 `JOIN … ON` associe les lignes de deux tables grâce à leur clé.
 
+On peut donner un nom court à une table, et enchaîner les jointures :
+
+```sql exec base=lycee
+SELECT e.nom, m.intitule, n.valeur
+FROM note n
+JOIN eleve e ON n.id_eleve = e.id_eleve
+JOIN matiere m ON n.id_matiere = m.id_matiere
+WHERE n.valeur >= 18;
+```
+
 ## L'essentiel
 
 - `SELECT colonnes FROM table WHERE condition ORDER BY colonne`.
@@ -70,24 +80,6 @@ Une question à la fois : la correction s'affiche aussitôt.
    - [ ] `ORDER BY`
 
    > `SELECT` choisit les colonnes.
-
-1. Que renvoie `SELECT COUNT(*) FROM eleve;` ?
-
-   - [ ] la liste des élèves
-   - [x] le nombre d'élèves
-   - [ ] le nombre de colonnes
-   - [ ] une erreur
-
-   > Une seule valeur.
-
-1. Comment sélectionner les élèves dont la date de naissance est inconnue ?
-
-   - [ ] `WHERE naissance = NULL`
-   - [x] `WHERE naissance IS NULL`
-   - [ ] `WHERE naissance = ''`
-   - [ ] `WHERE NOT naissance`
-
-   > Toute comparaison avec NULL avec `=` est « inconnue ».
 
 1. Que fait `ORDER BY valeur DESC` ?
 
@@ -116,15 +108,6 @@ Une question à la fois : la correction s'affiche aussitôt.
 
    > Le nom est dans `eleve`, la note dans `note`.
 
-1. Que se passe-t-il si on oublie le `ON` d'une jointure (en SQLite) ?
-
-   - [ ] une erreur systématique
-   - [x] on obtient toutes les combinaisons de lignes des deux tables
-   - [ ] la jointure se fait automatiquement sur la bonne colonne
-   - [ ] la requête ne renvoie rien
-
-   > C'est le produit cartésien : des lignes sans signification.
-
 1. Quelle requête donne la meilleure note de NSI (id_matiere = 2) ?
 
    - [ ] `SELECT valeur FROM note WHERE id_matiere = 2;`
@@ -133,15 +116,6 @@ Une question à la fois : la correction s'affiche aussitôt.
    - [ ] `SELECT valeur FROM note ORDER BY valeur;`
 
    > La dernière proposition trie par ordre croissant, sans s'arrêter à la meilleure.
-
-1. SQL est un langage :
-
-   - [ ] impératif : on décrit les étapes du calcul
-   - [x] déclaratif : on décrit le résultat voulu
-   - [ ] orienté objet
-   - [ ] de balisage
-
-   > Le SGBD choisit lui-même comment calculer le résultat.
 ::::
 
 ::::exercice[Compléter des requêtes]{niveau=1 type=completer}
@@ -166,20 +140,6 @@ SELECT e.nom, n.valeur
 FROM note n
 [[JOIN]] eleve e [[ON]] n.id_eleve = e.[[id_eleve]];
 ```
-::::
-
-::::exercice[Les élèves de première]{niveau=1 base=lycee}
-Affiche le nom et le prénom des élèves des classes `1G1` et `1G2`, triés par nom.
-
-:::corrige
-```sql solution
-SELECT nom, prenom FROM eleve
-WHERE id_classe = '1G1' OR id_classe = '1G2'
-ORDER BY nom;
-```
-
-On peut aussi écrire `WHERE id_classe IN ('1G1', '1G2')`.
-:::
 ::::
 
 ::::exercice[Statistiques de mathématiques]{niveau=1 base=lycee}
@@ -214,37 +174,6 @@ Trois tables : `note` (la valeur), `eleve` (le nom), `matiere` (l'intitulé), re
 :::
 ::::
 
-::::exercice[Moyenne d'une classe]{niveau=2 base=lycee}
-Affiche la moyenne de toutes les notes des élèves de la classe `TG1` (colonne `moyenne`), arrondie à deux décimales avec `ROUND(x, 2)`.
-
-:::corrige
-```sql solution
-SELECT ROUND(AVG(n.valeur), 2) AS moyenne
-FROM note n
-JOIN eleve e ON n.id_eleve = e.id_eleve
-WHERE e.id_classe = 'TG1';
-```
-
-La classe est dans `eleve`, les notes dans `note` : la jointure est indispensable avant de calculer la moyenne.
-:::
-::::
-
-::::exercice[Salles des terminales]{niveau=2 base=lycee}
-Affiche le nom, le prénom et la salle de tous les élèves de Terminale (niveau `'Terminale'` dans la table `classe`), triés par nom.
-
-:::corrige
-```sql solution
-SELECT e.nom, e.prenom, c.salle
-FROM eleve e
-JOIN classe c ON e.id_classe = c.id_classe
-WHERE c.niveau = 'Terminale'
-ORDER BY e.nom;
-```
-
-L'élève n° 16, sans classe (`id_classe` à NULL), n'apparaît pas : la jointure ne garde que les lignes qui ont une correspondance.
-:::
-::::
-
 ::::exercice[Lire une requête]{niveau=2}
 Explique en français, à un camarade, ce que renvoie cette requête, et comment elle est construite :
 
@@ -267,5 +196,31 @@ La requête affiche le **nom et le prénom des élèves qui ont obtenu au moins 
 dans l'ordre logique : `FROM … JOIN` associe chaque **note** à l'**élève** qui l'a obtenue (même `id_eleve`) ; `WHERE` garde les lignes où la
 note vaut au moins 18 ; `SELECT` ne garde que le nom et le prénom ; `DISTINCT` supprime les doublons, car un élève avec deux notes de 18 ou plus
 apparaîtrait deux fois ; `ORDER BY` trie par nom.
+:::
+::::
+
+::::exercice[Les élèves à féliciter]{niveau=3 base=lycee}
+Le lycée veut féliciter les élèves de **Terminale** qui ont obtenu au moins une note supérieure ou égale à 16 en **NSI**.
+
+Affiche leur nom et leur prénom, sans répétition, triés par nom. N'utilise aucun numéro de matière ou de classe : filtre sur `'NSI'` et sur `'Terminale'`.
+
+À l'écrit : que se passe-t-il pour un élève qui a deux notes de 17 si tu oublies `DISTINCT` ?
+
+:::indice
+Il faut relier quatre tables : `note`, `eleve`, `matiere` et `classe`.
+:::
+
+:::corrige
+```sql solution
+SELECT DISTINCT e.nom, e.prenom
+FROM note n
+JOIN eleve e ON n.id_eleve = e.id_eleve
+JOIN matiere m ON n.id_matiere = m.id_matiere
+JOIN classe c ON e.id_classe = c.id_classe
+WHERE m.intitule = 'NSI' AND c.niveau = 'Terminale' AND n.valeur >= 16
+ORDER BY e.nom;
+```
+
+Sans `DISTINCT`, cet élève apparaît deux fois : la jointure produit une ligne par note retenue.
 :::
 ::::

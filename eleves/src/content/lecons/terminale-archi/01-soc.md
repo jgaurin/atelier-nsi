@@ -28,7 +28,7 @@ Dans un téléphone, presque tout tient sur une seule puce : un **système sur p
 - **Consommation** : moins d'énergie perdue, essentiel sur batterie.
 - **Taille** et **coût** réduits en grande série.
 
-En contrepartie, on ne peut pas remplacer un seul composant.
+Sur un ordinateur classique, ces composants sont séparés sur une carte mère. En les intégrant, on perd une possibilité : on ne peut pas remplacer un seul composant.
 
 ## 3. Logiciel et matériel
 
@@ -89,15 +89,25 @@ Un téléphone fonctionne sur batterie : regrouper les composants réduit la con
 :::
 ::::
 
-::::exercice[QCM : systèmes sur puce]{niveau=1 type=qcm}
-Quel est un inconvénient d'un système sur puce ?
+::::exercice[Une montre connectée]{niveau=3}
+Une montre mesure le rythme cardiaque, affiche l'heure sur un écran et envoie les mesures au téléphone en Bluetooth. Le fabricant hésite entre une carte à composants séparés et un système sur puce.
 
-- [ ] il prend beaucoup de place
-- [ ] il consomme énormément
-- [x] on ne peut pas remplacer un composant séparément
-- [ ] il ne contient pas de processeur
+1. Cite quatre blocs du système sur puce nécessaires à cette montre, avec le rôle de chacun.
+2. Donne deux avantages du système sur puce, en les reliant aux contraintes d'une montre.
+3. Le module Bluetooth tombe en panne. Quelle différence entre les deux solutions pour la réparation ?
+4. Pourquoi dit-on qu'on utilise les blocs d'un système sur puce comme une bibliothèque logicielle ?
+
+:::criteres
+- Quatre blocs cohérents : processeur, mémoire, interface radio, contrôleur d'écran, gestion d'énergie.
+- Avantages reliés à la batterie et à la taille.
+- Sur un système sur puce, on ne peut pas remplacer le module seul.
+- Les blocs sont accessibles par des API.
+:::
 
 :::corrige
-Tous les composants sont réunis sur une même puce : si l'un d'eux est défaillant ou dépassé, il faut changer la puce entière.
+1. Le **processeur** exécute le programme ; la **mémoire** garde les données et le code ; l'**interface radio** assure le Bluetooth ; la **gestion d'énergie** adapte la consommation.
+2. Une montre a une petite batterie : la **faible consommation** est essentielle. Elle a peu de place : la **petite taille** de la puce unique convient.
+3. Avec des composants séparés, on peut remplacer le module. Avec un système sur puce, il faut remplacer toute la puce.
+4. Le programme commande les blocs par des **API**, sans connaître leur circuit, comme il appelle les fonctions d'une bibliothèque.
 :::
 ::::

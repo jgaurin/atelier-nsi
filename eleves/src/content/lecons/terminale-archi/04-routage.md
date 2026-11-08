@@ -15,7 +15,7 @@ Sur Internet, chaque **routeur** décide vers où envoyer un paquet grâce à sa
 | --- | --- | --- |
 | Réseau N5 | R3 | 2 |
 
-« Pour atteindre N5, envoyer le paquet à R3. » Chaque routeur ne connaît que le **prochain** routeur.
+« Pour atteindre N5, envoyer le paquet à R3. » Chaque routeur ne connaît que le **prochain** routeur. Pour trouver la route complète, on lit la table de chaque routeur, l'un après l'autre.
 
 ## 2. RIP : le nombre de sauts
 
@@ -33,7 +33,7 @@ coût = 10⁸ / débit (en bit/s)
 | 10 Mbit/s | 10 |
 | 1 Mbit/s | 100 |
 
-OSPF choisit la route de **coût total minimal**. Chaque routeur connaît toute la carte du réseau, un **graphe** pondéré, et calcule le plus court chemin.
+OSPF choisit la route de **coût total minimal**. Chaque routeur connaît toute la carte du réseau, un **graphe** pondéré, et calcule le plus court chemin avec l'algorithme de **Dijkstra**.
 
 :::exemple
 Route 1 : deux liaisons à 10 Mbit/s, coût 20. Route 2 : trois liaisons à 100 Mbit/s, coût 3.
@@ -87,33 +87,6 @@ Une question à la fois : la correction s'affiche aussitôt.
 
    > 10⁸ / 10⁷ = 10.
 
-1. Quel algorithme utilise OSPF pour calculer les meilleurs chemins ?
-
-   - [ ] la recherche dichotomique
-   - [ ] le tri par insertion
-   - [x] l'algorithme de Dijkstra
-   - [ ] le parcours en profondeur
-
-   > Plus courts chemins dans un graphe pondéré.
-
-1. Avec RIP, quelle route R1 choisit-il pour atteindre R5 ?
-
-   - [x] par R3 (2 sauts)
-   - [ ] par R2 et R4 (3 sauts)
-   - [ ] les deux en alternance
-   - [ ] aucune
-
-   > Le moins de sauts.
-
-1. Avec les coûts OSPF du cours, quelle route R1 choisit-il pour atteindre R5 ?
-
-   - [ ] par R3, coût 20
-   - [x] par R2 et R4, coût 3
-   - [ ] par R3 puis R4, coût 12
-   - [ ] aucune
-
-   > Plus de sauts mais des liaisons rapides.
-
 1. Avec RIP, à quoi correspond une distance de 16 ?
 
    - [ ] 16 routeurs
@@ -122,15 +95,6 @@ Une question à la fois : la correction s'affiche aussitôt.
    - [ ] une erreur de configuration
 
    > C'est « l'infini » de RIP.
-
-1. Quel protocole connaît la carte complète du réseau ?
-
-   - [ ] RIP
-   - [x] OSPF
-   - [ ] les deux
-   - [ ] aucun
-
-   > Chaque routeur OSPF reçoit l'état de toutes les liaisons.
 ::::
 
 ::::exercice[Calculer des coûts]{niveau=1 type=reponses}
@@ -210,4 +174,44 @@ après un délai (absence de mises à jour), puis les échanges avec les voisins
 minutes de perturbation. Avec **OSPF**, la panne ne change rien au trafic, qui passait déjà par la fibre ; et en cas de panne d'une liaison
 utilisée, l'information se diffuse à tout le réseau et chaque routeur recalcule immédiatement avec Dijkstra.
 :::
+::::
+
+::::exercice[Le réseau d'une entreprise]{niveau=3 type=reponses}
+Liaisons d'un réseau : R1–R2 et R2–R5 à 10 Mbit/s ; R1–R3, R3–R4 et R4–R5 à 100 Mbit/s. On prend coût = 10⁸ / débit. Écris les routes sous la forme `R1 R2 R5`.
+
+1. Avec RIP, quelle route R1 choisit-il pour atteindre R5 ?
+
+   - R1 R2 R5
+
+1. Quel est le coût OSPF de cette route ?
+
+   ```python calcul
+   print(10 + 10)
+   ```
+
+   - 20
+
+1. Quel est le coût OSPF de la route passant par R3 et R4 ?
+
+   ```python calcul
+   print(1 + 1 + 1)
+   ```
+
+   - 3
+
+1. Avec OSPF, quelle route R1 choisit-il pour atteindre R5 ?
+
+   - R1 R3 R4 R5
+
+1. Dans la table OSPF de R1, quelle est la passerelle pour atteindre R5 ?
+
+   - R3
+
+1. La liaison R3–R4 tombe en panne. Avec OSPF, quelle route R1 utilise-t-il maintenant ?
+
+   - R1 R2 R5
+
+1. Avant la panne, quel est le nombre de sauts de R3 vers R5 avec RIP ?
+
+   - 2
 ::::
