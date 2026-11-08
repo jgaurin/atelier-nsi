@@ -35,6 +35,10 @@ On choisit des objets pour **maximiser la valeur**, sans dépasser une masse max
 
 Cette méthode est rapide, mais elle ne donne **pas toujours** la meilleure solution.
 
+:::exemple
+Sac de 6 kg. A : 5 kg, 11 €, rapport 2,2. B : 3 kg, 6 €, rapport 2. C : 3 kg, 6 €, rapport 2. Le glouton prend A et ne peut plus rien ajouter : 11 €. Pourtant, B et C rapportent 12 €.
+:::
+
 ## L'essentiel
 
 - Glouton : le meilleur choix immédiat, sans retour en arrière.
@@ -56,15 +60,6 @@ Une question à la fois : la correction s'affiche aussitôt.
 
    > Choix localement optimal, jamais remis en cause.
 
-1. Quelles pièces le glouton rend-il pour 38 € avec le système euro ?
-
-   - [ ] 10 + 10 + 10 + 5 + 2 + 1
-   - [x] 20 + 10 + 5 + 2 + 1
-   - [ ] 20 + 10 + 2 + 2 + 2 + 2
-   - [ ] 20 + 5 + 5 + 5 + 2 + 1
-
-   > Toujours la plus grande valeur possible.
-
 1. Avec des pièces de 1, 3 et 4, combien de pièces le glouton rend-il pour 6 ?
 
    - [ ] 2
@@ -83,15 +78,6 @@ Une question à la fois : la correction s'affiche aussitôt.
 
    > Le système euro est dit canonique.
 
-1. Dans le rendu de monnaie glouton, pourquoi utiliser `while somme >= p` plutôt que `if` ?
-
-   - [ ] c'est plus rapide
-   - [x] pour pouvoir rendre plusieurs fois la même pièce
-   - [ ] pour éviter une erreur
-   - [ ] c'est équivalent
-
-   > Pour 40 €, on rend deux billets de 20.
-
 1. Pour le sac à dos, quel critère glouton est en général le plus efficace ?
 
    - [ ] les objets les plus lourds d'abord
@@ -100,24 +86,6 @@ Une question à la fois : la correction s'affiche aussitôt.
    - [ ] l'ordre alphabétique
 
    > Il privilégie la valeur par kilo.
-
-1. Combien de sous-ensembles faut-il examiner pour résoudre exactement le sac à dos par recherche exhaustive avec 20 objets ?
-
-   - [ ] 20
-   - [ ] 400
-   - [x] environ un million (2²⁰)
-   - [ ] 20 × 19
-
-   > Chaque objet est pris ou non : 2 × 2 × … × 2.
-
-1. Quel est le principal avantage d'un algorithme glouton ?
-
-   - [x] il est simple et rapide
-   - [ ] il donne toujours la meilleure solution
-   - [ ] il n'a pas besoin de données
-   - [ ] il revient sur ses choix
-
-   > La rapidité se paie parfois par une solution non optimale.
 
 1. Un glouton donne la bonne réponse sur 10 exemples. On peut conclure :
 
@@ -200,7 +168,7 @@ On classe par rapport décroissant : B (5), C (4), puis A et D (3). B (5 kg) et 
 :::
 ::::
 
-::::exercice[Rendu de monnaie]{niveau=1}
+::::exercice[Rendu de monnaie]{niveau=2}
 Écris `rendu(somme, pieces)` qui renvoie la liste des pièces rendues par l'algorithme glouton. Les valeurs de `pieces` ne sont **pas
 forcément triées** : trie-les d'abord par ordre décroissant. On suppose qu'il existe une pièce de 1.
 
@@ -274,5 +242,50 @@ def sac(objets, masse_max):
 ```
 
 Le dernier test est le contre-exemple du cours : X a le meilleur rapport, mais le prendre empêche de prendre Y et Z.
+:::
+::::
+
+::::exercice[Réserver une salle]{niveau=3}
+Une salle reçoit des demandes de réservation. Chaque demande est un couple `(debut, fin)`. Deux réservations sont compatibles si l'une finit avant que l'autre commence, ou au moment où elle commence. On veut accepter le plus de demandes possible.
+
+1. Écris `compatibles(a, b)`, qui renvoie `True` si les deux réservations sont compatibles.
+2. Écris `selection(demandes)`, avec la stratégie gloutonne suivante : on examine les demandes par **heure de fin croissante** et on garde chacune si elle est compatible avec la dernière gardée. La fonction renvoie la liste des demandes gardées.
+3. À l'écrit : on essaie une autre stratégie, qui examine les demandes par **heure de début croissante**. Donne un exemple où elle garde moins de réservations. Qu'est-ce qui fait de ces deux stratégies des algorithmes gloutons ?
+
+```python depart
+def compatibles(a, b):
+    ...
+
+def selection(demandes):
+    ...
+```
+
+```python tests
+assert compatibles((8, 10), (10, 12)), "à la suite"
+assert compatibles((13, 14), (8, 10)), "dans l'autre ordre"
+assert not compatibles((8, 11), (10, 12)), "chevauchement"
+d = [(8, 18), (9, 10), (10, 12), (11, 13), (12, 14)]
+assert selection(d) == [(9, 10), (10, 12), (12, 14)], "trois réservations"
+assert selection([]) == [], "aucune demande"
+assert selection([(1, 2)]) == [(1, 2)], "une demande"
+```
+
+:::corrige
+```python solution
+def compatibles(a, b):
+    return a[1] <= b[0] or b[1] <= a[0]
+
+def fin(demande):
+    return demande[1]
+
+def selection(demandes):
+    gardees = []
+    for d in sorted(demandes, key=fin):
+        if len(gardees) == 0 or compatibles(gardees[len(gardees) - 1], d):
+            gardees.append(d)
+    return gardees
+```
+
+**Question 3.** Avec `(8, 18)`, `(9, 10)` et `(10, 12)`, commencer par le début fait garder seulement `(8, 18)`, alors qu'on peut garder les deux autres. Ces stratégies sont gloutonnes : à chaque étape, on fait un choix immédiat, sans jamais revenir en arrière.
 :::
 ::::

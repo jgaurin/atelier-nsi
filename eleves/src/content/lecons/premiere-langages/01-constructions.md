@@ -142,3 +142,48 @@ En observant les deux versions de la fonction `somme` du cours, cite deux points
 Les deux versions définissent une fonction, utilisent une variable `s`, une boucle bornée et `return`. En revanche, Python marque les blocs par l'indentation et JavaScript par des accolades. Python utilise `def`, JavaScript `function`, et les variables se déclarent avec `let` en JavaScript.
 :::
 ::::
+
+::::exercice[Un langage inconnu]{niveau=3 type=reponses}
+Voici une fonction écrite en Lua, un langage que tu n'as jamais vu. Dans ce langage, le premier élément d'un tableau a l'indice 1, et `#t` donne la taille de `t`.
+
+```lua
+function compter(t, x)
+  local n = 0
+  for i = 1, #t do
+    if t[i] == x then
+      n = n + 1
+    end
+  end
+  return n
+end
+```
+
+1. Quel mot marque la fin d'un bloc ?
+
+   - end
+
+1. La boucle de cette fonction est-elle bornée ou non bornée ?
+
+   - bornée
+
+1. Par quelle expression Python remplacerait-on `#t` ?
+
+   - len(t)
+
+1. Que renvoie `compter({5, 2, 5}, 5)` ? (`{5, 2, 5}` est un tableau.)
+
+   - 2
+
+1. Dans cette boucle, quelle valeur prend `i` au dernier tour pour un tableau de 3 éléments ?
+
+   - 3
+
+1. En Python, quel `range` parcourt les indices de ce même tableau ?
+
+   - range(len(t))
+   - range(0, len(t))
+
+1. Quel caractère Python remplace `then` et `do` à la fin de la ligne ?
+
+   - :
+::::

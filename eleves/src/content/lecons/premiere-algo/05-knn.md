@@ -86,42 +86,6 @@ Une question à la fois : la correction s'affiche aussitôt.
    - [ ] il ne marche pas
 
    > On ne se fie qu'à un seul exemple.
-
-1. Que se passe-t-il si k est égal au nombre total de données ?
-
-   - [ ] la prédiction est parfaite
-   - [x] on prédit toujours la classe la plus fréquente du jeu de données
-   - [ ] l'algorithme plante
-   - [ ] on prédit toujours la classe du plus proche
-
-   > Toutes les données votent, quelle que soit la nouvelle.
-
-1. Dans l'algorithme, que trie-t-on ?
-
-   - [ ] les classes par ordre alphabétique
-   - [x] les distances à la nouvelle donnée, avec leur classe
-   - [ ] les données par première caractéristique
-   - [ ] les votes
-
-   > On garde le lien entre chaque distance et sa classe.
-
-1. Quelle structure est pratique pour compter les votes ?
-
-   - [ ] un p-uplet
-   - [x] un dictionnaire classe → nombre de votes
-   - [ ] une chaîne
-   - [ ] un booléen
-
-   > Le schéma de comptage des occurrences.
-
-1. L'algorithme des k plus proches voisins est un exemple :
-
-   - [ ] d'algorithme glouton
-   - [x] d'apprentissage supervisé
-   - [ ] de tri
-   - [ ] de recherche dichotomique
-
-   > Il apprend à partir d'exemples dont la classe est connue.
 ::::
 
 ::::exercice[Dérouler à la main]{niveau=1 type=completer}
@@ -167,7 +131,7 @@ def majoritaire(classes):
 ```
 ::::
 
-::::exercice[Distance et plus proche voisin]{niveau=1}
+::::exercice[Distance et plus proche voisin]{niveau=2}
 Écris `distance(a, b)` qui renvoie la distance euclidienne entre deux points `(x, y)`, puis `plus_proche(points, p)` qui renvoie le point de
 la liste (non vide) `points` le plus proche de `p`.
 
@@ -264,5 +228,86 @@ def knn(donnees, nouveau, k):
 
 Pour départager les égalités, on parcourt les voisins **du plus proche au plus lointain** et on ne remplace le gagnant que si une classe a
 **strictement** plus de votes : à égalité, la classe rencontrée en premier (la plus proche) reste.
+:::
+::::
+
+::::exercice[Évaluer un classifieur]{niveau=3}
+Des données sont des triplets `(x, y, classe)`. La fonction `predire`, qui applique les k plus proches voisins, est fournie.
+
+1. Écris `taux_reussite(donnees, essais, k)`. `essais` est un tableau non vide de triplets dont on connaît la classe. La fonction renvoie la proportion d'essais bien prédits, entre 0 et 1.
+2. Écris `meilleur_k(donnees, essais, valeurs)`, qui renvoie la valeur de `k` du tableau non vide `valeurs` ayant le meilleur taux. En cas d'égalité, on garde la première.
+3. À l'écrit : pourquoi `k = 1` est-il sensible à une donnée erronée ? Pourquoi `k` égal au nombre total de données est-il un mauvais choix ?
+
+```python depart
+from math import sqrt
+
+def distance(d, x, y):
+    return sqrt((d[0] - x) ** 2 + (d[1] - y) ** 2)
+
+def predire(donnees, x, y, k):
+    def cle(d):
+        return distance(d, x, y)
+    proches = sorted(donnees, key=cle)
+    votes = {}
+    for d in proches[:k]:
+        votes[d[2]] = votes.get(d[2], 0) + 1
+    meilleure = None
+    for c in votes:
+        if meilleure is None or votes[c] > votes[meilleure]:
+            meilleure = c
+    return meilleure
+
+def taux_reussite(donnees, essais, k):
+    ...
+
+def meilleur_k(donnees, essais, valeurs):
+    ...
+```
+
+```python tests
+donnees = [(0, 0, "A"), (0, 1, "A"), (1, 0, "A"), (5, 5, "B"), (5, 6, "B"), (6, 5, "B"), (0.5, 0.5, "B")]
+essais = [(0.6, 0.6, "A"), (0, 0.2, "A"), (5, 5.2, "B")]
+assert taux_reussite(donnees, essais, 3) == 1, "tout est juste avec k = 3"
+assert round(taux_reussite(donnees, essais, 1), 2) == 0.67, "une erreur avec k = 1"
+assert meilleur_k(donnees, essais, [1, 3, 5]) == 3, "meilleur k"
+assert meilleur_k(donnees, essais, [3, 5]) == 3, "première valeur en cas d'égalité"
+```
+
+:::corrige
+```python solution
+from math import sqrt
+
+def distance(d, x, y):
+    return sqrt((d[0] - x) ** 2 + (d[1] - y) ** 2)
+
+def predire(donnees, x, y, k):
+    def cle(d):
+        return distance(d, x, y)
+    proches = sorted(donnees, key=cle)
+    votes = {}
+    for d in proches[:k]:
+        votes[d[2]] = votes.get(d[2], 0) + 1
+    meilleure = None
+    for c in votes:
+        if meilleure is None or votes[c] > votes[meilleure]:
+            meilleure = c
+    return meilleure
+
+def taux_reussite(donnees, essais, k):
+    justes = 0
+    for e in essais:
+        if predire(donnees, e[0], e[1], k) == e[2]:
+            justes = justes + 1
+    return justes / len(essais)
+
+def meilleur_k(donnees, essais, valeurs):
+    meilleur = valeurs[0]
+    for k in valeurs:
+        if taux_reussite(donnees, essais, k) > taux_reussite(donnees, essais, meilleur):
+            meilleur = k
+    return meilleur
+```
+
+**Question 3.** Avec `k = 1`, un seul voisin décide : s'il est erroné, la prédiction est fausse. Avec `k` égal au nombre de données, tout le monde vote : on prédit toujours la classe la plus nombreuse, quelle que soit la position du point.
 :::
 ::::

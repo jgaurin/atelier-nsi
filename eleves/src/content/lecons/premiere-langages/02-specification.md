@@ -170,3 +170,59 @@ Le `return i` dans la boucle arrête la fonction dès la première occurrence. L
 zéro) et donnent un message clair.
 :::
 ::::
+
+::::exercice[Une caisse automatique]{niveau=3}
+Une caisse automatique calcule la monnaie à rendre.
+
+1. Écris `monnaie(prix, paye)`, qui renvoie `paye - prix`. Ajoute deux assertions : le prix est positif ou nul, et le montant payé suffit.
+2. Écris `total(prix, quantites)`, qui renvoie la somme des `prix[i] * quantites[i]`. Ajoute une assertion : les deux tableaux ont la même taille.
+3. À l'écrit : rédige la docstring de `monnaie`, avec sa précondition et sa postcondition. Pourquoi une assertion est-elle préférable à un résultat faux renvoyé sans prévenir ?
+
+```python depart
+def monnaie(prix, paye):
+    ...
+
+def total(prix, quantites):
+    ...
+```
+
+```python tests
+def refuse(f, *args):
+    try:
+        f(*args)
+    except AssertionError:
+        return True
+    return False
+
+assert monnaie(3, 5) == 2, "monnaie"
+assert monnaie(5, 5) == 0, "compte juste"
+assert refuse(monnaie, 8, 5), "montant insuffisant"
+assert refuse(monnaie, -1, 5), "prix négatif"
+assert total([2, 3], [10, 1]) == 23, "total"
+assert total([], []) == 0, "panier vide"
+assert refuse(total, [2, 3], [1]), "tailles différentes"
+```
+
+:::corrige
+```python solution
+def monnaie(prix, paye):
+    """Renvoie la monnaie à rendre.
+
+    Précondition : prix >= 0 et paye >= prix.
+    Postcondition : le résultat est positif ou nul.
+    """
+    assert prix >= 0, "prix négatif"
+    assert paye >= prix, "montant insuffisant"
+    return paye - prix
+
+def total(prix, quantites):
+    assert len(prix) == len(quantites), "tailles différentes"
+    s = 0
+    for i in range(len(prix)):
+        s = s + prix[i] * quantites[i]
+    return s
+```
+
+**Question 3.** La docstring figure dans le corrigé. Une assertion arrête le programme là où le problème commence ; un résultat faux pourrait se propager sans que personne ne s'en aperçoive.
+:::
+::::

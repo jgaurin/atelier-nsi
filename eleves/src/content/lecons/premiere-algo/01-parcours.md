@@ -95,24 +95,6 @@ Une question à la fois : la correction s'affiche aussitôt.
 
    > Le résultat serait 0, qui n'est même pas dans le tableau.
 
-1. Où placer `return False` dans la fonction `appartient` ?
-
-   - [ ] dans un `else` dans la boucle
-   - [x] après la boucle
-   - [ ] avant la boucle
-   - [ ] nulle part
-
-   > On ne peut conclure à l'absence qu'après avoir tout examiné.
-
-1. Pourquoi écrire `while i < len(t) and t[i] != x` dans cet ordre ?
-
-   - [ ] pour la lisibilité seulement
-   - [x] pour ne jamais lire `t[i]` quand i est hors du tableau
-   - [ ] parce que `and` est commutatif
-   - [ ] pour aller plus vite
-
-   > Si `i < len(t)` est faux, Python n'évalue pas `t[i]`.
-
 1. Si le tableau est 3 fois plus grand, le temps d'un algorithme linéaire est environ :
 
    - [ ] le même
@@ -130,54 +112,6 @@ Une question à la fois : la correction s'affiche aussitôt.
    - [ ] le tableau est trié
 
    > Une seule comparaison suffit.
-
-1. Que renvoie `indice_minimum([5, 2, 9, 2])` avec la fonction du cours ?
-
-   - [ ] 2
-   - [x] 1
-   - [ ] 3
-   - [ ] [1, 3]
-
-   > La comparaison stricte garde la première occurrence du minimum.
-
-1. Ces algorithmes de parcours marchent-ils sur un tableau de chaînes ?
-
-   - [ ] non, seulement sur des nombres
-   - [x] oui, les chaînes se comparent avec `==`, `<`, `>`
-   - [ ] seulement la recherche du maximum
-   - [ ] seulement la moyenne
-
-   > Recherche et extremum marchent sur tout type comparable ; la moyenne exige des nombres.
-::::
-
-::::exercice[Lire un parcours]{niveau=1 type=reponses}
-Donne ce que le programme affiche.
-
-1. Que s'affiche-t-il ?
-
-   ```python verifier
-   t = [3, 7, 2, 7]
-   r = -1
-   for i in range(len(t)):
-       if t[i] == 7:
-           r = i
-   print(r)
-   ```
-
-   - 3
-
-1. Que s'affiche-t-il ?
-
-   ```python verifier
-   t = [5, 1, 4]
-   m = t[0]
-   for x in t:
-       if x < m:
-           m = x
-   print(m)
-   ```
-
-   - 1
 ::::
 
 ::::exercice[Compléter la recherche du minimum]{niveau=1 type=completer}
@@ -193,7 +127,7 @@ def indice_min(t):
 ```
 ::::
 
-::::exercice[Minimum et maximum en un seul parcours]{niveau=1}
+::::exercice[Minimum et maximum en un seul parcours]{niveau=2}
 Écris `extremums(t)` qui renvoie le couple `(minimum, maximum)` d'un tableau non vide, en **un seul** parcours, sans `min` ni `max`.
 
 ```python depart
@@ -262,35 +196,61 @@ Pour la dernière occurrence, on ne s'arrête pas : on retient le dernier indice
 :::
 ::::
 
-::::exercice[Le plus jeune de la classe]{niveau=2}
-Une table d'élèves est un tableau de dictionnaires `{"nom": ..., "naissance": (annee, mois, jour)}`. Écris `plus_jeune(classe)` qui renvoie le
-nom de l'élève le plus jeune (date de naissance la plus **récente**). Les p-uplets se comparent dans l'ordre : `(2009, 5, 1) > (2009, 3, 20)`.
+::::exercice[Une liste de lecture]{niveau=3}
+Une liste de lecture est un tableau `d` de durées de morceaux, en secondes.
+
+1. Écris `indice_plus_long(d)`, qui renvoie l'indice du premier morceau le plus long, pour un tableau non vide.
+2. Écris `dernier_ecoute(d, temps)`, qui renvoie l'indice du morceau en cours après `temps` secondes d'écoute, ou `-1` si la liste est terminée. Un morceau de durée 60 occupe les instants de 0 inclus à 60 exclu.
+3. Écris `est_croissant(d)`, qui renvoie `True` si chaque durée est supérieure ou égale à la précédente.
+4. À l'écrit : pour `est_croissant`, quel est le meilleur cas ? Quel est le pire cas ? Quel est son coût dans le pire cas ?
 
 ```python depart
-def plus_jeune(classe):
+def indice_plus_long(d):
+    ...
+
+def dernier_ecoute(d, temps):
+    ...
+
+def est_croissant(d):
     ...
 ```
 
 ```python tests
-classe = [
-    {"nom": "Léa", "naissance": (2009, 3, 20)},
-    {"nom": "Tom", "naissance": (2009, 11, 2)},
-    {"nom": "Inès", "naissance": (2008, 12, 30)},
-]
-assert plus_jeune(classe) == "Tom", "le plus jeune"
-assert plus_jeune([{"nom": "Noé", "naissance": (2010, 1, 1)}]) == "Noé", "un seul élève"
+assert indice_plus_long([100, 200, 200, 50]) == 1, "premier maximum"
+assert indice_plus_long([7]) == 0, "un seul morceau"
+assert dernier_ecoute([60, 100], 0) == 0, "début"
+assert dernier_ecoute([60, 100], 60) == 1, "changement de morceau"
+assert dernier_ecoute([60, 100], 159) == 1, "dernier instant"
+assert dernier_ecoute([60, 100], 160) == -1, "liste terminée"
+assert est_croissant([1, 2, 2, 5]), "croissant"
+assert not est_croissant([1, 3, 2]), "non croissant"
+assert est_croissant([]) and est_croissant([4]), "cas limites"
 ```
 
 :::corrige
 ```python solution
-def plus_jeune(classe):
-    meilleur = classe[0]
-    for e in classe:
-        if e["naissance"] > meilleur["naissance"]:
-            meilleur = e
-    return meilleur["nom"]
+def indice_plus_long(d):
+    i_max = 0
+    for i in range(len(d)):
+        if d[i] > d[i_max]:
+            i_max = i
+    return i_max
+
+def dernier_ecoute(d, temps):
+    cumul = 0
+    for i in range(len(d)):
+        cumul = cumul + d[i]
+        if temps < cumul:
+            return i
+    return -1
+
+def est_croissant(d):
+    for i in range(len(d) - 1):
+        if d[i + 1] < d[i]:
+            return False
+    return True
 ```
 
-C'est une recherche de **maximum** sur des valeurs qui ne sont pas des nombres : on compare les dates (p-uplets), on garde la ligne entière.
+**Question 4.** Meilleur cas : les deux premières valeurs sont mal rangées, on s'arrête aussitôt. Pire cas : le tableau est croissant, on examine tout. Le coût est **linéaire** dans le pire cas.
 :::
 ::::

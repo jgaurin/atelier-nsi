@@ -91,15 +91,6 @@ Une question à la fois : la correction s'affiche aussitôt.
 
    > 2¹⁰ = 1 024.
 
-1. Si la taille du tableau double, le nombre d'étapes de la dichotomie :
-
-   - [ ] double
-   - [x] augmente de 1
-   - [ ] est multiplié par 4
-   - [ ] ne change pas
-
-   > Une étape de plus suffit à couper la taille en deux.
-
 1. Quel est le variant qui prouve la terminaison ?
 
    - [ ] milieu
@@ -108,42 +99,6 @@ Une question à la fois : la correction s'affiche aussitôt.
    - [ ] len(t)
 
    > Il décroît strictement à chaque tour.
-
-1. Pourquoi écrire `debut = milieu + 1` plutôt que `debut = milieu` ?
-
-   - [ ] pour aller plus vite seulement
-   - [x] pour que la zone diminue toujours, sinon la boucle peut être infinie
-   - [ ] parce que milieu est un flottant
-   - [ ] c'est équivalent
-
-   > `t[milieu]` est déjà examiné, on peut l'exclure.
-
-1. Quand s'arrête la boucle si l'élément est absent ?
-
-   - [ ] quand milieu vaut 0
-   - [x] quand debut > fin (zone vide)
-   - [ ] quand debut == fin
-   - [ ] jamais
-
-   > Avec `while debut < fin`, on oublierait de tester le dernier élément.
-
-1. Quel est le coût de la recherche dichotomique ?
-
-   - [ ] linéaire
-   - [ ] quadratique
-   - [x] logarithmique
-   - [ ] constant
-
-   > De l'ordre de log₂(n).
-
-1. On ne fait qu'**une seule** recherche dans un tableau **non trié** d'un million d'éléments. Que faire ?
-
-   - [ ] trier puis faire une dichotomie
-   - [x] faire une recherche séquentielle
-   - [ ] faire une dichotomie directement
-   - [ ] c'est impossible
-
-   > Trier coûte plus cher qu'un parcours ; la dichotomie se rentabilise sur de nombreuses recherches.
 ::::
 
 ::::exercice[Dérouler]{niveau=1 type=completer}
@@ -187,7 +142,7 @@ def dichotomie(t, x):
 ```
 ::::
 
-::::exercice[Écrire la dichotomie]{niveau=1}
+::::exercice[Écrire la dichotomie]{niveau=2}
 Écris `dichotomie(t, x)` qui renvoie un indice de `x` dans le tableau **trié** `t`, ou `-1` si `x` est absent, avec une boucle `while`.
 
 ```python depart
@@ -226,7 +181,7 @@ Les tests couvrent les cas limites : premier, dernier, absent, au-delà des born
 :::
 ::::
 
-::::exercice[Le nombre mystère]{niveau=1}
+::::exercice[Le nombre mystère]{niveau=2}
 Dans le jeu du nombre mystère entre 1 et 100, l'ordinateur répond « plus grand », « plus petit » ou « gagné ». (a) Explique la meilleure
 stratégie et pourquoi elle garantit de gagner en au plus 7 coups. (b) Combien de coups au plus entre 1 et 1 000 ? Entre 1 et un million ?
 (c) Quel lien avec la recherche dichotomique dans un tableau ?
@@ -243,5 +198,70 @@ possibilités : 100, 50, 25, 13, 7, 4, 2, 1. Après 7 coups il ne reste qu'une v
 (2¹⁰ = 1 024) ; entre 1 et un million : **20** coups (2²⁰ ≈ 1,05 million). (c) C'est exactement la dichotomie dans le tableau trié
 `[1, 2, …, 100]` : l'intervalle des possibles est la zone `debut..fin`, le nombre proposé est `t[milieu]`, et « plus grand / plus petit »
 indique la moitié à garder.
+:::
+::::
+
+::::exercice[Des valeurs répétées]{niveau=3}
+Un tableau trié peut contenir plusieurs fois la même valeur. La dichotomie du cours renvoie alors n'importe quelle occurrence.
+
+1. Écris `premiere(t, x)`, qui renvoie l'indice de la **première** occurrence de `x`, ou `-1`. Le coût doit rester logarithmique.
+2. Écris `position_insertion(t, x)`, qui renvoie l'indice où insérer `x` pour que `t` reste trié, à gauche des valeurs égales.
+3. À l'écrit : comment prouver que la boucle de `premiere` s'arrête ? Quel gain obtient-on sur un tableau d'un million de valeurs, par rapport à une recherche séquentielle ?
+
+:::indice
+Quand `t[milieu]` vaut `x`, retiens l'indice, puis continue à chercher dans la moitié gauche.
+:::
+
+```python depart
+def premiere(t, x):
+    ...
+
+def position_insertion(t, x):
+    ...
+```
+
+```python tests
+t = [1, 3, 3, 3, 7, 9]
+assert premiere(t, 3) == 1, "première occurrence"
+assert premiere(t, 9) == 5, "dernière case"
+assert premiere(t, 4) == -1, "absent"
+assert premiere([], 4) == -1, "vide"
+assert premiere([2] * 1000, 2) == 0, "que des doublons"
+assert position_insertion(t, 3) == 1, "à gauche des égaux"
+assert position_insertion(t, 0) == 0, "au début"
+assert position_insertion(t, 10) == 6, "à la fin"
+assert position_insertion(t, 5) == 4, "au milieu"
+```
+
+:::corrige
+```python solution
+def premiere(t, x):
+    debut = 0
+    fin = len(t) - 1
+    trouve = -1
+    while debut <= fin:
+        milieu = (debut + fin) // 2
+        if t[milieu] == x:
+            trouve = milieu
+            fin = milieu - 1
+        elif x < t[milieu]:
+            fin = milieu - 1
+        else:
+            debut = milieu + 1
+    return trouve
+
+def position_insertion(t, x):
+    debut = 0
+    fin = len(t)
+    while debut < fin:
+        milieu = (debut + fin) // 2
+        if t[milieu] < x:
+            debut = milieu + 1
+        else:
+            fin = milieu
+    return debut
+```
+
+**Question 3.** `fin - debut` est un entier qui diminue strictement à chaque tour : c'est un variant. Il faut environ 20 comparaisons au lieu d'un million dans le pire cas.
 :::
 ::::

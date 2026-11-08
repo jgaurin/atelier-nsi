@@ -78,3 +78,23 @@ Donne l'année.
 
    - 1989
 ::::
+
+::::exercice[Du calcul à l'ordinateur]{niveau=3}
+Réponds en quelques phrases, en citant une personne et une date pour chaque idée.
+
+1. Quelle idée mathématique permet de relier le calcul et la logique ? Pourquoi est-elle utile aux ordinateurs ?
+2. Quelle idée apparaît en 1936 ? Pourquoi est-elle un tournant ?
+3. Quelle est la différence entre Internet et le Web ? Situe chacun dans le temps.
+
+:::criteres
+- Boole, 1847 : un calcul sur le vrai et le faux, que réalisent les circuits.
+- Turing, 1936 : une machine universelle, capable d'exécuter tous les algorithmes.
+- Internet (1969) est un réseau ; le Web (1989, Tim Berners-Lee) est un service qui l'utilise.
+:::
+
+:::corrige
+1. En 1847, **George Boole** formalise un calcul sur le vrai et le faux. Les circuits électroniques réalisent ces opérations : les ordinateurs calculent ainsi avec des 0 et des 1.
+2. En 1936, **Alan Turing** décrit une **machine universelle**, capable d'exécuter tous les algorithmes. Machine, algorithme, langage et information sont alors pensés comme un tout.
+3. **Internet**, né en 1969 avec ARPANET, est un réseau qui relie des machines. Le **Web**, inventé en 1989 par Tim Berners-Lee, est un service qui utilise ce réseau pour consulter des pages reliées par des liens.
+:::
+::::

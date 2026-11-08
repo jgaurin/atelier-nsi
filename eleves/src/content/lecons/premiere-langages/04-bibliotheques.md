@@ -78,7 +78,7 @@ de = randint(1, 6)
 ```
 ::::
 
-::::exercice[Hypoténuse]{niveau=1}
+::::exercice[Hypoténuse]{niveau=2}
 Écris `hypotenuse(a, b)` qui renvoie la longueur de l'hypoténuse d'un triangle rectangle de côtés `a` et `b`, en utilisant `math.sqrt`.
 
 ```python depart
@@ -129,5 +129,56 @@ def somme_des(n):
         s = s + randint(1, 6)
     return s
 ```
+:::
+::::
+
+::::exercice[Organiser une sortie]{niveau=3}
+Voici un extrait de documentation :
+
+> `math.ceil(x)` : renvoie le plus petit entier supérieur ou égal à `x`.
+>
+> `random.sample(population, k)` : renvoie une liste de `k` éléments distincts de `population`, choisis au hasard.
+
+1. Écris `nb_bus(eleves, places)`, qui renvoie le nombre de bus nécessaires.
+2. Écris `tirage(noms, n)`, qui renvoie `n` noms distincts choisis au hasard. Si `n` dépasse le nombre de noms, elle renvoie tous les noms.
+3. À l'écrit : quels renseignements as-tu utilisés dans la documentation ? As-tu eu besoin de lire le code de ces fonctions ?
+
+```python depart
+import math
+import random
+
+def nb_bus(eleves, places):
+    ...
+
+def tirage(noms, n):
+    ...
+```
+
+```python tests
+assert nb_bus(100, 50) == 2, "compte juste"
+assert nb_bus(101, 50) == 3, "un bus de plus"
+assert nb_bus(0, 50) == 0, "aucun élève"
+noms = ["a", "b", "c", "d"]
+t = tirage(noms, 2)
+assert len(t) == 2 and t[0] != t[1], "deux noms distincts"
+assert t[0] in noms and t[1] in noms, "noms de la liste"
+assert sorted(tirage(noms, 10)) == noms, "n trop grand"
+```
+
+:::corrige
+```python solution
+import math
+import random
+
+def nb_bus(eleves, places):
+    return math.ceil(eleves / places)
+
+def tirage(noms, n):
+    if n > len(noms):
+        return noms
+    return random.sample(noms, n)
+```
+
+**Question 3.** Le rôle de chaque fonction, ses paramètres et la valeur qu'elle renvoie. Le code n'est pas nécessaire : c'est l'intérêt d'une bibliothèque documentée.
 :::
 ::::

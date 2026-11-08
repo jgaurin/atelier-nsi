@@ -66,7 +66,17 @@ print(t)
 
 **Invariant** : au début du tour i, les i premières cases sont triées.
 
-## 3. Terminaison et coût
+## 3. Prouver avec un invariant
+
+Un **invariant** est une propriété vraie à chaque tour. Pour prouver qu'un algorithme est correct :
+
+1. on vérifie qu'elle est vraie au départ ;
+2. on montre qu'un tour la conserve ;
+3. on regarde ce qu'elle dit à la fin de la boucle.
+
+Pour la sélection, à la fin, les n − 1 premières cases contiennent les n − 1 plus petits éléments, triés. La dernière case contient donc le plus grand : tout est trié.
+
+## 4. Terminaison et coût
 
 **Terminaison** : dans le `while`, `j` diminue à chaque tour et s'arrête au plus tard à 0. C'est un **variant**.
 
@@ -93,24 +103,6 @@ Une question à la fois : la correction s'affiche aussitôt.
 
    > Une sélection, un échange.
 
-1. Que devient `[4, 2, 7, 1]` après le **premier** tour du tri par sélection ?
-
-   - [ ] `[2, 4, 7, 1]`
-   - [x] `[1, 2, 7, 4]`
-   - [ ] `[1, 4, 2, 7]`
-   - [ ] `[1, 2, 4, 7]`
-
-   > Le minimum 1 est échangé avec le premier élément 4.
-
-1. Que devient `[4, 2, 7, 1]` après le **premier** tour du tri par insertion (insertion de `t[1]`) ?
-
-   - [x] `[2, 4, 7, 1]`
-   - [ ] `[1, 2, 7, 4]`
-   - [ ] `[1, 4, 2, 7]`
-   - [ ] `[4, 2, 7, 1]`
-
-   > On insère 2 avant 4.
-
 1. Combien de comparaisons fait le tri par sélection sur 10 éléments ?
 
    - [ ] 10
@@ -129,15 +121,6 @@ Une question à la fois : la correction s'affiche aussitôt.
 
    > (2n)² = 4n².
 
-1. Quel est le meilleur cas du tri par insertion ?
-
-   - [x] le tableau est déjà trié
-   - [ ] le tableau est trié à l'envers
-   - [ ] tous les éléments sont différents
-   - [ ] le tableau est vide de moitié
-
-   > Chaque élément est déjà à sa place : une seule comparaison par tour.
-
 1. Quel invariant correspond au tri par sélection ?
 
    - [ ] la partie gauche est triée mais peut encore changer
@@ -147,33 +130,6 @@ Une question à la fois : la correction s'affiche aussitôt.
 
    > Les éléments placés par la sélection ne bougent plus.
 
-1. Comment échanger `t[i]` et `t[j]` en Python ?
-
-   - [ ] `t[i] = t[j]` puis `t[j] = t[i]`
-   - [x] `t[i], t[j] = t[j], t[i]`
-   - [ ] `swap(t[i], t[j])`
-   - [ ] `t[i] == t[j]`
-
-   > La première proposition perd la valeur de `t[i]`.
-
-1. Pourquoi mémoriser `valeur = t[i]` au début du tour dans le tri par insertion ?
-
-   - [ ] pour aller plus vite
-   - [x] parce que le décalage écrase `t[i]`
-   - [ ] pour pouvoir la renvoyer
-   - [ ] ce n'est pas nécessaire
-
-   > Le premier décalage copie `t[i-1]` dans `t[i]`.
-
-1. Que renvoie `tri_selection(t)` (version du cours) ?
-
-   - [ ] le tableau trié
-   - [x] `None` ; c'est `t` qui est modifié
-   - [ ] une copie triée
-   - [ ] le nombre d'échanges
-
-   > Tri en place, sans `return`.
-
 1. Quel élément justifie la terminaison du `while` dans le tri par insertion ?
 
    - [ ] le tableau est fini
@@ -182,15 +138,6 @@ Une question à la fois : la correction s'affiche aussitôt.
    - [ ] la boucle `for` extérieure
 
    > j est un variant de boucle.
-
-1. Pour trier un million de nombres en pratique, on utilise :
-
-   - [ ] le tri par sélection
-   - [ ] le tri par insertion
-   - [x] `sorted` ou `t.sort()`, de coût de l'ordre de n log n
-   - [ ] une recherche du maximum
-
-   > Les tris quadratiques demanderaient des centaines de milliards d'opérations.
 ::::
 
 ::::exercice[Dérouler le tri par sélection]{niveau=1 type=completer}
@@ -238,47 +185,7 @@ for i in range(1, len(t)):
 | 3 | [[2 4 7 9]] |
 ::::
 
-::::exercice[Compléter le tri par insertion]{niveau=2 type=completer}
-Complète ce programme.
-
-```python trous
-def tri_insertion(t):
-    for i in range([[1]], len(t)):
-        valeur = t[[[i]]]
-        j = i
-        while j > [[0]] and t[j - 1] > [[valeur]]:
-            t[j] = [[t[j - 1]]]
-            j = [[j - 1]]
-        t[j] = [[valeur]]
-```
-::::
-
-::::exercice[Coût]{niveau=2 type=reponses}
-Réponds à chaque question.
-
-1. Si un tri quadratique trie 1 000 valeurs en 2 secondes, combien de secondes pour 2 000 valeurs ?
-
-   ```python calcul
-   print(2 * 4)
-   ```
-
-   - 8
-
-1. Combien de comparaisons le tri par sélection fait-il sur un tableau de 10 éléments ?
-
-   ```python calcul
-   print(10 * 9 // 2)
-   ```
-
-   - 45
-
-1. Dans le tri par insertion, quel nom donne-t-on à `j`, qui décroît et prouve que le `while` s'arrête ?
-
-   - variant
-   - un variant
-::::
-
-::::exercice[Écrire le tri par sélection]{niveau=1}
+::::exercice[Écrire le tri par sélection]{niveau=2}
 Écris `tri_selection(t)` qui trie le tableau `t` par ordre croissant, **en place**, avec la méthode du tri par sélection (sans `sort`, `sorted`,
 `min` ni `index`).
 
@@ -354,5 +261,60 @@ def tri_insertion(t):
 ```
 
 Le même code trie des chaînes : il suffit que les éléments soient comparables avec `>`.
+:::
+::::
+
+::::exercice[Trier et compter]{niveau=3}
+1. Écris `tri_par_age(eleves)`, qui trie **en place**, avec le tri par insertion, un tableau de dictionnaires `{"nom": ..., "age": ...}` par âge croissant. Deux élèves du même âge gardent leur ordre.
+2. Écris `nb_decalages(t)`, qui renvoie le nombre de décalages effectués par le tri par insertion de `t`, sans modifier `t`.
+3. À l'écrit : pour un tableau de n éléments, quel tableau demande le plus de décalages ? Combien ? Donne l'invariant du tri par insertion et explique pourquoi la boucle `while` s'arrête.
+
+```python depart
+def tri_par_age(eleves):
+    ...
+
+def nb_decalages(t):
+    ...
+```
+
+```python tests
+e = [{"nom": "A", "age": 18}, {"nom": "B", "age": 16}, {"nom": "C", "age": 18}, {"nom": "D", "age": 15}]
+tri_par_age(e)
+assert [x["nom"] for x in e] == ["D", "B", "A", "C"], "tri stable par âge"
+tri_par_age([])
+assert nb_decalages([1, 2, 3]) == 0, "déjà trié"
+assert nb_decalages([3, 2, 1]) == 3, "ordre inverse"
+assert nb_decalages([2, 1, 3]) == 1, "un décalage"
+t = [5, 4, 3, 2, 1]
+assert nb_decalages(t) == 10, "cinq éléments à l'envers"
+assert t == [5, 4, 3, 2, 1], "t n'est pas modifié"
+```
+
+:::corrige
+```python solution
+def tri_par_age(eleves):
+    for i in range(1, len(eleves)):
+        e = eleves[i]
+        j = i
+        while j > 0 and eleves[j - 1]["age"] > e["age"]:
+            eleves[j] = eleves[j - 1]
+            j = j - 1
+        eleves[j] = e
+
+def nb_decalages(t):
+    c = [x for x in t]
+    n = 0
+    for i in range(1, len(c)):
+        v = c[i]
+        j = i
+        while j > 0 and c[j - 1] > v:
+            c[j] = c[j - 1]
+            j = j - 1
+            n = n + 1
+        c[j] = v
+    return n
+```
+
+**Question 3.** Le pire cas est un tableau trié à l'envers : 1 + 2 + … + (n − 1) = n(n − 1) / 2 décalages. Invariant : au début du tour i, les i premières cases sont triées. `j` est un entier qui diminue à chaque tour et ne peut pas descendre sous 0 : c'est un variant, donc le `while` s'arrête.
 :::
 ::::

@@ -122,7 +122,7 @@ Associe chaque instruction à l'erreur qu'elle provoque.
 | `print(variable_inconnue)` | NameError |
 ::::
 
-::::exercice[Corriger une fonction boguée]{niveau=1}
+::::exercice[Corriger une fonction boguée]{niveau=2}
 La fonction suivante doit compter les notes supérieures **ou égales** à `seuil`, mais elle est fausse. Écris les tests qui révèlent l'erreur,
 puis corrige-la.
 
@@ -190,5 +190,64 @@ def est_trie(t):
 Les cas à tester : tableau trié, désordre au **début** et à la **fin** (erreurs de borne), tableau **vide** et à **un élément** (trié par
 convention), **égalités** (« au sens large » : `>` et non `>=`), tableau décroissant. La boucle s'arrête à `len(t) - 2` pour que `t[i + 1]`
 existe : une erreur fréquente est d'écrire `range(len(t))`, qui provoque une `IndexError` que seul un test révèle.
+:::
+::::
+
+::::exercice[Un jeu de tests qui détecte les bugs]{niveau=3}
+Spécification : `nb_depassements(t, s)` renvoie le nombre de valeurs du tableau `t` **strictement** supérieures à `s`.
+
+Écris `valide(f)`, qui applique un jeu de tests à une fonction `f` censée respecter cette spécification. Elle renvoie `True` si tous les tests réussissent, `False` sinon. Ton jeu de tests doit être assez bon pour détecter toutes les versions fausses essayées par le correcteur.
+
+À l'écrit : si `valide(f)` renvoie `True`, la fonction `f` est-elle forcément correcte ? Justifie.
+
+:::indice
+Pense à la valeur égale au seuil, au premier élément, au dernier élément, au tableau vide et aux valeurs négatives.
+:::
+
+```python depart
+def valide(f):
+    ...
+```
+
+```python tests
+def juste(t, s):
+    return len([x for x in t if x > s])
+
+def large(t, s):
+    return len([x for x in t if x >= s])
+
+def sans_dernier(t, s):
+    return len([t[i] for i in range(len(t) - 1) if t[i] > s])
+
+def sans_premier(t, s):
+    return len([t[i] for i in range(1, len(t)) if t[i] > s])
+
+def positifs(t, s):
+    return len([x for x in t if x > s and x > 0])
+
+def plante_si_vide(t, s):
+    return t[0] * 0 + len([x for x in t if x > s])
+
+assert valide(juste) is True, "version correcte acceptée"
+assert valide(large) is False, "la valeur égale au seuil ne compte pas"
+assert valide(sans_dernier) is False, "le dernier élément compte"
+assert valide(sans_premier) is False, "le premier élément compte"
+assert valide(positifs) is False, "les valeurs négatives comptent"
+```
+
+:::corrige
+```python solution
+def valide(f):
+    return (f([1, 5, 9], 4) == 2
+            and f([4, 4], 4) == 0
+            and f([9, 1, 1], 4) == 1
+            and f([1, 1, 9], 4) == 1
+            and f([-1, -5], -3) == 1
+            and f([], 0) == 0)
+```
+
+Chaque test vise une erreur précise : valeur égale au seuil, premier élément, dernier élément, valeurs négatives, tableau vide.
+
+**À l'écrit.** Non : réussir des tests augmente la confiance, mais ne prouve rien pour les cas qui n'ont pas été essayés.
 :::
 ::::
