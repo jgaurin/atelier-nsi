@@ -22,8 +22,28 @@ export const TYPES = {
   associer: "À associer",
 };
 
-/** Une case à remplir, écrite [[réponse]] ou [[réponse;autre réponse acceptée]]. */
-export const MOTIF_TROU = /\[\[([^\]]+)\]\]/g;
+/**
+ * Les cases à remplir d'un texte, écrites [[réponse]] ou [[réponse;autre réponse acceptée]].
+ * Une réponse peut contenir des crochets équilibrés ([[t[i]]]), et une case peut suivre un crochet du code (m[[[i]]]).
+ */
+export function casesDe(texte) {
+  const cases = [];
+  let i = 0;
+  while ((i = texte.indexOf("[[", i)) !== -1) {
+    if (texte[i + 2] === "[") { i += 1; continue; }
+    let profondeur = 0;
+    let j = i + 2;
+    for (; j < texte.length; j++) {
+      if (profondeur === 0 && texte.startsWith("]]", j)) break;
+      if (texte[j] === "[") profondeur += 1;
+      else if (texte[j] === "]") profondeur -= 1;
+    }
+    if (j >= texte.length) break;
+    cases.push({ debut: i, fin: j + 2, reponse: texte.slice(i + 2, j) });
+    i = j + 2;
+  }
+  return cases;
+}
 
 /** Lit les informations d'un bloc de code : ```python exec base=lycee legende="..." */
 export function lireMeta(meta) {
@@ -126,7 +146,7 @@ export function trousDe(noeuds) {
   const trous = [];
   visit({ type: "root", children: noeuds }, (t) => {
     if (t.type !== "text" && !(t.type === "code" && role(t).has("trous"))) return;
-    for (const m of t.value.matchAll(MOTIF_TROU)) trous.push(m[1]);
+    for (const c of casesDe(t.value)) trous.push(c.reponse);
   });
   return trous;
 }

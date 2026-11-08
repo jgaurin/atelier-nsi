@@ -9,7 +9,7 @@
 // et il range la page en blocs : intro, cours, exemple guidé, l'essentiel, exercices.
 import { visit, SKIP } from "unist-util-visit";
 import { toString } from "mdast-util-to-string";
-import { analyserExercice, analyserQuestion, analyserReponse, decouperTests, lireMeta, MOTIF_TROU, NIVEAUX, TYPES } from "./exercices.mjs";
+import { analyserExercice, analyserQuestion, analyserReponse, decouperTests, lireMeta, casesDe, NIVEAUX, TYPES } from "./exercices.mjs";
 
 const ENCADRES = {
   definition: "Définition",
@@ -50,11 +50,11 @@ function creuserTrous(noeuds) {
     if ((t.type !== "text" && !enCode) || !parent || index == null || !t.value.includes("[[")) return;
     const morceaux = [];
     let curseur = 0;
-    for (const m of t.value.matchAll(MOTIF_TROU)) {
-      if (m.index > curseur) morceaux.push(texte(t.value.slice(curseur, m.index)));
+    for (const c of casesDe(t.value)) {
+      if (c.debut > curseur) morceaux.push(texte(t.value.slice(curseur, c.debut)));
       n += 1;
-      morceaux.push(champ(m[1], `Case ${n} à compléter`));
-      curseur = m.index + m[0].length;
+      morceaux.push(champ(c.reponse, `Case ${n} à compléter`));
+      curseur = c.fin;
     }
     if (curseur < t.value.length) morceaux.push(texte(t.value.slice(curseur)));
     if (enCode) {
