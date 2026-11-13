@@ -8,55 +8,65 @@ objectifs:
 prerequis: [terminale-structures/lineaires]
 ---
 
-Un dictionnaire associe des **clés** à des valeurs. Sa grande force : retrouver une valeur **sans parcourir** toutes les autres.
+Dans un tableau, on retrouve une valeur par sa **position**. Dans un dictionnaire, on la retrouve par une **clé** : un nom, un mot, un numéro. Sa grande force est de retrouver une valeur **sans parcourir** toutes les autres.
 
-## 1. Chercher dans une liste
+## 1. Chercher dans un tableau
 
-Pour savoir si un nom est dans une liste de n éléments, il faut les examiner un par un : le coût est **linéaire**.
+Pour savoir si « Zoé » est dans un tableau de 1 000 noms, Python compare « Zoé » au premier nom, puis au deuxième, et ainsi de suite. Dans le pire cas, il fait 1 000 comparaisons. Le coût est **linéaire** : deux fois plus de noms, deux fois plus de temps.
 
 ## 2. Chercher dans un dictionnaire
 
-Un dictionnaire calcule directement où ranger chaque clé. Chercher une clé prend donc un temps **à peu près constant**, quelle que soit la taille du dictionnaire.
+Un dictionnaire ne range pas ses clés au hasard. À partir de la clé elle-même, il **calcule** directement l'emplacement où la ranger. Pour la retrouver, il refait le même calcul et va directement au bon endroit, comme si chaque nom avait son casier numéroté.
 
-Seules les **clés** profitent de cette vitesse : chercher une **valeur** oblige à tout parcourir.
-
-Une clé doit être **non modifiable** : si elle changeait, le dictionnaire ne saurait plus où la retrouver.
+Chercher une clé prend donc un temps **à peu près constant**, que le dictionnaire contienne 10 ou 1 million de clés.
 
 ```python exec
 import time
 
 n = 200000
-liste = list(range(n))
+tableau = list(range(n))
 dico = {i: True for i in range(n)}
 
 debut = time.perf_counter()
 for _ in range(100):
-    (n - 1) in liste
+    (n - 1) in tableau
 milieu = time.perf_counter()
 for _ in range(100):
     (n - 1) in dico
 fin = time.perf_counter()
 
-print("liste plus lente :", milieu - debut > fin - milieu)
+print("le tableau est plus lent :", milieu - debut > fin - milieu)
 ```
 
-## 3. Quand choisir quoi ?
+Deux conséquences importantes :
 
-| Besoin | Structure |
-| --- | --- |
-| accéder à un élément par sa **position** | liste |
-| garder un **ordre** | liste |
-| retrouver une valeur par une **clé** | dictionnaire |
-| tester souvent si un élément est présent | dictionnaire |
+- Seules les **clés** profitent de cette vitesse. Chercher une **valeur** dans un dictionnaire oblige à tout parcourir.
+- Une clé doit être **non modifiable** : nombre, chaîne ou p-uplet. Si une clé changeait, son emplacement calculé ne serait plus le bon, et le dictionnaire ne la retrouverait plus. C'est pourquoi une liste ne peut pas être une clé.
+
+## 3. Choisir entre tableau et dictionnaire
+
+| Besoin | Structure | Pourquoi |
+| --- | --- | --- |
+| lire la 3e mesure d'une série | tableau | accès direct par la position |
+| garder les éléments dans un ordre précis | tableau | l'ordre des cases a un sens |
+| retrouver un numéro de téléphone à partir d'un nom | dictionnaire | accès direct par la clé |
+| tester très souvent si un élément est présent | dictionnaire | test immédiat au lieu d'un parcours |
 
 ## 4. Un index
 
-Un **index** associe à chaque mot les endroits où il apparaît, comme à la fin d'un livre : `{"pile": [12, 40], "file": [13]}`. On trouve ainsi les pages d'un mot sans relire tout le livre.
+Un **index** est un dictionnaire qui associe à chaque mot les endroits où il apparaît, comme l'index à la fin d'un livre :
+
+```python
+index = {"pile": [12, 40], "file": [13], "arbre": [55, 56]}
+```
+
+Pour trouver les pages qui parlent de piles, on lit directement `index["pile"]`, sans relire tout le livre. Les moteurs de recherche et les bases de données utilisent ce principe.
 
 ## L'essentiel
 
-- Dans une liste, la recherche d'une valeur a un coût linéaire.
-- Dans un dictionnaire, la recherche d'une clé est à peu près immédiate.
+- Tableau : recherche d'une valeur au coût linéaire.
+- Dictionnaire : recherche d'une **clé** à peu près immédiate, car l'emplacement est calculé à partir de la clé.
+- Chercher une **valeur** dans un dictionnaire reste linéaire.
 - Une clé doit être non modifiable : nombre, chaîne, p-uplet.
 
 ## Exercices

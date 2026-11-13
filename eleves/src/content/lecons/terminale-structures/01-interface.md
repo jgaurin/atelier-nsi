@@ -8,26 +8,30 @@ objectifs:
   - "Écrire plusieurs implémentations d'une même structure"
 ---
 
-Une structure de données se décrit d'abord par **ce qu'on peut faire avec elle**, avant de savoir comment la programmer.
+Quand tu conduis une voiture, tu utilises un volant, des pédales et un levier de vitesse. Tu n'as pas besoin de savoir comment le moteur est construit. Si le constructeur change de moteur, tu conduis exactement de la même façon.
+
+Les structures de données fonctionnent pareil. Ce qu'on peut faire avec elles, c'est leur **interface**. La façon dont elles sont programmées, c'est leur **implémentation**.
 
 ## 1. L'interface d'une file
 
-Une **file** fonctionne comme une file d'attente : premier arrivé, premier servi.
+Une **file** fonctionne comme une file d'attente : le premier arrivé est le premier servi.
 
 | Opération | Effet |
 | --- | --- |
 | `creer_file()` | crée une file vide |
 | `est_vide(f)` | indique si la file est vide |
-| `enfiler(f, x)` | ajoute x à la fin |
+| `enfiler(f, x)` | ajoute x à la fin de la file |
 | `defiler(f)` | retire le premier élément et le renvoie |
 
-C'est son **interface** : la liste des opérations et leur effet.
+Cette liste d'opérations, avec leur effet, est l'**interface**. Elle ne dit rien de la façon de ranger les éléments en mémoire.
 
-## 2. Deux implémentations
+:::exemple
+On part d'une file vide. On enfile A, puis B, puis C. `defiler` renvoie A, le premier arrivé. Un second `defiler` renvoie B.
+:::
 
-L'**implémentation** est la façon de la programmer.
+## 2. Première implémentation : un tableau
 
-**Avec un tableau :**
+On range les éléments dans un tableau Python, du plus ancien au plus récent.
 
 ```python exec
 class File:
@@ -41,11 +45,33 @@ class File:
         return self.contenu.pop(0)
 
 f = File()
-f.enfiler(1); f.enfiler(2)
-print(f.defiler())
+f.enfiler("A"); f.enfiler("B"); f.enfiler("C")
+print(f.defiler(), f.defiler())
 ```
 
-**Avec deux piles :** on enfile sur `entree`. Pour défiler, si `sortie` est vide, on y verse toute la pile `entree`, ce qui inverse l'ordre.
+- `enfiler` ajoute à la fin du tableau avec `append`.
+- `defiler` retire la première case avec `pop(0)`.
+
+C'est simple, mais `pop(0)` a un défaut : après avoir retiré la première case, Python **décale toutes les autres** d'un cran vers la gauche. Avec un million d'éléments, chaque retrait demande un million de déplacements.
+
+## 3. Deuxième implémentation : deux piles
+
+Une pile est comme une pile d'assiettes : on ajoute et on retire seulement au sommet. En Python, `append` et `pop()` sur la fin d'un tableau sont immédiats.
+
+On utilise deux piles :
+
+- `entree`, où l'on empile chaque élément enfilé ;
+- `sortie`, d'où l'on dépile pour défiler.
+
+Quand `sortie` est vide et qu'on veut défiler, on y verse toute la pile `entree`. Verser une pile dans une autre **inverse l'ordre** : le plus ancien se retrouve au sommet de `sortie`.
+
+| Opération | `entree` (sommet à droite) | `sortie` (sommet à droite) | Résultat |
+| --- | --- | --- | --- |
+| enfiler A, B, C | A B C | vide | |
+| défiler : `sortie` est vide, on verse | vide | C B A | A |
+| défiler | vide | C B | B |
+| enfiler D | D | C | |
+| défiler | D | vide | C |
 
 ```python exec
 class File:
@@ -63,19 +89,22 @@ class File:
         return self.sortie.pop()
 
 f = File()
-f.enfiler(1); f.enfiler(2)
-print(f.defiler())
+f.enfiler("A"); f.enfiler("B"); f.enfiler("C")
+print(f.defiler(), f.defiler())
 ```
 
-Le programme qui **utilise** la file n'a pas à changer : il n'utilise que l'interface.
+Chaque élément est déplacé **une seule fois** d'une pile à l'autre. Il n'y a plus de grand décalage à chaque retrait.
 
-Pourquoi changer ? `pop(0)` décale tous les éléments à chaque retrait : son coût est linéaire. Avec deux piles, chaque élément n'est déplacé qu'une seule fois.
+## 4. Pourquoi séparer interface et implémentation
+
+Les deux classes ont exactement les mêmes méthodes, avec le même effet. Un programme qui utilise une file, par exemple pour gérer une imprimante, n'appelle que `enfiler`, `defiler` et `est_vide`. On peut donc remplacer la première version par la seconde, plus rapide, **sans modifier une seule ligne** de ce programme.
 
 ## L'essentiel
 
-- **Interface** : les opérations disponibles et leur effet.
-- **Implémentation** : la façon de les programmer.
-- On peut changer d'implémentation sans modifier les programmes qui utilisent la structure.
+- **Interface** : les opérations disponibles et leur effet. **Implémentation** : la façon de les programmer.
+- Une file avec un tableau : simple, mais `pop(0)` décale tous les éléments.
+- Une file avec deux piles : chaque élément n'est déplacé qu'une fois.
+- On peut changer d'implémentation sans modifier les programmes qui n'utilisent que l'interface.
 
 ## Exercices
 

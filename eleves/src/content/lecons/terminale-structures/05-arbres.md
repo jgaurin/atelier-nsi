@@ -9,9 +9,11 @@ objectifs:
 prerequis: [terminale-structures/poo]
 ---
 
-Arborescence de fichiers, page HTML, arbre généalogique : un **arbre** représente des données **hiérarchiques**.
+Les dossiers de ton ordinateur, l'organisation d'une page HTML, un arbre généalogique ou un tournoi : tous ces exemples ont une forme **hiérarchique**. Chaque élément dépend d'un seul élément au-dessus de lui. On les représente par un **arbre**.
 
-## 1. Vocabulaire
+## 1. Le vocabulaire
+
+Voici un arbre. En informatique, on le dessine la racine en haut.
 
 ```mermaid
 flowchart TD
@@ -22,19 +24,28 @@ flowchart TD
     C --> F((F))
 ```
 
-- **A** est la **racine**.
-- **D, E, F** sont des **feuilles** : elles n'ont pas d'enfant.
-- Le **sous-arbre gauche** de A a pour racine B.
-- La **taille** est le nombre de nœuds : ici 6.
-- La **hauteur** est le nombre de nœuds de la plus longue branche : ici 3.
+| Mot | Sens | Dans l'exemple |
+| --- | --- | --- |
+| **nœud** | un élément de l'arbre | A, B, C, D, E, F |
+| **racine** | le seul nœud sans parent | A |
+| **enfants** | les nœuds juste en dessous | les enfants de B sont D et E |
+| **feuille** | un nœud sans enfant | D, E, F |
+| **sous-arbre** | un nœud et tout ce qui est en dessous | le sous-arbre gauche de A a pour racine B |
+
+## 2. Taille et hauteur
+
+- La **taille** est le nombre de nœuds : ici **6**.
+- La **hauteur** est le nombre de nœuds sur la plus longue branche, de la racine à une feuille. La branche A, B, D compte 3 nœuds, comme A, C, F : la hauteur vaut **3**.
 
 :::attention
-Certains sujets comptent les arêtes pour la hauteur (une racine seule a alors une hauteur 0). Lis toujours la définition donnée.
+Certains sujets comptent les **arêtes** au lieu des nœuds. Une racine seule a alors une hauteur 0, et notre arbre une hauteur 2. Lis toujours la définition donnée dans l'énoncé.
 :::
 
-## 2. Arbre binaire
+## 3. L'arbre binaire
 
-Dans un **arbre binaire**, chaque nœud a **au plus deux** enfants.
+Dans un **arbre binaire**, chaque nœud a **au plus deux** enfants : un enfant gauche et un enfant droit. L'un ou l'autre peut manquer : dans notre exemple, C n'a qu'un enfant, à droite.
+
+En Python, on représente chaque nœud par un objet qui contient sa valeur et ses deux sous-arbres :
 
 ```python exec
 class Noeud:
@@ -43,26 +54,36 @@ class Noeud:
         self.gauche = gauche
         self.droit = droit
 
-a = Noeud("A", Noeud("B"), Noeud("C"))
-print(a.gauche.valeur)
+arbre = Noeud("A", Noeud("B", Noeud("D"), Noeud("E")), Noeud("C", None, Noeud("F")))
+print(arbre.gauche.valeur, arbre.droit.droit.valeur)
 ```
 
-`None` représente un arbre vide.
+`None` représente un arbre vide : C n'a pas d'enfant gauche, donc son attribut `gauche` vaut `None`.
 
-## 3. Encadrer la hauteur
+## 4. Encadrer la hauteur
 
-Pour un arbre binaire de hauteur h (en comptant les nœuds), le nombre de nœuds n vérifie : **h ≤ n ≤ 2ʰ − 1**.
+Pour une hauteur h donnée, combien de nœuds un arbre binaire peut-il avoir ?
 
-- Arbre **filiforme** (une seule branche) : n = h.
-- Arbre **complet** (tous les niveaux remplis) : n = 2ʰ − 1.
+- **Au minimum h** : une seule branche, chaque nœud n'a qu'un enfant. On dit que l'arbre est **filiforme**.
+- **Au maximum 2ʰ − 1** : tous les niveaux sont remplis. Le niveau 1 a 1 nœud, le niveau 2 en a 2, le niveau 3 en a 4… On obtient 1 + 2 + 4 + … + 2ʰ⁻¹ = 2ʰ − 1. On dit que l'arbre est **complet**.
 
-Un arbre bien rempli reste donc très peu haut : 1 000 nœuds tiennent sur 10 niveaux, car 2¹⁰ − 1 = 1 023. On dit que sa hauteur est de l'ordre de log₂(n).
+| Hauteur h | Nœuds au minimum | Nœuds au maximum |
+| --- | --- | --- |
+| 1 | 1 | 1 |
+| 2 | 2 | 3 |
+| 3 | 3 | 7 |
+| 10 | 10 | 1 023 |
+
+On retient : **h ≤ n ≤ 2ʰ − 1**.
+
+Conséquence importante : un arbre bien rempli est très peu haut. 1 000 nœuds tiennent en 10 niveaux. On dit que sa hauteur est de l'ordre de **log₂(n)**. C'est ce qui rendra les recherches dans les arbres très rapides.
 
 ## L'essentiel
 
-- Racine, nœud, feuille, sous-arbre gauche et droit.
-- Taille : nombre de nœuds. Hauteur : longueur de la plus longue branche.
-- h ≤ n ≤ 2ʰ − 1.
+- Racine, nœuds, enfants, feuilles, sous-arbres gauche et droit.
+- Taille : le nombre de nœuds. Hauteur : le nombre de nœuds de la plus longue branche.
+- Arbre binaire : au plus deux enfants par nœud ; `None` représente un arbre vide.
+- h ≤ n ≤ 2ʰ − 1 : filiforme si n = h, complet si n = 2ʰ − 1.
 
 ## Exercices
 

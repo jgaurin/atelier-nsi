@@ -9,31 +9,57 @@ objectifs:
 prerequis: [terminale-structures/poo]
 ---
 
-Trois structures rangent les éléments les uns à la suite des autres. Ce qui les distingue, c'est **comment on y accède**.
+Les **piles**, les **files** et les **listes** rangent leurs éléments les uns à la suite des autres. On dit que ce sont des structures **linéaires**. Ce qui les distingue, c'est **par où l'on ajoute et par où l'on retire**.
 
-## 1. La pile : LIFO
+## 1. La pile : le dernier arrivé sort le premier
 
-*Last In, First Out* : le dernier entré est le premier sorti, comme une pile d'assiettes.
+Pense à une pile d'assiettes : on pose une assiette sur le dessus, et on reprend celle du dessus. La dernière posée est la première reprise. En anglais : *Last In, First Out*, abrégé **LIFO**.
 
-Opérations : `empiler`, `depiler`, `sommet`, `est_vide`.
+| Opération | Effet |
+| --- | --- |
+| `empiler(x)` | pose x au sommet |
+| `depiler()` | retire et renvoie l'élément du sommet |
+| `sommet()` | renvoie l'élément du sommet sans le retirer |
+| `est_vide()` | indique si la pile est vide |
 
-Usages : annuler une action, retour en arrière, parenthèses, appels de fonctions.
+| Opération | Pile (sommet à droite) | Résultat |
+| --- | --- | --- |
+| empiler 4, puis 7, puis 2 | 4 7 2 | |
+| dépiler | 4 7 | 2 |
+| empiler 9 | 4 7 9 | |
+| dépiler | 4 7 | 9 |
 
-En Python, un tableau suffit : `append` empile, `pop()` dépile. Ces deux opérations sont immédiates.
+**Usages** : le bouton « annuler » (on annule d'abord la dernière action), le bouton « précédent » d'un navigateur, la vérification des parenthèses, les appels de fonctions en cours.
 
-## 2. La file : FIFO
+En Python, un tableau suffit : `append` empile et `pop()` dépile, à la fin du tableau. Ces deux opérations sont immédiates.
 
-*First In, First Out* : le premier entré est le premier sorti, comme une file d'attente.
+## 2. La file : le premier arrivé sort le premier
 
-Opérations : `enfiler`, `defiler`, `est_vide`.
+Pense à une file d'attente : on arrive à la fin, on sort par le début. En anglais : *First In, First Out*, abrégé **FIFO**.
 
-Usages : impression, requêtes d'un serveur, processus en attente.
+| Opération | File (début à gauche) | Résultat |
+| --- | --- | --- |
+| enfiler 4, puis 7, puis 2 | 4 7 2 | |
+| défiler | 7 2 | 4 |
+| enfiler 9 | 7 2 9 | |
+| défiler | 2 9 | 7 |
 
-On ne voit que le bout de ces structures. Pour lire tous les éléments sans les perdre, on les retire dans une structure auxiliaire, puis on les remet.
+**Usages** : les documents envoyés à une imprimante, les requêtes reçues par un serveur, les processus qui attendent le processeur.
 
-## 3. La liste chaînée
+## 3. Choisir entre pile et file
 
-Une suite de **maillons** : chacun contient une **valeur** et un lien vers le **maillon suivant**.
+Pose-toi une seule question : **dans quel ordre veut-on traiter les éléments ?**
+
+- Le plus récent d'abord : une **pile**.
+- Dans l'ordre d'arrivée : une **file**.
+
+:::methode[Parcourir une pile ou une file sans la perdre]
+On ne voit qu'une extrémité de ces structures. Pour examiner tous les éléments, on les retire un par un et on les range dans une structure auxiliaire, puis on les remet en place.
+:::
+
+## 4. La liste chaînée
+
+Une **liste chaînée** est une suite de **maillons**. Chaque maillon contient une valeur et un lien vers le maillon suivant, comme un jeu de piste où chaque indice indique où trouver le suivant. Le dernier maillon pointe vers `None`.
 
 ```python exec
 class Maillon:
@@ -53,16 +79,19 @@ def longueur(m):
 print(longueur(liste))
 ```
 
+`liste` est le premier maillon, de valeur 3. Son suivant vaut 8, puis 5, puis `None`. La fonction `longueur` avance de maillon en maillon avec `m = m.suivant`, jusqu'à tomber sur `None`.
+
 | Opération | Tableau | Liste chaînée |
 | --- | --- | --- |
-| lire le i-ème élément | immédiat | il faut parcourir |
-| ajouter au début | il faut tout décaler | immédiat |
+| lire le i-ème élément | immédiat, par son indice | il faut suivre i liens |
+| ajouter au début | il faut décaler tous les éléments | immédiat : un nouveau maillon pointe vers l'ancien premier |
 
 ## L'essentiel
 
-- Pile : LIFO. File : FIFO.
-- Liste chaînée : des maillons (valeur, suivant).
-- On choisit la structure selon l'ordre de traitement voulu.
+- Pile : LIFO, on ajoute et on retire au sommet.
+- File : FIFO, on ajoute à la fin et on retire au début.
+- On choisit selon l'ordre de traitement voulu : le plus récent d'abord, ou l'ordre d'arrivée.
+- Liste chaînée : des maillons (valeur, suivant) ; ajouter au début est immédiat, lire le i-ème élément demande de parcourir.
 
 ## Exercices
 

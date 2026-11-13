@@ -8,9 +8,11 @@ objectifs:
 prerequis: [terminale-structures/interface]
 ---
 
-Une **classe** regroupe des données et les fonctions qui les manipulent. C'est un modèle à partir duquel on crée des **objets**.
+Un jeu vidéo contient des dizaines de personnages. Chacun a un nom, des points de vie, une position, et sait se déplacer ou attaquer. Plutôt que de gérer des dizaines de variables séparées, on décrit **une fois** ce qu'est un personnage, puis on en fabrique autant qu'on veut.
 
-## 1. Une classe
+C'est le principe de la **programmation objet** : une **classe** est le modèle, un **objet** est un exemplaire fabriqué à partir de ce modèle.
+
+## 1. Une première classe
 
 ```python exec
 class Chien:
@@ -26,25 +28,52 @@ rex.anniversaire()
 print(rex.nom, rex.age)
 ```
 
-| Mot | Sens |
-| --- | --- |
-| **classe** | le modèle : `Chien` |
-| **objet** | un exemplaire : `rex` |
-| **attribut** | une donnée de l'objet : `self.nom` |
-| **méthode** | une fonction de la classe : `anniversaire` |
-| **constructeur** | `__init__`, appelé à la création de l'objet |
+Ligne par ligne :
 
-## 2. `self`
+- `class Chien:` commence la description du modèle.
+- `__init__` est le **constructeur** : il s'exécute automatiquement à la création d'un objet. Il crée les **attributs**, c'est-à-dire les données de l'objet.
+- `anniversaire` est une **méthode** : une fonction qui appartient à la classe et agit sur un objet.
+- `rex = Chien("Rex", 3)` fabrique un objet. Python appelle `__init__` avec `nom = "Rex"` et `age = 3`.
+- `rex.anniversaire()` appelle la méthode sur l'objet `rex`.
 
-`self` désigne l'objet sur lequel on appelle la méthode. `rex.anniversaire()` exécute `anniversaire` avec `self = rex`.
+| Mot | Sens | Dans l'exemple |
+| --- | --- | --- |
+| **classe** | le modèle | `Chien` |
+| **objet** | un exemplaire | `rex` |
+| **attribut** | une donnée de l'objet | `nom`, `age` |
+| **méthode** | une fonction de la classe | `anniversaire` |
+| **constructeur** | la méthode appelée à la création | `__init__` |
+
+## 2. Le rôle de `self`
+
+Quand on écrit `rex.anniversaire()`, Python exécute `anniversaire` en donnant à `self` la valeur `rex`. `self` désigne donc **l'objet sur lequel on appelle la méthode**.
+
+C'est grâce à `self` que deux chiens différents ont chacun leurs propres données :
+
+```python exec
+class Chien:
+    def __init__(self, nom, age):
+        self.nom = nom
+        self.age = age
+
+    def anniversaire(self):
+        self.age = self.age + 1
+
+rex = Chien("Rex", 3)
+pif = Chien("Pif", 7)
+rex.anniversaire()
+print(rex.age, pif.age)
+```
+
+Seul l'âge de `rex` a changé.
 
 :::attention
-Sans `self.`, `nom = nom` crée une simple variable locale, et l'attribut n'existe pas.
+Dans `__init__`, écrire `nom = nom` au lieu de `self.nom = nom` crée une simple variable qui disparaît à la fin de la méthode. L'attribut n'existe pas, et `rex.nom` provoque une erreur.
 :::
 
-## 3. Plusieurs objets
+## 3. Des objets dans un tableau
 
-On range souvent des objets dans un tableau, puis on lit leurs attributs.
+On range souvent des objets dans un tableau, puis on parcourt ce tableau en lisant les attributs de chaque objet.
 
 ```python exec
 class Eleve:
@@ -52,20 +81,34 @@ class Eleve:
         self.nom = nom
         self.note = note
 
-classe = [Eleve("Ana", 14), Eleve("Bo", 9)]
-print([e.nom for e in classe if e.note >= 10])
+classe = [Eleve("Ana", 14), Eleve("Bo", 9), Eleve("Cy", 12)]
+for e in classe:
+    if e.note >= 10:
+        print(e.nom)
 ```
 
-:::attention
-`b = a` ne copie pas l'objet : `a` et `b` désignent alors le **même** objet.
-:::
+## 4. Copier ou partager ?
+
+```python exec
+class Eleve:
+    def __init__(self, nom, note):
+        self.nom = nom
+        self.note = note
+
+a = Eleve("Ana", 14)
+b = a
+b.note = 20
+print(a.note)
+```
+
+`b = a` ne fabrique pas un nouvel élève : `a` et `b` sont **deux noms pour le même objet**. Modifier `b.note` modifie donc aussi `a.note`. Pour avoir deux objets distincts, il faut appeler deux fois le constructeur.
 
 ## L'essentiel
 
-- Une classe définit des attributs et des méthodes ; `__init__` crée les attributs.
-- `self` est l'objet courant.
-- On écrit `objet.attribut` et `objet.methode()`.
-- `b = a` ne crée pas de copie de l'objet.
+- Une classe est un modèle ; un objet est un exemplaire créé par le constructeur `__init__`.
+- Les attributs sont les données de l'objet, les méthodes ses fonctions.
+- `self` désigne l'objet sur lequel on appelle la méthode.
+- `b = a` ne copie pas l'objet : les deux noms désignent le même objet.
 
 ## Exercices
 

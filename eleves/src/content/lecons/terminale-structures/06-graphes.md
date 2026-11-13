@@ -9,22 +9,38 @@ objectifs:
 prerequis: [terminale-structures/arbres]
 ---
 
-Réseau routier, Internet, réseau social : dès qu'on représente des **relations**, on obtient un **graphe**.
+Un réseau routier relie des villes. Internet relie des machines. Un réseau social relie des personnes. Dès qu'on représente des **relations** entre des éléments, on obtient un **graphe**.
 
-## 1. Vocabulaire
+## 1. Le vocabulaire
 
-- Un graphe est formé de **sommets** reliés par des **arêtes**.
-- Dans un graphe **orienté**, les liens sont des **arcs**, à sens unique.
-- Deux sommets reliés sont **voisins**. Le **degré** d'un sommet est son nombre de voisins.
-- Un **chemin** est une suite de sommets reliés. Un **cycle** est un chemin qui revient à son départ sans réutiliser d'arête.
-- Un graphe est **connexe** si on peut aller de n'importe quel sommet à n'importe quel autre.
-- Un graphe est **pondéré** si chaque arête porte une valeur : distance, coût, durée.
+Prenons quatre villes : A, B, C, D, avec des routes A–B, A–C, B–C et C–D.
 
-## 2. Deux représentations
+```mermaid
+flowchart LR
+    A((A)) --- B((B))
+    A --- C((C))
+    B --- C
+    C --- D((D))
+```
 
-Graphe : A–B, A–C, B–C, C–D.
+| Mot | Sens | Dans l'exemple |
+| --- | --- | --- |
+| **sommet** | un élément | les villes A, B, C, D |
+| **arête** | un lien entre deux sommets | la route A–B |
+| **voisins** | deux sommets reliés | A et C |
+| **degré** | le nombre de voisins | C a pour degré 3 |
+| **chemin** | une suite de sommets reliés | A, C, D |
+| **cycle** | un chemin qui revient à son départ sans réutiliser d'arête | A, B, C, A |
 
-**Matrice d'adjacence** : `m[i][j]` vaut 1 s'il y a un lien entre i et j.
+Autres notions :
+
+- Un graphe est **orienté** si les liens ont un sens, comme les rues à sens unique. Les liens s'appellent alors des **arcs**.
+- Un graphe est **pondéré** si chaque lien porte une valeur : distance, durée, coût.
+- Un graphe est **connexe** si l'on peut aller de n'importe quel sommet à n'importe quel autre.
+
+## 2. Représenter un graphe par une matrice
+
+On numérote les sommets : A = 0, B = 1, C = 2, D = 3. La **matrice d'adjacence** est un tableau de tableaux : la case `m[i][j]` vaut 1 s'il y a un lien entre i et j, et 0 sinon.
 
 ```python
 #     A  B  C  D
@@ -34,27 +50,43 @@ m = [[0, 1, 1, 0],   # A
      [0, 0, 1, 0]]   # D
 ```
 
-**Listes de successeurs** : un dictionnaire.
+Pour savoir si A et C sont reliés, on lit `m[0][2]` : il vaut 1. Pour les voisins de C, on lit la ligne de C : B, A et D.
+
+Dans un graphe **non orienté**, si A est relié à C, alors C est relié à A : la matrice est **symétrique**, `m[i][j]` est toujours égal à `m[j][i]`.
+
+## 3. Représenter un graphe par des listes
+
+On associe à chaque sommet la liste de ses voisins, dans un dictionnaire :
 
 ```python
 g = {"A": ["B", "C"], "B": ["A", "C"], "C": ["A", "B", "D"], "D": ["C"]}
 ```
 
-| | Matrice | Listes |
+Pour les voisins de C, on lit directement `g["C"]`.
+
+Dans un graphe **orienté**, on distingue :
+
+- les **successeurs** d'un sommet : ceux vers lesquels partent ses arcs ;
+- ses **prédécesseurs** : ceux d'où viennent les arcs qui arrivent à lui.
+
+Dans une matrice, la **ligne** d'un sommet donne ses successeurs, et sa **colonne** ses prédécesseurs.
+
+## 4. Choisir une représentation
+
+| Besoin | Matrice | Listes |
 | --- | --- | --- |
-| Tester si i et j sont liés | immédiat | parcourir la liste |
-| Lister les voisins | parcourir toute la ligne | immédiat |
-| Mémoire | n² cases | selon le nombre d'arêtes |
+| savoir si i et j sont reliés | immédiat : on lit une case | il faut parcourir la liste de i |
+| obtenir les voisins d'un sommet | il faut lire toute une ligne | immédiat |
+| mémoire utilisée | n² cases, même s'il y a peu de liens | seulement les liens existants |
 
-La matrice d'un graphe **non orienté** est **symétrique**.
-
-Dans un graphe **orienté**, les **successeurs** de s sont les sommets vers lesquels partent ses arcs, et ses **prédécesseurs** ceux d'où viennent les arcs qui arrivent à s. Dans la matrice, la ligne de s donne ses successeurs, sa colonne ses prédécesseurs.
+Pour un réseau social d'un million de personnes, avec environ 200 amis chacune, la matrice aurait 10¹² cases presque toutes à 0. Les listes conviennent bien mieux.
 
 ## L'essentiel
 
-- Sommets, arêtes (arcs si orienté), voisins, degré.
-- Matrice d'adjacence ou dictionnaire de listes de successeurs (ou de prédécesseurs).
-- Le choix dépend du traitement à effectuer.
+- Sommets, arêtes (arcs si orienté), voisins, degré, chemin, cycle.
+- Matrice d'adjacence : `m[i][j]` vaut 1 si i et j sont reliés ; symétrique si le graphe est non orienté.
+- Listes de successeurs (ou de prédécesseurs) dans un dictionnaire.
+- Le choix dépend du traitement et de la taille du graphe.
 
 ## Exercices
 
