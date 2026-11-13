@@ -8,35 +8,53 @@ objectifs:
 prerequis: [snt-internet/tcp-ip]
 ---
 
-Les machines communiquent avec des nombres, mais nous préférons retenir des noms.
+Pour appeler un ami, tu cherches son nom dans ton répertoire, et le téléphone compose son numéro. Sur Internet, c'est pareil : tu tapes un nom, comme `wikipedia.fr`, mais les machines communiquent avec des numéros, les adresses IP. Le **DNS** fait la traduction.
 
 ## 1. Deux sortes d'adresses
 
-- Une **adresse IP** est numérique et hiérarchique. Exemple : `91.198.174.192`. Dans sa version 4, elle s'écrit avec quatre nombres de 0 à 255.
-- Une **adresse symbolique** est un nom lisible. Exemple : `wikipedia.fr`.
+- Une **adresse IP** est un numéro qui identifie une machine sur le réseau. Dans sa version 4, elle s'écrit avec **quatre nombres de 0 à 255**, séparés par des points : `91.198.174.192`. Elle est **hiérarchique** : comme une adresse postale, le début indique le réseau, la fin la machine.
+- Une **adresse symbolique**, ou nom de domaine, est un nom facile à retenir : `wikipedia.fr`.
+
+Les humains retiennent les noms, les routeurs utilisent les adresses IP.
 
 ## 2. Le DNS
 
 Le **DNS** (*Domain Name System*) transforme une adresse symbolique en adresse IP. C'est l'annuaire d'Internet.
 
-Il n'existe pas un seul annuaire central. Le DNS est réparti sur un **grand nombre d'ordinateurs**, constamment mis à jour. Cela évite qu'une seule panne bloque tout.
+Quand tu tapes `wikipedia.fr` :
 
-## 3. Une consultation
+1. ton ordinateur demande à un **serveur DNS** : « quelle est l'adresse IP de wikipedia.fr ? » ;
+2. le serveur répond : `91.198.174.192` ;
+3. ton ordinateur envoie alors ses paquets à cette adresse IP.
 
-1. Tu tapes `wikipedia.fr`.
-2. Ton ordinateur demande l'adresse à un **serveur DNS**.
-3. Le serveur répond avec l'adresse IP.
-4. Ton ordinateur contacte la machine à cette adresse.
+Le nom ne sert qu'au début : ensuite, tout se fait avec l'adresse IP.
+
+## 3. Un annuaire réparti
+
+Il n'existe pas un seul annuaire central pour tout Internet. Le DNS est **réparti** sur un très grand nombre d'ordinateurs, et chacun ne connaît qu'une partie des noms. Ils sont constamment mis à jour.
+
+Pourquoi ? Un seul annuaire devrait répondre à des milliards de demandes par jour, et sa moindre panne bloquerait tout Internet. Réparti sur de nombreuses machines, le DNS supporte la charge et résiste aux pannes.
 
 ## 4. Essayer sur ton ordinateur
 
-Dans un terminal, `nslookup wikipedia.fr` affiche l'adresse IP. Avec une adresse IP, `nslookup` peut parfois retrouver le nom associé.
+Dans un terminal, la commande `nslookup` interroge le DNS :
+
+```
+nslookup wikipedia.fr
+```
+
+Elle affiche l'adresse IP du site. Avec une adresse IP, `nslookup` peut parfois retrouver le nom associé.
+
+:::exemple
+Si plus aucun site ne s'ouvre quand tu tapes son nom, mais qu'il s'ouvre quand tu tapes directement son adresse IP, c'est que le réseau fonctionne : seul le DNS ne répond plus.
+:::
 
 ## L'essentiel
 
-- Adresse IP : numérique. Adresse symbolique : lisible par les humains.
-- Le DNS transforme un nom en adresse IP.
-- Il est réparti sur de nombreux ordinateurs.
+- Adresse IP : un numéro, quatre nombres de 0 à 255 en version 4. Adresse symbolique : un nom.
+- Le DNS transforme un nom en adresse IP, comme un annuaire.
+- Il est réparti sur de nombreux ordinateurs, pour supporter la charge et résister aux pannes.
+- `nslookup` permet de l'interroger.
 
 ## Exercices
 

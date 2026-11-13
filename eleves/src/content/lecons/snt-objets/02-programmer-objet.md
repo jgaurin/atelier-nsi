@@ -9,9 +9,11 @@ objectifs:
 prerequis: [snt-objets/embarque, snt-python/boucles]
 ---
 
-On simule ici un objet : une valeur représente la mesure d'un capteur, et le résultat de la fonction représente l'ordre donné à l'actionneur.
+Dans un vrai objet connecté, un capteur envoie une mesure, et le programme commande un moteur ou une lampe. Ici, on simule l'objet : une **valeur** joue le rôle de la mesure du capteur, et le **résultat** de la fonction joue le rôle de l'ordre donné à l'actionneur.
 
-## 1. Décider à partir d'un capteur
+## 1. Décider à partir d'une mesure
+
+Une lampe doit s'allumer quand il fait sombre, c'est-à-dire quand la luminosité mesurée est inférieure à 30.
 
 ```python exec
 def lampe(luminosite):
@@ -22,7 +24,11 @@ def lampe(luminosite):
 print(lampe(10), lampe(70))
 ```
 
+La fonction reçoit la mesure du capteur, et renvoie l'ordre pour l'actionneur. Pour 10, il fait sombre : on allume. Pour 70, il fait clair : on éteint.
+
 ## 2. Traiter une série de mesures
+
+Un capteur de température envoie une mesure toutes les heures. Combien de fois a-t-il fait plus de 25 °C ?
 
 ```python exec
 mesures = [12, 18, 31, 27]
@@ -33,9 +39,11 @@ for m in mesures:
 print(n)
 ```
 
-## 3. Envoyer des commandes
+On parcourt les mesures une par une, et on compte celles qui dépassent 25 : 31 et 27, donc 2.
 
-Un objet reçoit souvent des **chaînes de caractères**. Par exemple, `"A50"` signifie : moteur A, à 50 % de sa vitesse.
+## 3. Envoyer une commande sous forme de texte
+
+Un robot reçoit souvent ses ordres sous forme de **texte**. Par exemple, `"A50"` signifie : « moteur A, à 50 % de sa vitesse ». Il faut séparer la lettre et le nombre.
 
 ```python exec
 message = "A50"
@@ -44,11 +52,13 @@ vitesse = int(message[1:])
 print(moteur, vitesse)
 ```
 
-`message[0]` est le premier caractère, et `message[1:]` est tout le reste.
+- `message[0]` est le premier caractère : `"A"`.
+- `message[1:]` est tout le reste, à partir du caractère 1 : `"50"`.
+- `int(...)` transforme le texte `"50"` en nombre 50, pour pouvoir calculer avec.
 
 ## 4. Une interface simple
 
-Une **IHM** relie un bouton à une action et affiche un résultat.
+Une **IHM** relie une action de l'utilisateur à un changement d'état. Un bouton qui allume et éteint une lumière inverse l'état à chaque appui :
 
 ```python exec
 def bouton(etat):
@@ -57,13 +67,17 @@ def bouton(etat):
 lumiere = False
 lumiere = bouton(lumiere)
 print(lumiere)
+lumiere = bouton(lumiere)
+print(lumiere)
 ```
+
+`not` transforme `False` en `True`, et `True` en `False` : le premier appui allume, le second éteint.
 
 ## L'essentiel
 
-- Un capteur donne une valeur, le programme décide.
+- Un capteur donne une valeur ; le programme décide ; l'actionneur reçoit l'ordre.
 - Une boucle permet de traiter plusieurs mesures.
-- Une chaîne comme `"A50"` peut coder une commande.
+- Une commande comme `"A50"` se découpe : `message[0]` pour la lettre, `int(message[1:])` pour le nombre.
 - Une IHM associe une action de l'utilisateur à un changement d'état.
 
 ## Exercices

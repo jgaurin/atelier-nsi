@@ -8,46 +8,80 @@ objectifs:
   - "Utiliser les opérations courantes"
 ---
 
-Une **variable** est un nom qui désigne une valeur. On la crée avec une **affectation**.
+Un programme a besoin de retenir des informations : un score, un prix, un prénom. Il les range dans des **variables**.
 
-## 1. L'affectation
+## 1. Une variable, c'est une étiquette
+
+Imagine une étiquette sur laquelle on écrit un nom, et qu'on colle sur une valeur. Quand on écrit `age = 15`, on colle l'étiquette `age` sur la valeur 15. Ensuite, chaque fois qu'on écrit `age`, Python va chercher la valeur qui porte cette étiquette.
 
 ```python exec
 age = 15
+print(age)
 age = age + 1
 print(age)
 ```
 
-Le signe `=` ne veut pas dire « égal » : il **range** à gauche la valeur calculée à droite. La ligne `age = age + 1` prend donc l'ancienne valeur, ajoute 1, et remplace.
+## 2. Le signe `=` ne veut pas dire « égal »
 
-## 2. Les types
+En mathématiques, `age = age + 1` serait absurde. En Python, `=` est une **affectation** : Python calcule d'abord ce qui est **à droite**, puis range le résultat dans la variable **à gauche**.
+
+Pour `age = age + 1`, Python fait donc :
+
+1. il lit la valeur actuelle de `age` : 15 ;
+2. il calcule 15 + 1 = 16 ;
+3. il range 16 dans `age`, à la place de 15.
+
+:::exemple
+Que vaut `b` à la fin ?
+
+```python
+a = 4
+b = a + 3
+a = 10
+```
+
+| Ligne | `a` | `b` |
+| --- | --- | --- |
+| `a = 4` | 4 | |
+| `b = a + 3` | 4 | 7 |
+| `a = 10` | 10 | 7 |
+
+`b` vaut 7. Quand on a calculé `b`, `a` valait 4. Changer `a` ensuite ne modifie pas `b`.
+:::
+
+Pour suivre un programme à la main, on fait toujours ce genre de tableau : une colonne par variable, une ligne par instruction.
+
+## 3. Les types de valeurs
 
 | Type | Exemple | Sens |
 | --- | --- | --- |
 | `int` | `15` | nombre entier |
-| `float` | `1.75` | nombre à virgule, écrit avec un point |
+| `float` | `1.75` | nombre à virgule, écrit avec un **point** |
 | `str` | `"Léa"` | texte, entre guillemets |
-| `bool` | `True` | vrai ou faux |
+| `bool` | `True` ou `False` | vrai ou faux |
 
-## 3. Les opérations
+## 4. Les opérations
 
-| Opération | Exemple | Résultat |
-| --- | --- | --- |
-| addition, soustraction, multiplication | `2 + 3 * 4` | 14 |
-| division | `7 / 2` | 3.5 |
-| quotient entier | `7 // 2` | 3 |
-| reste | `7 % 2` | 1 |
-| puissance | `2 ** 3` | 8 |
+| Opération | Exemple | Résultat | Explication |
+| --- | --- | --- | --- |
+| addition, soustraction, multiplication | `2 + 3 * 4` | 14 | la multiplication passe avant, comme en maths |
+| division | `7 / 2` | 3.5 | toujours un nombre à virgule |
+| quotient entier | `7 // 2` | 3 | combien de fois 2 tient dans 7 |
+| reste | `7 % 2` | 1 | ce qui reste : 7 = 3 × 2 + 1 |
+| puissance | `2 ** 3` | 8 | 2 × 2 × 2 |
 
-On peut coller deux textes avec `+` : `"bon" + "jour"` donne `"bonjour"`.
+`//` et `%` servent souvent ensemble. Pour convertir 130 minutes : `130 // 60` donne 2 heures, et `130 % 60` donne les 10 minutes restantes.
+
+On peut aussi coller deux textes avec `+` : `"bon" + "jour"` donne `"bonjour"`.
 
 :::attention
-`"3" + 4` provoque une erreur : on ne peut pas ajouter un texte et un nombre.
+`"3" + 4` provoque une erreur : `"3"` est un texte, pas un nombre. Python refuse d'ajouter un texte et un nombre.
 :::
 
 ## L'essentiel
 
-- `nom = valeur` range une valeur dans une variable.
+- `nom = valeur` range une valeur dans une variable ; Python calcule d'abord la droite, puis range à gauche.
+- Pour suivre un programme, on fait un tableau des valeurs de chaque variable.
 - Types de base : `int`, `float`, `str`, `bool`.
 - `//` donne le quotient entier, `%` le reste, `**` la puissance.
 

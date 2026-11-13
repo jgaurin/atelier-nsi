@@ -9,42 +9,30 @@ objectifs:
 prerequis: [snt-python/conditions]
 ---
 
-Une boucle répète des instructions. On distingue deux sortes de boucles.
+Afficher les nombres de 1 à 100, ou relancer un dé jusqu'à faire 6 : on ne va pas écrire cent lignes. On utilise une **boucle**, qui répète des instructions.
 
-## 1. La boucle bornée : `for`
-
-On l'utilise quand on connaît le nombre de tours.
+## 1. La boucle `for` : un nombre de tours connu
 
 ```python exec
 for i in range(4):
     print(i)
 ```
 
-| Écriture | Valeurs de `i` |
-| --- | --- |
-| `range(4)` | 0, 1, 2, 3 |
-| `range(2, 5)` | 2, 3, 4 |
+`range(4)` donne les nombres 0, 1, 2 et 3. À chaque tour, `i` prend la valeur suivante, puis le bloc décalé s'exécute. Il y a donc **4 tours**.
 
-La dernière valeur n'est jamais atteinte.
-
-## 2. La boucle non bornée : `while`
-
-Elle répète **tant que** la condition est vraie.
-
-```python exec
-n = 1
-while n < 20:
-    n = n * 2
-print(n)
-```
+| Écriture | Valeurs de `i` | Nombre de tours |
+| --- | --- | --- |
+| `range(4)` | 0, 1, 2, 3 | 4 |
+| `range(2, 5)` | 2, 3, 4 | 3 |
+| `range(1, 11)` | 1 à 10 | 10 |
 
 :::attention
-Si la condition reste toujours vraie, la boucle ne s'arrête jamais. Quelque chose doit changer à chaque tour.
+La dernière valeur n'est **jamais** atteinte : `range(1, 11)` s'arrête à 10. Pour aller jusqu'à n, on écrit `range(1, n + 1)`.
 :::
 
-## 3. Compter et additionner
+## 2. Additionner avec une boucle
 
-Une variable de départ, puis une mise à jour à chaque tour.
+Pour calculer 1 + 2 + 3 + 4 + 5, on utilise une variable qui grossit à chaque tour, un **accumulateur**.
 
 ```python exec
 somme = 0
@@ -53,11 +41,53 @@ for i in range(1, 6):
 print(somme)
 ```
 
+| Tour | `i` | `somme` après le tour |
+| --- | --- | --- |
+| départ | | 0 |
+| 1 | 1 | 1 |
+| 2 | 2 | 3 |
+| 3 | 3 | 6 |
+| 4 | 4 | 10 |
+| 5 | 5 | 15 |
+
+Deux règles : on **initialise** l'accumulateur **avant** la boucle, et on le **met à jour** dedans. Si on écrivait `somme = 0` dans la boucle, il serait remis à zéro à chaque tour.
+
+## 3. La boucle `while` : tant que…
+
+Quand on ne sait pas à l'avance combien de tours il faut, on répète **tant qu'** une condition est vraie.
+
+```python exec
+n = 1
+while n < 20:
+    n = n * 2
+print(n)
+```
+
+| Test | `n < 20` ? | `n` après le tour |
+| --- | --- | --- |
+| n = 1 | oui | 2 |
+| n = 2 | oui | 4 |
+| n = 4 | oui | 8 |
+| n = 8 | oui | 16 |
+| n = 16 | oui | 32 |
+| n = 32 | non : on sort | |
+
+Le programme affiche 32 : c'est la première puissance de 2 qui dépasse 20.
+
+:::attention
+Si la condition reste toujours vraie, la boucle ne s'arrête **jamais**. Il faut que quelque chose change à chaque tour pour qu'elle finisse par devenir fausse.
+:::
+
+## 4. Laquelle choisir ?
+
+- On connaît le nombre de tours : **`for`**. Par exemple, faire 10 lancers de dé.
+- On répète jusqu'à ce qu'une condition change : **`while`**. Par exemple, lancer le dé jusqu'à obtenir un 6.
+
 ## L'essentiel
 
 - `for i in range(n)` : n tours, avec i de 0 à n − 1.
-- `while condition:` répète tant que la condition est vraie.
-- Pour accumuler : on initialise avant la boucle, on met à jour dedans.
+- `while condition:` répète tant que la condition est vraie ; quelque chose doit changer à chaque tour.
+- Accumulateur : on l'initialise avant la boucle, on le met à jour dedans.
 
 ## Exercices
 

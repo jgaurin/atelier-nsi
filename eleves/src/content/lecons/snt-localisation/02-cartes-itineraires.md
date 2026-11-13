@@ -9,42 +9,58 @@ objectifs:
 prerequis: [snt-localisation/gps]
 ---
 
-Une carte numérique rassemble toutes les échelles et plusieurs types d'informations.
+Une carte numérique fait bien plus qu'une carte papier : on y zoome, on y choisit ce qu'on veut voir, et on y calcule un itinéraire. Voyons comment.
 
-## 1. Les couches
+## 1. Les couches d'information
 
-Sur **Géoportail**, on superpose des **couches** : photographies aériennes, routes, relief, limites administratives. On choisit ce qu'on veut voir.
+Sur un site comme **Géoportail**, la carte est faite de **couches** superposées : photographies aériennes, routes, relief, cours d'eau, limites des communes… On affiche ou on masque chaque couche, selon ce qu'on cherche.
 
-Quand on change d'échelle, certaines informations disparaissent, sinon la carte serait illisible. Une route garde à peu près la même largeur à l'écran, quelle que soit l'échelle.
+Quand on dézoome, la carte masque les petits détails, sinon elle deviendrait illisible : les noms des petites rues disparaissent. Une route garde à peu près la même largeur à l'écran, quelle que soit l'échelle, pour rester visible.
 
 ## 2. D'où viennent les données ?
 
-Services géographiques des États, satellites, avions, voitures, utilisateurs. **OpenStreetMap** est une carte collaborative en libre accès : chacun peut la compléter, et ses ajouts deviennent visibles par tous.
+Elles viennent des services géographiques des États, de photos prises par des satellites, des avions ou des voitures, et des utilisateurs eux-mêmes.
 
-Une carte n'est jamais parfaite : une erreur peut avoir de graves conséquences, et la mise à jour demande beaucoup de travail.
+**OpenStreetMap** est une carte **collaborative**, libre et gratuite : n'importe qui peut y ajouter une rue, un commerce ou un chemin, et l'ajout devient visible par tous. C'est le même principe que Wikipédia, appliqué aux cartes.
 
-## 3. Calculer un itinéraire
+Une carte n'est jamais parfaite : le monde change sans cesse, et une erreur, comme une route qui n'existe plus, peut avoir de graves conséquences.
 
-On représente le réseau par un **graphe** :
+## 3. Un itinéraire, c'est un graphe
 
-- les **sommets** sont les carrefours ;
-- les **arêtes** sont les routes ;
-- chaque arête a un **poids** : distance, durée ou coût.
+Pour calculer un itinéraire, le logiciel représente le réseau routier par un **graphe** :
 
-Un itinéraire est un **chemin**. Le meilleur est celui dont la somme des poids est la plus petite.
+| Dans la réalité | Dans le graphe |
+| --- | --- |
+| un carrefour | un **sommet** |
+| une route entre deux carrefours | une **arête** |
+| la longueur ou la durée de cette route | le **poids** de l'arête |
+| un trajet | un **chemin** |
+
+Le meilleur itinéraire est le chemin dont la **somme des poids** est la plus petite.
 
 :::exemple
-A–B : 4 km, B–C : 3 km, A–C : 9 km. De A à C, le chemin A, B, C mesure 7 km, et il bat la route directe de 9 km.
+Trois carrefours A, B et C. A–B mesure 4 km, B–C mesure 3 km, et la route directe A–C mesure 9 km.
+
+| Chemin de A à C | Longueur |
+| --- | --- |
+| A, C | 9 km |
+| A, B, C | 4 + 3 = 7 km |
+
+Passer par B est plus court que la route directe : 7 km contre 9 km.
 :::
 
-Changer de poids change la réponse : le plus court n'est pas forcément le plus rapide.
+Le logiciel compare ainsi les chemins possibles, avec des algorithmes qui évitent de les essayer tous.
+
+## 4. Le plus court n'est pas le plus rapide
+
+Si les poids sont des **durées** au lieu des distances, la réponse peut changer : une autoroute plus longue en kilomètres peut être plus rapide qu'une petite route. C'est pourquoi les applications proposent « le plus court » ou « le plus rapide ».
 
 ## L'essentiel
 
-- Une carte numérique superpose des couches.
-- OpenStreetMap est collaboratif.
-- Un réseau routier est un graphe pondéré.
-- Le meilleur itinéraire minimise la somme des poids.
+- Une carte numérique superpose des couches qu'on affiche ou masque.
+- OpenStreetMap est une carte collaborative : chacun peut la compléter.
+- Un réseau routier est un graphe : carrefours, routes, et des poids (distance ou durée).
+- Le meilleur itinéraire minimise la somme des poids ; il dépend du poids choisi.
 
 ## Exercices
 

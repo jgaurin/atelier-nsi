@@ -9,45 +9,55 @@ objectifs:
 prerequis: [snt-donnees/descripteurs]
 ---
 
-Un fichier est toujours stocké sur un support physique, même quand il est « dans le nuage ».
+Tes photos « dans le cloud » ne flottent pas dans les airs. Elles sont enregistrées sur de vrais disques, dans de vrais bâtiments, quelque part dans le monde.
 
-## 1. Stocker
+## 1. Où stocker ses fichiers ?
 
 | Support | Exemple | Local ou distant |
 | --- | --- | --- |
-| Interne | disque dur, SSD | local |
-| Externe | clé USB | local |
-| Nuage (*cloud*) | service en ligne | distant |
+| Interne | le disque dur ou le SSD de l'ordinateur | local |
+| Externe | une clé USB, un disque externe | local |
+| Nuage (*cloud*) | un service de stockage en ligne | distant |
 
-Tout support peut tomber en panne : il faut faire des **sauvegardes**, si possible à deux endroits.
+Avec le **nuage**, on accède à ses fichiers depuis n'importe quel appareil connecté. En échange, on les confie à une entreprise, et il faut Internet pour y accéder.
+
+Tout support peut tomber en panne, être perdu ou volé. Il faut donc faire des **sauvegardes** : garder une copie à un autre endroit, par exemple sur un disque externe **et** dans le nuage.
 
 ## 2. Partager et synchroniser
 
-- **Partager** : on donne un lien, en choisissant lecture seule ou modification.
-- **Synchroniser** : le même fichier est mis à jour sur plusieurs appareils.
+Ce sont deux choses différentes :
+
+- **Partager**, c'est donner accès à un fichier à d'autres personnes, avec un lien. On choisit si elles peuvent seulement le **lire**, ou aussi le **modifier**.
+- **Synchroniser**, c'est garder **le même fichier à jour sur plusieurs appareils**. Tu modifies un document sur ton ordinateur, et la modification apparaît sur ton téléphone.
 
 :::attention
-Avec la synchronisation, un fichier supprimé sur un appareil peut disparaître partout. Ce n'est donc pas une sauvegarde.
+La synchronisation recopie **tout**, y compris les erreurs et les suppressions. Un fichier supprimé par erreur sur un appareil disparaît aussi des autres. La synchronisation n'est donc **pas** une sauvegarde.
 :::
 
 ## 3. Les centres de données
 
-Le nuage repose sur des **centres de données** : des bâtiments remplis de serveurs.
+Le nuage repose sur des **centres de données** : des bâtiments remplis de milliers de serveurs qui tournent jour et nuit.
 
-Ils consomment :
+Ils consomment beaucoup de ressources :
 
-- de l'**électricité**, pour les serveurs et leur refroidissement ;
-- de l'**eau**, pour le refroidissement ;
-- des **métaux rares**, pour la fabrication des machines.
+- de l'**électricité**, pour faire fonctionner les serveurs ;
+- encore de l'électricité, et souvent de l'**eau**, pour les **refroidir**, car les serveurs chauffent énormément ;
+- des **métaux rares**, pour fabriquer les machines.
 
-En ordre de grandeur, les centres de données utilisent environ **1,5 % de l'électricité mondiale**.
+En ordre de grandeur, les centres de données utilisent environ **1,5 % de l'électricité mondiale**, et cette part augmente.
+
+:::exemple
+Un centre de données qui consomme en permanence 20 MW utilise en un an 20 × 8 760 heures = 175 200 MWh, autant qu'environ 35 000 foyers.
+:::
+
+Stocker moins de fichiers inutiles et éviter les copies en double réduit cette consommation.
 
 ## L'essentiel
 
-- Le nuage est un stockage distant, sur de vraies machines.
-- Partager donne accès, synchroniser garde des copies identiques.
-- Serveurs et refroidissement sont les principales causes de consommation.
-- Ordre de grandeur : environ 1,5 % de l'électricité mondiale.
+- Le nuage est un stockage distant, sur de vrais serveurs, dans des centres de données.
+- Partager donne accès à d'autres personnes ; synchroniser garde un fichier identique sur plusieurs appareils.
+- La synchronisation n'est pas une sauvegarde.
+- Serveurs et refroidissement consomment beaucoup : environ 1,5 % de l'électricité mondiale.
 
 ## Exercices
 

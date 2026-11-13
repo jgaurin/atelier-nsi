@@ -9,9 +9,23 @@ objectifs:
 prerequis: [snt-python/variables]
 ---
 
-Une **fonction** donne un nom à un calcul. On l'écrit une fois, puis on l'utilise autant qu'on veut.
+Quand tu calcules souvent la même chose, avec des nombres différents, tu ne veux pas réécrire le calcul à chaque fois. Tu lui donnes un nom une fois pour toutes : c'est une **fonction**. C'est comme une recette : on l'écrit une fois, puis on la suit avec les ingrédients du jour.
 
-## 1. Définir et appeler
+## 1. Définir une fonction
+
+```python exec
+def double(x):
+    return 2 * x
+```
+
+- `def` annonce qu'on **définit** une fonction, ici nommée `double`.
+- `x` est un **paramètre** : une variable qui recevra la valeur donnée au moment de l'appel.
+- La ligne se termine par `:`, et les lignes de la fonction sont **décalées** vers la droite. Ce décalage, l'**indentation**, indique ce qui fait partie de la fonction.
+- `return` renvoie le résultat et termine la fonction.
+
+Définir une fonction ne l'exécute pas : on a seulement écrit la recette.
+
+## 2. Appeler une fonction
 
 ```python exec
 def double(x):
@@ -21,12 +35,13 @@ print(double(4))
 print(double(10))
 ```
 
-- `def` commence la définition, et la ligne finit par `:`.
-- `x` est un **paramètre** : il reçoit la valeur donnée à l'appel.
-- Les lignes de la fonction sont **décalées** vers la droite : c'est l'**indentation**.
-- `return` renvoie le résultat et termine la fonction.
+Quand Python lit `double(4)` :
 
-## 2. Plusieurs paramètres
+1. il donne la valeur 4 au paramètre `x` ;
+2. il exécute les lignes de la fonction : `2 * 4` ;
+3. `return` renvoie 8, qui remplace `double(4)` à l'endroit de l'appel.
+
+## 3. Plusieurs paramètres
 
 ```python exec
 def aire_rectangle(longueur, largeur):
@@ -35,24 +50,44 @@ def aire_rectangle(longueur, largeur):
 print(aire_rectangle(5, 3))
 ```
 
-## 3. `return` n'est pas `print`
+Les valeurs sont données **dans l'ordre** des paramètres : `longueur` reçoit 5 et `largeur` reçoit 3.
 
-`print` **affiche** à l'écran. `return` **donne** le résultat au programme, qui peut s'en resservir.
+## 4. `return` n'est pas `print`
+
+- `print` **affiche** une valeur à l'écran, pour la personne qui regarde.
+- `return` **renvoie** la valeur au programme, qui peut s'en resservir dans un calcul.
 
 ```python exec
 def carre(x):
     return x * x
 
-print(carre(3) + 1)
+resultat = carre(3) + 1
+print(resultat)
 ```
 
-Sans `return`, la fonction renvoie la valeur spéciale `None`.
+`carre(3)` vaut 9, et on peut l'utiliser dans un calcul : 9 + 1 = 10. Si la fonction faisait seulement `print(x * x)`, elle afficherait 9, mais ne renverrait rien d'utilisable : elle renverrait la valeur spéciale `None`, et `None + 1` provoquerait une erreur.
+
+## 5. Des fonctions qui en utilisent d'autres
+
+Une fonction peut en appeler une autre :
+
+```python exec
+def prix_ttc(prix_ht):
+    return prix_ht * 1.2
+
+def prix_total(prix_ht, quantite):
+    return prix_ttc(prix_ht) * quantite
+
+print(prix_total(10, 3))
+```
+
+Si le taux de TVA change, on ne modifie qu'une ligne, dans `prix_ttc`.
 
 ## L'essentiel
 
-- `def nom(parametres):` définit une fonction.
-- `return` renvoie le résultat.
-- On appelle une fonction en écrivant son nom et ses valeurs entre parenthèses.
+- `def nom(parametres):` définit une fonction ; son contenu est indenté.
+- À l'appel, les paramètres reçoivent les valeurs données, dans l'ordre.
+- `return` renvoie le résultat au programme ; `print` ne fait que l'afficher.
 
 ## Exercices
 

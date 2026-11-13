@@ -9,44 +9,56 @@ objectifs:
 prerequis: [snt-photo/pixels]
 ---
 
-Une photo contient bien plus que ses pixels.
+Une photo contient bien plus que ce que l'on voit. Et l'image que tu regardes n'est pas ce qu'a capté le capteur : des algorithmes l'ont calculée.
 
 ## 1. Les métadonnées EXIF
 
-Le format **EXIF** enregistre dans le fichier des informations comme : modèle de l'appareil, objectif, vitesse, diaphragme, date, auteur, position GPS.
+Quand tu prends une photo, l'appareil enregistre dans le fichier, en plus des pixels, des informations sur la prise de vue. Ce sont des **métadonnées**, au format **EXIF** :
 
-On les lit dans les **propriétés** du fichier, ou avec un logiciel.
+| Métadonnée | Exemple |
+| --- | --- |
+| modèle de l'appareil | Exemple X10 |
+| date et heure | 14 juin 2026, 18 h 32 |
+| réglages | temps de pose 1/250 s, ouverture f/2 |
+| position GPS | 45,1885 ; 5,7245 |
+| auteur | Lina |
+
+On les lit dans les **propriétés** du fichier, ou avec un logiciel de photo.
 
 :::attention
-Si la position GPS est enregistrée, une photo partagée peut révéler où tu habites.
+Si la position GPS est enregistrée, une photo prise chez toi et publiée en ligne peut révéler ton adresse. Avant de publier, on peut supprimer ces métadonnées, ou désactiver la localisation de l'appareil photo.
 :::
 
-## 2. La construction de l'image
+## 2. Comment l'image est fabriquée
 
-| Étape | Algorithmes |
+Entre l'appui sur le bouton et l'image finale, l'appareil enchaîne trois grandes étapes, chacune faite d'algorithmes.
+
+| Étape | Ce que font les algorithmes |
 | --- | --- |
-| **Prise de vue** | calcul de l'exposition, mise au point, stabilisation |
-| **Développement** | gestion de la lumière, balance des blancs, netteté, correction des distorsions |
-| **Après le développement** | compression du fichier |
+| **Prise de vue** | calculer l'exposition (ni trop sombre, ni trop claire), faire la mise au point, stabiliser contre les tremblements |
+| **Développement** | transformer les mesures brutes du capteur en image : régler la lumière et le contraste, corriger les couleurs (balance des blancs), renforcer la netteté, corriger les déformations de l'objectif |
+| **Enregistrement** | compresser le fichier, par exemple en JPEG |
 
 ## 3. La fusion d'images
 
-Un téléphone a un petit capteur. Il prend souvent **plusieurs images** et les combine :
+Le capteur d'un téléphone est minuscule : il capte peu de lumière. Pour compenser, le téléphone prend souvent **plusieurs images** en une fraction de seconde, puis les **combine** :
 
-- **réduction du bruit** ;
-- **HDR** : détails à la fois dans les zones claires et sombres ;
-- **panorama** ;
-- *focus stacking* : plusieurs mises au point pour étendre la netteté.
+- **réduction du bruit** : en moyennant plusieurs images, les petits points parasites disparaissent ;
+- **HDR** : une image sombre garde les détails du ciel, une image claire ceux des zones d'ombre, et on combine les deux ;
+- **panorama** : plusieurs photos sont assemblées en une seule image large ;
+- **mise au point étendue** : plusieurs images nettes à différentes distances sont combinées pour que tout soit net.
+
+C'est ce que fait le « mode nuit » : il prend des images pendant quelques secondes et les fusionne.
 
 ## 4. Les enjeux
 
-Une image se copie sans coût et se diffuse vite. Elle peut être truquée, être difficile à faire disparaître, ou permettre de pister une personne. Se pose aussi la question de sa conservation à long terme.
+Une photo numérique se copie gratuitement et se diffuse en un instant. Cela pose de nouvelles questions : une image publiée peut ne jamais disparaître, elle peut être truquée de façon presque invisible, ou permettre de suivre une personne grâce à ses métadonnées.
 
 ## L'essentiel
 
-- EXIF : les métadonnées d'une photo, dont parfois sa position.
-- Prise de vue, développement, compression.
-- Un téléphone combine souvent plusieurs images.
+- Les métadonnées EXIF décrivent la prise de vue : appareil, date, réglages, parfois position GPS.
+- Prise de vue, développement, enregistrement : chaque étape repose sur des algorithmes.
+- Un téléphone combine souvent plusieurs images pour compenser son petit capteur.
 
 ## Exercices
 

@@ -8,9 +8,25 @@ objectifs:
 prerequis: [snt-python/fonctions]
 ---
 
-Un programme doit souvent choisir selon la situation.
+Un programme doit souvent choisir : « si le mot de passe est juste, ouvrir la session, sinon afficher une erreur ». C'est le rôle des **conditions**.
 
-## 1. `if`, `elif`, `else`
+## 1. `if` et `else`
+
+```python exec
+def acces(age):
+    if age >= 18:
+        return "majeur"
+    else:
+        return "mineur"
+
+print(acces(20), acces(15))
+```
+
+- Après `if` vient une **condition**, qui est vraie ou fausse, puis `:`.
+- Si elle est vraie, Python exécute le bloc décalé sous le `if`.
+- Sinon, il exécute le bloc sous le `else`.
+
+## 2. Plusieurs cas : `elif`
 
 ```python exec
 def mention(note):
@@ -24,26 +40,38 @@ def mention(note):
 print(mention(17), mention(12), mention(8))
 ```
 
-Python teste les conditions dans l'ordre. Il exécute le premier bloc dont la condition est vraie, puis il ignore les suivants.
+Python teste les conditions **dans l'ordre**, et exécute seulement le **premier** bloc dont la condition est vraie.
 
-## 2. Comparer
+| Note | `note >= 16` ? | `note >= 10` ? | Résultat |
+| --- | --- | --- | --- |
+| 17 | oui | pas testé | Très bien |
+| 12 | non | oui | Admis |
+| 8 | non | non | Refusé |
+
+Pour 17, la condition `note >= 10` est vraie aussi, mais elle n'est même pas testée : la première a suffi. L'**ordre** des conditions compte donc beaucoup.
+
+## 3. Comparer
 
 | Écriture | Sens |
 | --- | --- |
 | `==` | égal à |
 | `!=` | différent de |
-| `<`, `<=` | inférieur, inférieur ou égal |
-| `>`, `>=` | supérieur, supérieur ou égal |
+| `<` et `<=` | inférieur, inférieur ou égal |
+| `>` et `>=` | supérieur, supérieur ou égal |
 
 :::attention
-`=` range une valeur, `==` compare deux valeurs.
+`=` **range** une valeur dans une variable. `==` **compare** deux valeurs. `if x = 3:` est une erreur ; il faut écrire `if x == 3:`.
 :::
 
-## 3. Combiner
+Attention aussi aux valeurs frontières : « admis à partir de 10 » s'écrit `note >= 10`. Avec `note > 10`, un élève qui a exactement 10 serait refusé.
 
-- `a and b` est vrai si **les deux** sont vrais.
-- `a or b` est vrai si **au moins un** est vrai.
-- `not a` est vrai si `a` est faux.
+## 4. Combiner des conditions
+
+| Mot | Sens | Exemple |
+| --- | --- | --- |
+| `and` | vrai si **les deux** sont vraies | `age < 18 and carte` |
+| `or` | vrai si **au moins une** est vraie | `age < 14 or etudiant` |
+| `not` | inverse une condition | `not ferme` |
 
 ```python exec
 age = 16
@@ -53,8 +81,9 @@ print(age < 18 and carte)
 
 ## L'essentiel
 
-- `if`, puis éventuellement `elif` et `else`, suivis de `:` et d'un bloc décalé.
-- `==` compare, `=` affecte.
+- `if condition:` puis, éventuellement, `elif` et `else`, chacun suivi d'un bloc décalé.
+- Python exécute le premier bloc dont la condition est vraie : l'ordre compte.
+- `==` compare, `=` range.
 - `and`, `or` et `not` combinent des conditions.
 
 ## Exercices

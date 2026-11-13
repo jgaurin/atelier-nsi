@@ -10,11 +10,11 @@ objectifs:
 prerequis: [snt-photo/pixels, snt-python/boucles]
 ---
 
-Une image est un tableau de lignes, et chaque ligne est un tableau de pixels.
+Retoucher une photo, c'est faire des calculs sur ses pixels. Tu vas voir comment un programme transforme une image en couleur en image grise, ou en négatif.
 
-## 1. Un pixel
+## 1. Un pixel, trois nombres
 
-Un pixel est un triplet `(r, v, b)`.
+Chaque pixel est un triplet `(r, v, b)` : ses quantités de rouge, de vert et de bleu, chacune de 0 à 255.
 
 ```python exec
 pixel = (200, 100, 50)
@@ -22,9 +22,15 @@ r, v, b = pixel
 print(r, v, b)
 ```
 
-## 2. Deux transformations
+La deuxième ligne range les trois valeurs dans trois variables d'un coup.
 
-**Niveau de gris** : on donne aux trois composantes leur moyenne.
+## 2. Passer en niveaux de gris
+
+Un gris a la même quantité de rouge, de vert et de bleu : (128, 128, 128) est un gris moyen. Pour griser un pixel, on remplace ses trois valeurs par leur **moyenne**.
+
+:::exemple
+Pour (200, 100, 50) : la moyenne vaut (200 + 100 + 50) / 3, soit environ 116. Le pixel devient (116, 116, 116).
+:::
 
 ```python exec
 def gris(pixel):
@@ -35,11 +41,19 @@ def gris(pixel):
 print(gris((200, 100, 50)))
 ```
 
-**Négatif** : chaque composante c devient 255 − c.
+On utilise `//` pour obtenir un entier, car un niveau de couleur est un nombre entier.
 
-## 3. Parcourir l'image
+## 3. Le négatif
 
-Une boucle parcourt les lignes, une autre les pixels de chaque ligne.
+Dans un négatif, le clair devient sombre et le sombre devient clair. Chaque valeur c devient **255 − c** : 0, le noir, devient 255, le blanc, et inversement.
+
+:::exemple
+(200, 100, 50) devient (55, 155, 205).
+:::
+
+## 4. Parcourir toute l'image
+
+Une image est un tableau de **lignes**, et chaque ligne est un tableau de pixels. Pour visiter tous les pixels, on utilise **deux boucles** : une sur les lignes, et dans chaque ligne, une sur ses pixels.
 
 ```python exec
 image = [[(10, 20, 30), (0, 0, 0)],
@@ -53,16 +67,20 @@ for ligne in image:
 print(nb)
 ```
 
-## 4. Détecter un contour
+Cette image a 2 lignes de 2 pixels. Le programme les visite tous et compte les pixels noirs : il y en a 1.
 
-Dans une image en niveaux de gris, un **contour** apparaît là où un pixel diffère fortement de son voisin. On compare la différence à un **seuil**.
+Pour transformer toute l'image, on construit une nouvelle image en appliquant la même transformation, comme `gris`, à chaque pixel.
+
+## 5. Détecter les contours
+
+Un **contour** est l'endroit où l'image change brusquement : entre un objet sombre et un fond clair, par exemple. Dans une image en niveaux de gris, on compare chaque pixel à son voisin. Si la différence dépasse un **seuil**, on est sur un contour.
 
 ## L'essentiel
 
-- Un pixel est un triplet `(r, v, b)`.
-- Gris : la moyenne des trois composantes.
-- Négatif : 255 − c.
-- Deux boucles imbriquées parcourent une image.
+- Un pixel est un triplet `(r, v, b)`, chaque valeur de 0 à 255.
+- Gris : la moyenne des trois valeurs. Négatif : 255 − c pour chaque valeur.
+- Deux boucles imbriquées parcourent une image, ligne par ligne.
+- Un contour est un endroit où deux pixels voisins diffèrent fortement.
 
 ## Exercices
 
