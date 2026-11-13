@@ -8,42 +8,49 @@ objectifs:
   - "Distinguer architecture monoprocesseur et multiprocesseur"
 ---
 
-Presque tous les ordinateurs suivent un même modèle, décrit en 1945.
+Ordinateur, téléphone, console de jeu : malgré leurs différences, presque tous suivent le même plan d'organisation, décrit en 1945. On l'appelle le **modèle de von Neumann**.
 
 ## 1. Les constituants
 
-| Constituant | Rôle |
-| --- | --- |
-| **Unité arithmétique et logique** (UAL) | effectue les calculs et les comparaisons |
-| **Unité de contrôle** | lit les instructions et commande les autres composants |
-| **Registres** | petites mémoires très rapides dans le processeur |
-| **Mémoire** | contient le programme **et** les données |
-| **Entrées-sorties** | clavier, écran, disque, réseau |
-| **Bus** | transportent les données et les adresses |
+| Constituant | Son rôle | Une image |
+| --- | --- | --- |
+| **Unité arithmétique et logique** (UAL) | faire les calculs et les comparaisons | la calculatrice |
+| **Unité de contrôle** | lire les instructions une à une et commander les autres composants | le chef d'orchestre |
+| **Registres** | garder quelques valeurs juste au moment où on les utilise | le brouillon à côté de la calculatrice |
+| **Mémoire** | contenir le programme **et** les données | le cahier |
+| **Entrées-sorties** | échanger avec l'extérieur | clavier, écran, disque, réseau |
+| **Bus** | transporter les données et les adresses entre les composants | les routes |
 
-L'UAL, l'unité de contrôle et les registres forment le **processeur**.
+L'UAL, l'unité de contrôle et les registres forment ensemble le **processeur**.
 
-La **mémoire vive** (RAM) est rapide, mais elle s'efface à l'extinction. Le **disque** est plus lent, mais il conserve les données.
+Deux sortes de mémoire coexistent :
+
+- la **mémoire vive** (RAM) est rapide, mais elle s'efface quand on éteint l'ordinateur : elle contient les programmes en cours ;
+- le **disque** est beaucoup plus lent, mais il conserve les données sans courant : il contient les fichiers.
 
 :::retenir[L'idée de von Neumann]
-Le **programme est stocké en mémoire**, comme les données.
+Le **programme est stocké en mémoire**, comme les données. Pour changer ce que fait la machine, il suffit de charger un autre programme : pas besoin de la recâbler.
 :::
 
 ## 2. Le cycle d'exécution
 
-Le processeur répète sans fin :
+Le processeur répète sans fin trois étapes :
 
-1. **chercher** l'instruction en mémoire, à l'adresse du **compteur de programme** ;
-2. **décoder** cette instruction ;
-3. **exécuter** cette instruction.
+1. **Chercher** : l'unité de contrôle lit en mémoire l'instruction dont l'adresse est dans le **compteur de programme**.
+2. **Décoder** : elle comprend ce que demande l'instruction.
+3. **Exécuter** : elle fait faire le travail, par exemple un calcul par l'UAL. Puis le compteur de programme passe à l'instruction suivante.
+
+Un processeur actuel répète ce cycle plusieurs milliards de fois par seconde.
 
 ## 3. Les circuits
 
-Le processeur est fait de **circuits combinatoires**, qui réalisent des fonctions booléennes. Le demi-additionneur vu avec les booléens en est un exemple.
+À l'intérieur, l'UAL est faite de **circuits combinatoires** : des circuits électroniques qui réalisent des fonctions booléennes, comme le demi-additionneur vu avec les booléens. En les combinant, on obtient des additions, des comparaisons, et tous les calculs de la machine.
 
 ## 4. Un ou plusieurs processeurs
 
-Une architecture **monoprocesseur** exécute une instruction à la fois. Une architecture **multiprocesseur** (plusieurs cœurs) en exécute plusieurs en même temps. On a multiplié les cœurs quand on n'a plus pu augmenter la fréquence sans trop chauffer.
+Une architecture **monoprocesseur** exécute une seule suite d'instructions à la fois. Une architecture **multiprocesseur**, avec plusieurs **cœurs**, en exécute plusieurs **en même temps**.
+
+Pourquoi plusieurs cœurs ? Pendant longtemps, on accélérait les processeurs en augmentant leur fréquence. Vers les années 2000, ils chauffaient trop : on a alors multiplié les cœurs. Mais deux cœurs ne vont deux fois plus vite que si le travail peut être partagé en tâches indépendantes.
 
 :::histoire
 Le modèle est décrit par John von Neumann en 1945. Les premiers ordinateurs à programme enregistré fonctionnent en 1948.
@@ -51,10 +58,10 @@ Le modèle est décrit par John von Neumann en 1945. Les premiers ordinateurs à
 
 ## L'essentiel
 
-- Processeur = UAL + unité de contrôle + registres.
-- La mémoire contient le programme **et** les données.
-- Cycle : chercher, décoder, exécuter.
-- Plusieurs cœurs permettent d'exécuter plusieurs instructions en même temps.
+- Processeur = UAL + unité de contrôle + registres. La mémoire contient le programme **et** les données.
+- RAM : rapide, effacée à l'extinction. Disque : lent, durable.
+- Cycle : chercher, décoder, exécuter, à l'adresse indiquée par le compteur de programme.
+- L'UAL est faite de circuits combinatoires. Plusieurs cœurs exécutent plusieurs instructions en même temps.
 
 ## Exercices
 

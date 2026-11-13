@@ -9,29 +9,37 @@ objectifs:
 prerequis: [premiere-architecture/von-neumann]
 ---
 
-Un robot, un thermostat ou un téléphone mesurent ce qui les entoure et réagissent.
+Un thermostat mesure la température et allume le chauffage. Un robot aspirateur détecte un mur et change de direction. Ces objets **mesurent** le monde, **décident**, puis **agissent**.
 
 ## 1. Capteurs et actionneurs
 
-- Un **capteur** mesure une grandeur physique : température, lumière, distance.
-- Un **actionneur** agit sur le monde : moteur, LED, haut-parleur.
-- Entre les deux, un **programme** décide.
+| Élément | Rôle | Exemples |
+| --- | --- | --- |
+| **Capteur** | mesurer une grandeur physique | thermomètre, capteur de lumière, détecteur de distance, micro |
+| **Actionneur** | agir sur le monde physique | moteur, résistance chauffante, LED, haut-parleur |
+| **Programme** | décider, à partir des mesures | l'algorithme du thermostat |
 
-## 2. Le schéma d'un programme
+Le capteur transforme une grandeur physique en nombre, que le programme peut lire. L'actionneur fait l'inverse : il transforme un ordre du programme en action physique.
+
+## 2. Le schéma d'un programme de pilotage
 
 ```
 répéter sans fin :
-    lire le capteur
+    lire les capteurs
     décider
-    commander l'actionneur
+    commander les actionneurs
 ```
+
+Pour un thermostat réglé à 20 °C : on lit la température ; si elle est inférieure à 20, on décide de chauffer ; on allume ou on éteint le chauffage ; puis on recommence.
 
 ## 3. Une interface homme-machine
 
-Une **IHM** permet à une personne de commander la machine : boutons, écran, écran tactile. On commence par rédiger un **cahier des charges** : ce que le système doit faire dans chaque situation.
+Une **IHM** permet à une personne de commander la machine et de voir son état : boutons, écran, écran tactile, application sur téléphone.
+
+Avant de programmer, on écrit un **cahier des charges** : ce que le système doit faire dans **chaque** situation.
 
 :::exemple
-Cahier des charges d'une veilleuse : la lampe s'allume si la luminosité est inférieure à 30, et si le bouton est en position marche.
+Cahier des charges d'une veilleuse : la lampe s'allume si la luminosité est inférieure à 30 **et** si le bouton est sur « marche ».
 :::
 
 ```python exec
@@ -41,9 +49,11 @@ def lampe_allumee(luminosite, marche):
 print(lampe_allumee(10, True), lampe_allumee(50, True), lampe_allumee(10, False))
 ```
 
+La fonction reçoit la mesure du capteur et l'état du bouton, et renvoie la décision. Chaque appel teste une situation du cahier des charges : il fait sombre et c'est en marche, il fait clair, ou c'est arrêté.
+
 ## 4. Programmer une IHM
 
-Une IHM garde un **état**, réagit à des **événements** et met à jour l'**affichage**.
+Une IHM garde un **état**, par exemple « allumée » ou « éteinte ». Elle réagit à des **événements**, comme un appui sur un bouton, en modifiant cet état. Puis elle met à jour l'**affichage**.
 
 ```python exec
 etat = {"marche": False}
@@ -59,13 +69,17 @@ def affichage():
 
 traiter("bouton")
 print(affichage())
+traiter("bouton")
+print(affichage())
 ```
+
+Chaque appui sur le bouton inverse l'état, grâce à `not`. L'affichage se contente de lire l'état. C'est le même principe que les pages Web interactives : un événement, une réaction, un affichage.
 
 ## L'essentiel
 
 - Capteur : il mesure. Actionneur : il agit. Programme : il décide.
-- Une IHM permet à une personne de commander la machine.
-- Un cahier des charges décrit le comportement attendu.
+- Un programme de pilotage répète : lire, décider, agir.
+- Un cahier des charges décrit le comportement attendu dans chaque situation.
 - Une IHM garde un état, réagit aux événements et met à jour l'affichage.
 
 ## Exercices

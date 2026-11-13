@@ -8,14 +8,23 @@ objectifs:
   - "Analyser et modifier ce qui se passe lors d'un clic"
 ---
 
-Une page Web réagit à ce que tu fais : un clic, une saisie, le passage de la souris. C'est l'**interface homme-machine** (IHM).
+Quand tu cliques sur « J'aime », le compteur augmente sans que la page se recharge. Quand tu tapes dans une barre de recherche, des suggestions apparaissent. La page **réagit** à ce que tu fais : c'est son **interface homme-machine** (IHM).
 
-## 1. HTML décrit, JavaScript fait réagir
+## 1. Deux langages, deux rôles
+
+Une page interactive repose sur deux langages :
+
+- le **HTML** décrit les **composants** : ce qu'il y a sur la page ;
+- le **JavaScript** décrit leur **comportement** : ce qui se passe quand on agit dessus.
+
+Voici un compteur avec un bouton.
 
 ```html
 <p>Valeur : <span id="valeur">0</span></p>
 <button id="plus">+1</button>
 ```
+
+Le HTML crée un texte et un bouton. L'attribut `id` donne à chaque composant un nom unique, pour que le JavaScript puisse le retrouver.
 
 ```javascript
 let compteur = 0;
@@ -26,26 +35,42 @@ bouton.addEventListener("click", function () {
 });
 ```
 
-- Le **HTML** décrit les composants : ici un bouton et un texte.
-- Le **JavaScript** décrit leur comportement : la fonction exécutée lors d'un clic.
+Ligne par ligne :
+
+- `let compteur = 0;` crée une variable, comme en Python.
+- `document.getElementById("plus")` retrouve dans la page le composant dont l'`id` est `plus` : le bouton.
+- `addEventListener("click", function () { … })` dit : « quand on clique sur ce bouton, exécute cette fonction ».
+- Dans la fonction, on augmente le compteur, puis on écrit sa nouvelle valeur dans le texte d'`id` `valeur`, grâce à `textContent`.
 
 ## 2. Composants et événements
 
-| Composant | Balise | Événement courant |
-| --- | --- | --- |
-| Bouton | `<button>` | `click` |
-| Champ de texte | `<input type="text">` | `input` |
-| Case à cocher | `<input type="checkbox">` | `change` |
-| Liste déroulante | `<select>` | `change` |
-| Formulaire | `<form>` | `submit` |
+Un **événement** est une action de l'utilisateur, ou du navigateur, à laquelle la page peut réagir.
 
-Le programme ne s'exécute pas de haut en bas une seule fois : il **attend des événements**. On parle de **programmation événementielle**.
+| Composant | Balise HTML | Événement courant |
+| --- | --- | --- |
+| Bouton | `<button>` | `click` : on clique |
+| Champ de texte | `<input type="text">` | `input` : le texte change |
+| Case à cocher | `<input type="checkbox">` | `change` : on coche ou décoche |
+| Liste déroulante | `<select>` | `change` : on choisit une option |
+| Formulaire | `<form>` | `submit` : on l'envoie |
+| Toute zone | n'importe quelle balise | `mouseover` : la souris passe dessus |
+
+## 3. Un programme qui attend
+
+Un programme Python simple s'exécute de haut en bas, puis s'arrête. Le JavaScript d'une page fonctionne autrement : au chargement, il **associe des fonctions à des événements**, puis il **attend**. Chaque fonction ne s'exécute que lorsque son événement se produit, autant de fois qu'il se produit.
+
+C'est la **programmation événementielle**. Dans le compteur, la fonction ne s'exécute jamais au chargement : seulement à chaque clic.
+
+## 4. Modifier le comportement
+
+Pour changer ce que fait la page, on modifie le JavaScript, pas le HTML. Pour un bouton qui enlève 1, on remplace `compteur + 1` par `compteur - 1`. Pour réagir à chaque frappe dans un champ, on écoute l'événement `input` de ce champ, au lieu de `click` sur un bouton.
 
 ## L'essentiel
 
 - HTML : les composants. JavaScript : leur comportement.
+- `getElementById` retrouve un composant grâce à son `id`.
 - `element.addEventListener("click", fonction)` associe une fonction à un événement.
-- La fonction ne s'exécute que lorsque l'événement se produit.
+- Programmation événementielle : la fonction ne s'exécute que lorsque l'événement se produit.
 
 ## Exercices
 

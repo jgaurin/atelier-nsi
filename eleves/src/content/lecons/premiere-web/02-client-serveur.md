@@ -9,49 +9,57 @@ objectifs:
 prerequis: [premiere-web/evenements]
 ---
 
-En seconde, tu as vu que le navigateur (le **client**) demande une page à un **serveur**. Voyons qui fait quoi, et dans quel ordre.
+En seconde, tu as vu que le navigateur, le **client**, demande des pages à un **serveur**. Voyons précisément qui fait quoi, dans quel ordre, et ce que chacun mémorise.
 
-## 1. L'échange
+## 1. L'échange, étape par étape
 
-1. Le **client** envoie une **requête HTTP** : `GET /notes.html`.
-2. Le **serveur** reçoit la requête, fait ses calculs, consulte éventuellement une base de données.
-3. Le serveur envoie une **réponse** : un code et le contenu de la page.
-4. Le client **affiche** la page et exécute son JavaScript.
+Quand tu ouvres la page de tes notes sur l'ENT :
+
+1. Le **client** envoie une **requête HTTP** au serveur : « donne-moi `/notes` ».
+2. Le **serveur** reçoit la requête. Il exécute un programme, en PHP ou en Python par exemple, qui va chercher tes notes dans une base de données.
+3. Le serveur fabrique la page HTML et l'envoie dans une **réponse**, avec un code qui dit comment ça s'est passé.
+4. Le client **affiche** la page, et exécute son éventuel JavaScript.
 
 | Code | Sens |
 | --- | --- |
-| 200 | tout va bien |
-| 404 | page introuvable |
-| 500 | erreur du serveur |
+| 200 | tout va bien, voici la page |
+| 404 | la page demandée n'existe pas |
+| 500 | le programme du serveur a rencontré une erreur |
 
-## 2. Client ou serveur ?
+Une page **statique** est un fichier envoyé tel quel. Une page **dynamique** est fabriquée par le serveur au moment de la requête : la page de tes notes n'est pas la même que celle de ton voisin.
 
-| Sur le client | Sur le serveur |
+## 2. Qui exécute quoi ?
+
+| Sur le client, le navigateur | Sur le serveur |
 | --- | --- |
-| affichage HTML et CSS | programmes PHP ou Python du site |
-| JavaScript de la page | accès à la base de données |
-| réaction aux clics | vérification du mot de passe |
+| afficher le HTML et appliquer le CSS | exécuter le programme du site, en PHP ou en Python |
+| exécuter le JavaScript de la page | lire et écrire dans la base de données |
+| réagir aux clics | vérifier un mot de passe |
 
-Une page **statique** est envoyée telle quelle. Une page **dynamique** est fabriquée par le serveur au moment de la requête.
+Quand tu affiches le code source d'une page, tu vois le HTML et le JavaScript reçus. Le code PHP, lui, n'apparaît jamais : il s'est exécuté sur le serveur, qui n'a envoyé que son résultat.
 
 :::attention
-Tout ce qui s'exécute sur le client peut être lu et modifié par l'utilisateur. Le serveur doit donc toujours **revérifier** ce qu'il reçoit.
+Tout ce qui s'exécute sur le client peut être lu et modifié par l'utilisateur. Si un site vérifie en JavaScript qu'une note est entre 0 et 20, un utilisateur peut désactiver cette vérification et envoyer 25. Le serveur doit donc **toujours revérifier** ce qu'il reçoit.
 :::
 
 ## 3. Ce que le client mémorise : les cookies
 
-HTTP ne garde pas la mémoire des requêtes précédentes. Pour te reconnaître, le serveur demande au navigateur de conserver un petit texte, le **cookie**. Le navigateur le **stocke**, puis le **renvoie au serveur à chaque requête** vers ce site.
+HTTP n'a pas de mémoire : chaque requête est traitée comme si c'était la première. Comment l'ENT sait-il que c'est toi, d'une page à l'autre ?
 
-## 4. HTTPS
+Après ta connexion, le serveur demande au navigateur de garder un petit texte, un **cookie**, par exemple `session=A81F`. Le navigateur le **stocke**, puis le **renvoie automatiquement au serveur à chaque requête** vers ce site. Le serveur le reconnaît : « c'est la session de cet élève ».
 
-Avec **HTTPS**, les échanges sont **chiffrés** : on le reconnaît au `https://` dans l'adresse. Il protège les mots de passe et les données personnelles de quiconque écoute le réseau.
+## 4. HTTPS : quand la transmission est chiffrée
+
+Avec **HTTP**, les requêtes et les réponses circulent **en clair** : quelqu'un qui écoute le réseau, sur un Wi-Fi public par exemple, peut les lire. Avec **HTTPS**, tout est **chiffré**. On le reconnaît au `https://` au début de l'adresse.
+
+Le chiffrement est indispensable dès qu'on transmet un mot de passe, des données personnelles ou un paiement.
 
 ## L'essentiel
 
-- Le client envoie une requête, le serveur calcule et répond, le client affiche.
-- JavaScript de la page : client. PHP, Python du site, base de données : serveur.
-- Un **cookie** est stocké par le client et renvoyé au serveur à chaque requête.
-- **HTTPS** chiffre les échanges.
+- Le client envoie une requête, le serveur calcule et répond avec un code, le client affiche.
+- JavaScript : sur le client. PHP, programme du site, base de données : sur le serveur.
+- Le serveur doit revérifier tout ce qu'il reçoit.
+- Un cookie est stocké par le client et renvoyé au serveur à chaque requête. HTTPS chiffre les échanges.
 
 ## Exercices
 

@@ -9,52 +9,85 @@ objectifs:
 prerequis: [premiere-architecture/systeme]
 ---
 
-Sous Linux, on peut tout faire au clavier, dans un **terminal**.
+Sous Linux, on peut tout faire au clavier, dans un **terminal** : se déplacer dans les dossiers, créer des fichiers, les copier, changer qui a le droit de les lire. C'est souvent plus rapide qu'à la souris, et indispensable sur un serveur, qui n'a pas d'écran.
 
-## 1. Chemins
+## 1. L'arborescence et les chemins
 
-Les fichiers forment un arbre dont la **racine** est `/`.
+Les fichiers forment un **arbre**. Sa racine s'écrit `/`.
 
-- **Chemin absolu** : depuis la racine, `/home/lea/nsi/tp1.py`.
-- **Chemin relatif** : depuis le dossier courant, `nsi/tp1.py`.
-- `..` désigne le dossier parent, `.` le dossier courant.
+```
+/
+└── home
+    ├── lea
+    │   └── nsi
+    │       └── tp1.py
+    └── tom
+```
 
-## 2. Commandes
+Un **chemin** indique où se trouve un fichier :
 
-| Commande | Effet |
-| --- | --- |
-| `pwd` | afficher le dossier courant |
-| `ls` | lister le contenu (`ls -l` : avec les droits) |
-| `cd` | changer de dossier |
-| `mkdir` | créer un dossier |
-| `touch` | créer un fichier vide |
-| `cat` | afficher un fichier |
-| `cp` | copier |
-| `mv` | déplacer ou renommer |
-| `rm` | supprimer définitivement |
-| `chmod` | changer les droits |
+- un chemin **absolu** part de la racine : `/home/lea/nsi/tp1.py` ;
+- un chemin **relatif** part du **dossier courant**, celui où l'on se trouve. Depuis `/home/lea`, le même fichier s'écrit `nsi/tp1.py`.
 
-## 3. Les droits
+Deux raccourcis : `.` désigne le dossier courant, et `..` le dossier **parent**, juste au-dessus. Depuis `/home/lea/nsi`, le chemin `../../tom` mène à `/home/tom` : on remonte deux fois, puis on descend dans `tom`.
+
+## 2. Les commandes de base
+
+| Commande | Effet | Exemple |
+| --- | --- | --- |
+| `pwd` | afficher le dossier courant | `pwd` |
+| `ls` | lister le contenu d'un dossier | `ls -l` affiche aussi les droits |
+| `cd` | changer de dossier | `cd nsi`, `cd ..` |
+| `mkdir` | créer un dossier | `mkdir projet` |
+| `touch` | créer un fichier vide | `touch notes.txt` |
+| `cat` | afficher le contenu d'un fichier | `cat notes.txt` |
+| `cp` | copier | `cp a.py b.py` |
+| `mv` | déplacer ou renommer | `mv brouillon.py final.py` |
+| `rm` | supprimer, **définitivement** | `rm vieux.txt` |
+| `chmod` | changer les droits | `chmod 750 jeu.py` |
+
+:::attention
+`rm` ne passe pas par une corbeille : le fichier est supprimé définitivement.
+:::
+
+## 3. Les droits d'accès
+
+`ls -l` affiche par exemple :
 
 ```
 -rwxr-x---  lea  eleves  jeu.py
 ```
 
-- Le premier caractère indique le type : `-` fichier, `d` dossier.
-- Ensuite, trois groupes de trois lettres : le **propriétaire**, le **groupe**, les **autres**.
-- `r` lire, `w` écrire, `x` exécuter.
+On lit les dix premiers caractères ainsi :
 
-Avec `chmod`, on compte : r = 4, w = 2, x = 1.
+| `-` | `rwx` | `r-x` | `---` |
+| --- | --- | --- | --- |
+| type : `-` fichier, `d` dossier | la propriétaire, lea | le groupe `eleves` | tous les autres |
 
-:::exemple
-`chmod 750 jeu.py` : 7 = rwx, 5 = r-x, 0 = ---. Le résultat est `rwxr-x---`.
-:::
+Dans chaque groupe de trois lettres : `r` permet de **lire**, `w` d'**écrire** (modifier), `x` d'**exécuter**. Un tiret signifie que le droit est refusé.
+
+Ici, lea peut tout faire ; les membres du groupe `eleves` peuvent lire et exécuter, mais pas modifier ; les autres ne peuvent rien faire.
+
+## 4. Changer les droits avec chmod
+
+On code chaque groupe de trois lettres par un chiffre, en additionnant : **r = 4, w = 2, x = 1**.
+
+| Droits | Calcul | Chiffre |
+| --- | --- | --- |
+| `rwx` | 4 + 2 + 1 | 7 |
+| `r-x` | 4 + 0 + 1 | 5 |
+| `rw-` | 4 + 2 + 0 | 6 |
+| `r--` | 4 + 0 + 0 | 4 |
+| `---` | 0 | 0 |
+
+`chmod 750 jeu.py` donne donc `rwx` à la propriétaire, `r-x` au groupe et `---` aux autres : on retrouve `rwxr-x---`.
 
 ## L'essentiel
 
-- Chemin absolu : depuis `/`. Chemin relatif : depuis le dossier courant. `..` : le parent.
-- `ls`, `cd`, `mkdir`, `cp`, `mv`, `rm`, `cat`, `chmod`.
-- Droits : propriétaire, groupe, autres ; r = 4, w = 2, x = 1.
+- Chemin absolu : depuis `/`. Chemin relatif : depuis le dossier courant. `..` : le dossier parent.
+- `pwd`, `ls`, `cd`, `mkdir`, `touch`, `cat`, `cp`, `mv`, `rm`, `chmod`.
+- Droits : propriétaire, groupe, autres ; `r` lire, `w` écrire, `x` exécuter.
+- Avec chmod : r = 4, w = 2, x = 1, et un chiffre par groupe.
 
 ## Exercices
 

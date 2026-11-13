@@ -9,9 +9,9 @@ objectifs:
 prerequis: [premiere-web/client-serveur]
 ---
 
-Un **formulaire** permet d'envoyer des informations à un serveur : une recherche, une inscription, une connexion.
+Une recherche, une inscription, une connexion : chaque fois que tu envoies des informations à un site, tu utilises un **formulaire**.
 
-## 1. Un formulaire
+## 1. Un formulaire en HTML
 
 ```html
 <form action="/recherche" method="get">
@@ -20,30 +20,53 @@ Un **formulaire** permet d'envoyer des informations à un serveur : une recherch
 </form>
 ```
 
-- `action` : l'adresse à laquelle envoyer les données ;
-- `method` : la méthode, `get` ou `post` ;
-- `name` : le nom de chaque donnée envoyée. Un champ sans `name` n'est pas envoyé.
+| Élément | Rôle |
+| --- | --- |
+| `action="/recherche"` | l'adresse à laquelle envoyer les données |
+| `method="get"` | la façon de les envoyer : `get` ou `post` |
+| `name="ville"` | le nom sous lequel la donnée du champ est envoyée |
+| `type="submit"` | le bouton qui envoie le formulaire |
 
-## 2. GET et POST
+Un champ **sans** attribut `name` n'est pas envoyé : le serveur ne saurait pas comment l'appeler.
+
+## 2. La méthode GET
+
+Avec GET, les données sont ajoutées **à la fin de l'adresse**, après un `?`. Si tu tapes `Lyon` et que tu cliques sur « Chercher », le navigateur demande :
+
+`/recherche?ville=Lyon`
+
+Chaque donnée s'écrit `nom=valeur`. Plusieurs données sont séparées par `&` :
+
+`/recherche?ville=Lyon&page=2`
+
+L'adresse peut donc être mise en favori ou partagée : elle contient toute la recherche.
+
+## 3. La méthode POST
+
+Avec POST, les données sont placées **dans le corps de la requête**, et non dans l'adresse. Elles n'apparaissent ni dans la barre d'adresse, ni dans l'historique.
 
 | | GET | POST |
 | --- | --- | --- |
-| Où sont les données ? | dans l'**URL**, après le `?` | dans le **corps** de la requête |
-| Visibles dans l'adresse ? | oui | non |
-| Taille | limitée | grande |
-| Usage | recherche, filtre | mot de passe, fichier, inscription |
+| Où sont les données ? | dans l'**adresse**, après le `?` | dans le **corps** de la requête |
+| Visibles dans la barre d'adresse ? | oui | non |
+| Quantité de données | limitée | grande |
+| Usages | recherche, filtre, pages à partager | mot de passe, inscription, envoi de fichier |
 
-Avec GET, si on tape `Lyon` : `/recherche?ville=Lyon`. Plusieurs paramètres sont séparés par `&` : `?ville=Lyon&page=2`.
+## 4. POST n'est pas un chiffrement
 
 :::attention
-POST ne chiffre rien : il cache seulement les données de l'adresse. Pour protéger un mot de passe, il faut aussi **HTTPS**.
+POST cache les données de la barre d'adresse, mais il ne les **chiffre pas** : quelqu'un qui écoute le réseau peut toujours les lire. Pour protéger un mot de passe, il faut **POST et HTTPS**.
+:::
+
+:::exemple
+Un formulaire de connexion en GET enverrait `/connexion?identifiant=ana&mdp=1234` : le mot de passe resterait affiché dans la barre d'adresse et dans l'historique. On utilise donc POST, sur un site en HTTPS.
 :::
 
 ## L'essentiel
 
-- `name` donne le nom de la donnée, `action` la destination, `method` la méthode.
-- GET : paramètres dans l'URL. POST : paramètres dans le corps de la requête.
-- GET pour consulter, POST pour envoyer des données sensibles ou volumineuses.
+- `action` : l'adresse de destination. `method` : get ou post. `name` : le nom de chaque donnée envoyée.
+- GET : les données dans l'URL, `?nom=valeur&autre=valeur`. Pour consulter.
+- POST : les données dans le corps de la requête. Pour les données sensibles ou volumineuses.
 - Seul HTTPS chiffre les échanges.
 
 ## Exercices

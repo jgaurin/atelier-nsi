@@ -8,29 +8,31 @@ objectifs:
 prerequis: [premiere-architecture/von-neumann]
 ---
 
-Le processeur exécute des instructions très simples. On les écrit en **assembleur**, la version lisible du **langage machine** (binaire).
+Le processeur ne comprend pas Python. Il exécute des instructions très simples, codées en binaire : c'est le **langage machine**. Pour les lire plus facilement, on les écrit avec des mots courts : c'est l'**assembleur**. Python est traduit en instructions de ce genre.
 
 ## 1. Une machine simple
 
-Notre machine a un registre **A** et ces instructions.
+Notre machine a un seul registre, appelé **A**, et une mémoire faite de cases numérotées. Elle connaît ces instructions :
 
 | Instruction | Effet |
 | --- | --- |
 | `LOAD x` | A reçoit le contenu de la case x |
-| `STORE x` | la case x reçoit A |
+| `STORE x` | la case x reçoit la valeur de A |
 | `ADD x` | A reçoit A + le contenu de la case x |
 | `SUB x` | A reçoit A − le contenu de la case x |
 | `JUMP n` | aller à l'instruction n |
-| `JUMPZ n` | si A = 0, aller à l'instruction n |
+| `JUMPZ n` | si A vaut 0, aller à l'instruction n ; sinon, continuer normalement |
 | `HALT` | arrêter |
 
 :::attention
-`LOAD 10` charge le **contenu** de la case 10, pas le nombre 10.
+`LOAD 10` charge le **contenu** de la case 10, pas le nombre 10. Si la case 10 contient 42, A reçoit 42.
 :::
 
-## 2. Dérouler
+## 2. Dérouler un programme
 
-Programme : case 10 = 5, case 11 = 7.
+Pour dérouler, on suit trois choses à chaque instruction : le **compteur de programme**, qui indique l'instruction exécutée, la valeur de **A**, et la **mémoire**.
+
+Programme, avec la case 10 qui contient 5 et la case 11 qui contient 7 :
 
 ```
 0  LOAD 10
@@ -39,22 +41,45 @@ Programme : case 10 = 5, case 11 = 7.
 3  HALT
 ```
 
-| Compteur | Instruction | A | Mémoire |
-| --- | --- | --- | --- |
-| 0 | `LOAD 10` | 5 | |
-| 1 | `ADD 11` | 12 | |
-| 2 | `STORE 12` | 12 | case 12 = 12 |
-| 3 | `HALT` | 12 | |
+| Compteur | Instruction | Ce qui se passe | A | Mémoire |
+| --- | --- | --- | --- | --- |
+| 0 | `LOAD 10` | A reçoit le contenu de la case 10 | 5 | |
+| 1 | `ADD 11` | A reçoit 5 + 7 | 12 | |
+| 2 | `STORE 12` | la case 12 reçoit A | 12 | case 12 = 12 |
+| 3 | `HALT` | arrêt | 12 | |
 
-## 3. Les sauts
+Ce programme calcule la somme des cases 10 et 11 et la range dans la case 12. Sans le `STORE`, le résultat resterait dans A et serait perdu à la prochaine instruction qui modifie A.
 
-`JUMP` et `JUMPZ` permettent les **conditions** et les **boucles**. Un `if` ou un `while` en Python est traduit avec des sauts.
+## 3. Les sauts : conditions et boucles
+
+Sans saut, le processeur exécute les instructions dans l'ordre, de haut en bas. Les instructions de saut changent la prochaine instruction exécutée :
+
+- `JUMPZ` permet une **condition** : on saute seulement si A vaut 0 ;
+- `JUMP` permet de **revenir en arrière**, donc de faire une **boucle**.
+
+Un `if` ou un `while` en Python est traduit avec ces sauts.
+
+:::exemple
+Programme qui compte à rebours : la case 20 contient 3, la case 21 contient 1.
+
+```
+0  LOAD 20
+1  JUMPZ 5
+2  SUB 21
+3  STORE 20
+4  JUMP 0
+5  HALT
+```
+
+À chaque tour, si la case 20 vaut 0, on saute à `HALT`. Sinon, on lui retire 1, on range le résultat, et `JUMP 0` revient au début. La case 20 passe de 3 à 2, à 1, puis à 0, et le programme s'arrête. C'est l'équivalent d'un `while n != 0: n = n - 1`.
+:::
 
 ## L'essentiel
 
-- `LOAD`, `STORE`, `ADD`, `SUB` lisent, écrivent et calculent.
-- Pour dérouler, on suit le compteur, le registre et la mémoire.
-- Les sauts réalisent les conditions et les boucles.
+- Langage machine : des instructions simples codées en binaire ; assembleur : leur écriture lisible.
+- `LOAD`, `STORE`, `ADD`, `SUB` lisent, écrivent et calculent avec le registre A.
+- Pour dérouler, on suit le compteur de programme, A et la mémoire.
+- Les sauts `JUMP` et `JUMPZ` réalisent les conditions et les boucles.
 
 ## Exercices
 
