@@ -8,14 +8,24 @@ objectifs:
 prerequis: [terminale-archi/processus]
 ---
 
-Des processus se partagent des ressources : fichiers, imprimante. Parfois, ils se bloquent mutuellement.
+Quatre voitures arrivent en même temps à un carrefour sans feu. Chacune laisse passer celle de droite… et aucune ne bouge plus jamais. Des processus peuvent se retrouver dans la même situation : c'est un **interblocage**.
 
-## 1. La situation
+## 1. Comment cela arrive
 
-- P1 obtient l'imprimante, puis demande le fichier.
-- P2 obtient le fichier, puis demande l'imprimante.
+Deux processus ont besoin de deux ressources qu'on ne peut pas partager : une imprimante et un fichier. Chacun garde ce qu'il a obtenu pendant qu'il attend le reste.
 
-Chacun attend ce que l'autre ne libérera jamais : c'est un **interblocage** (*deadlock*).
+| Étape | P1 | P2 |
+| --- | --- | --- |
+| 1 | obtient l'imprimante | |
+| 2 | | obtient le fichier |
+| 3 | demande le fichier : il est pris, P1 attend | |
+| 4 | | demande l'imprimante : elle est prise, P2 attend |
+
+P1 attend le fichier, que P2 ne libérera qu'après avoir imprimé. P2 attend l'imprimante, que P1 ne libérera qu'après avoir lu le fichier. Aucun des deux n'avancera plus jamais : c'est un **interblocage** (*deadlock*).
+
+## 2. Le repérer : un cycle d'attente
+
+On dessine qui attend quoi, et qui détient quoi :
 
 ```mermaid
 flowchart LR
@@ -25,17 +35,23 @@ flowchart LR
     I -- détenue par --> P1
 ```
 
-On reconnaît un interblocage à un **cycle** dans ce schéma d'attente.
+En suivant les flèches, on revient au point de départ : il y a un **cycle**. Un interblocage se reconnaît toujours à un cycle dans ce schéma d'attente. Sans cycle, la chaîne d'attente finit par un processus qui n'attend rien : il termine, libère ses ressources, et les autres repartent.
 
-## 2. L'éviter
+:::exemple
+P1 détient A et attend B. P2 détient B et n'attend rien. Il n'y a pas de cycle : P2 termine, libère B, et P1 peut continuer.
+:::
 
-Une méthode simple : imposer à tous le **même ordre** de demande. Si tout le monde demande l'imprimante **avant** le fichier, le cycle ne peut plus se former.
+## 3. L'éviter
+
+Une méthode simple : imposer à **tous** les processus de demander les ressources **dans le même ordre**, par exemple toujours l'imprimante avant le fichier.
+
+Pourquoi cela marche ? Reprenons l'exemple. Si P2 doit lui aussi demander l'imprimante en premier, il attend que P1 ait fini avec elle **avant** de prendre le fichier. Il ne peut donc plus garder le fichier pendant que P1 l'attend : le cycle ne peut plus se former.
 
 ## L'essentiel
 
-- Interblocage : des processus s'attendent mutuellement.
-- Il se repère à un cycle d'attente.
-- Imposer un ordre de demande des ressources l'évite.
+- Interblocage : des processus s'attendent mutuellement, et aucun ne peut avancer.
+- Il se repère à un **cycle** dans le schéma « attend » et « détient ».
+- Imposer à tous le même ordre de demande des ressources l'empêche.
 
 ## Exercices
 

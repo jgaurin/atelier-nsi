@@ -8,48 +8,106 @@ objectifs:
   - "Observer les processus d'une machine"
 ---
 
-Un programme en cours d'exécution est un **processus**. Sur un cœur, un seul s'exécute à la fois : le système les fait alterner très vite.
+Sur ton ordinateur, la musique joue pendant que tu écris et que le navigateur charge une page. Pourtant, un cœur de processeur n'exécute qu'**une instruction à la fois**. Le secret : le système d'exploitation fait alterner les programmes très vite, des centaines de fois par seconde.
 
-## 1. Créer un processus
+## 1. Programme et processus
 
-Un **programme** est un fichier. Le système le charge en mémoire et crée un **processus**, avec un identifiant, le **PID**, et un parent, le **PPID**.
+Un **programme** est un fichier sur le disque, comme une recette de cuisine dans un livre. Un **processus** est ce programme **en cours d'exécution**, comme un cuisinier qui suit la recette, avec ses ingrédients sortis et l'étape où il en est.
+
+Le même programme peut donner plusieurs processus : deux fenêtres du même navigateur sont deux processus.
+
+Quand on lance un programme, le système :
+
+1. le charge en mémoire ;
+2. crée un processus, avec un numéro unique, le **PID** ;
+3. note le processus qui l'a lancé, son **parent**, dont le numéro est le **PPID**.
+
+Les processus forment ainsi un arbre : chaque processus a été créé par un autre.
 
 ```bash
-ps -ef          # lister les processus
-top             # les voir en direct
-kill 4321       # arrêter le processus 4321
+ps -ef          # lister les processus, avec leur PID et leur PPID
+top             # les voir en direct, avec leur consommation
+kill 4321       # arrêter le processus de PID 4321
 ```
 
-## 2. Les états
+## 2. Les états d'un processus
 
-- **Prêt** : il attend le processeur.
-- **Élu** : il s'exécute.
-- **Bloqué** : il attend une ressource, comme une lecture sur le disque.
+| État | Sens | Exemple |
+| --- | --- | --- |
+| **Prêt** | il pourrait s'exécuter, il attend son tour | le navigateur attend le processeur |
+| **Élu** | il s'exécute en ce moment | le lecteur de musique calcule le son |
+| **Bloqué** | il attend une ressource, et ne peut rien faire en attendant | un programme attend la lecture d'un fichier sur le disque |
 
-Un processus passe de prêt à élu quand l'ordonnanceur le choisit, d'élu à bloqué quand il attend une ressource, puis de bloqué à prêt quand la ressource arrive.
+Les passages entre états :
+
+- prêt → élu : l'ordonnanceur le choisit ;
+- élu → prêt : son temps est écoulé, il laisse la place ;
+- élu → bloqué : il demande une ressource lente, comme le disque ;
+- bloqué → prêt : la ressource est arrivée, il peut repartir.
+
+Un processus bloqué ne passe jamais directement à l'état élu : il redevient d'abord prêt.
 
 ## 3. L'ordonnancement
 
-L'**ordonnanceur** choisit quel processus prêt s'exécute. Trois processus : P1 (arrivé à 0, durée 5), P2 (arrivé à 1, durée 2), P3 (arrivé à 2, durée 1).
+L'**ordonnanceur** est la partie du système qui choisit quel processus prêt s'exécute. Plusieurs stratégies existent.
 
-**Premier arrivé, premier servi** : P1 finit à 5, P2 à 7, P3 à 8.
+Prenons trois processus :
 
-**Plus court d'abord**, sans interruption : P1 finit à 5, P3 à 6, P2 à 8.
+| Processus | Arrivée | Durée |
+| --- | --- | --- |
+| P1 | 0 | 5 |
+| P2 | 1 | 2 |
+| P3 | 2 | 1 |
 
-**Tourniquet**, quantum 2 : chaque processus s'exécute au plus 2 unités, puis repasse en fin de file.
+Deux mesures permettent de comparer les stratégies :
+
+- le **temps de séjour** = instant de fin − instant d'arrivée ;
+- le **temps d'attente** = temps de séjour − durée.
+
+### Premier arrivé, premier servi
+
+Chaque processus s'exécute jusqu'au bout, dans l'ordre d'arrivée.
+
+```
+temps : 0  1  2  3  4  5  6  7
+        P1 P1 P1 P1 P1 P2 P2 P3
+```
+
+P1 finit à 5, P2 à 7, P3 à 8. Temps de séjour : 5, 6 et 6.
+
+### Le plus court d'abord
+
+Quand le processeur se libère, on choisit le processus prêt le plus court. À l'instant 0, seul P1 est arrivé : il s'exécute en entier. À l'instant 5, P2 et P3 attendent : P3, plus court, passe d'abord.
+
+```
+temps : 0  1  2  3  4  5  6  7
+        P1 P1 P1 P1 P1 P3 P2 P2
+```
+
+P1 finit à 5, P3 à 6, P2 à 8. Temps de séjour : 5, 4 et 7. Le défaut : un processus long peut attendre très longtemps si des processus courts arrivent sans cesse.
+
+### Le tourniquet
+
+Chaque processus s'exécute au plus pendant un temps fixé, le **quantum**, puis repasse en fin de file d'attente. Avec un quantum de 2 :
 
 ```
 temps : 0  1  2  3  4  5  6  7
         P1 P1 P2 P2 P3 P1 P1 P1
 ```
 
-Le **temps de séjour** d'un processus est : instant de fin − instant d'arrivée.
+- De 0 à 2, P1 s'exécute. Il n'a pas fini : il repasse en fin de file, derrière P2 et P3, arrivés entre-temps.
+- De 2 à 4, P2 s'exécute et termine.
+- De 4 à 5, P3 s'exécute et termine.
+- De 5 à 8, P1 termine.
+
+P2 finit à 4, P3 à 5, P1 à 8. Chacun avance régulièrement : c'est la stratégie qui donne l'impression que tout tourne en même temps.
 
 ## L'essentiel
 
 - Un processus est un programme en cours d'exécution, avec un PID et un parent.
-- États : prêt, élu, bloqué.
-- Ordonnancement : premier arrivé premier servi, plus court d'abord, tourniquet.
+- États : prêt, élu, bloqué ; un processus bloqué redevient prêt avant d'être élu.
+- L'ordonnanceur choisit le processus élu : premier arrivé premier servi, plus court d'abord, tourniquet.
+- Temps de séjour = fin − arrivée ; temps d'attente = séjour − durée.
 
 ## Exercices
 

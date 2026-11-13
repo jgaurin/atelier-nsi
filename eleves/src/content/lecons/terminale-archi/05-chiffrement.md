@@ -7,41 +7,59 @@ objectifs:
   - "Décrire l'échange d'une clé symétrique pour sécuriser HTTPS"
 ---
 
-Sur Internet, les données traversent des réseaux que l'on ne contrôle pas. Pour les protéger, on les **chiffre**.
+Quand tu te connectes à ton ENT, ton mot de passe traverse des réseaux que personne ne contrôle : le Wi-Fi d'un café, les routeurs d'opérateurs. Pour que personne ne puisse le lire en chemin, on le **chiffre** : on le transforme en un message illisible, que seul le destinataire sait remettre en clair.
 
-## 1. Chiffrement symétrique
+## 1. Le chiffrement symétrique
 
-La **même clé** sert à chiffrer et à déchiffrer. C'est rapide, mais il faut **partager cette clé** secrètement au préalable.
+Une **même clé** sert à chiffrer et à déchiffrer.
 
 :::exemple
-Chiffre de César avec un décalage de 3 : `A` devient `D`, `B` devient `E`. La clé est 3.
+Le chiffre de César décale chaque lettre. Avec la clé 3, A devient D, B devient E, et `NSI` devient `QVL`. Pour déchiffrer, on décale de 3 dans l'autre sens.
 :::
 
-## 2. Chiffrement asymétrique
+Les chiffrements symétriques modernes sont beaucoup plus solides que César, et très **rapides**.
 
-Deux clés liées :
+Leur problème : les deux personnes doivent connaître la **même clé**. Comment se la transmettre en secret, si on ne s'est jamais rencontrés et que quelqu'un écoute tout ? L'envoyer en clair, c'est la donner à l'espion.
 
-- la **clé publique**, connue de tous, sert à **chiffrer** ;
-- la **clé privée**, gardée secrète, sert à **déchiffrer**.
+## 2. Le chiffrement asymétrique
 
-Pour écrire à Bob, Alice chiffre avec la **clé publique de Bob**. Seul Bob peut lire.
+Ici, chaque personne possède **deux clés** liées :
 
-La clé privée ne circule jamais : c'est plus sûr pour démarrer un échange. En revanche, c'est **beaucoup plus lent**.
+- une **clé publique**, que tout le monde peut connaître, qui sert à **chiffrer** ;
+- une **clé privée**, gardée secrète, qui sert à **déchiffrer**.
 
-## 3. HTTPS
+:::exemple
+Imagine que Bob distribue à tout le monde des cadenas ouverts, mais garde la seule clé qui les ouvre. Alice met son message dans une boîte, la ferme avec un cadenas de Bob, et l'envoie. Même si Ève intercepte la boîte, elle ne peut pas l'ouvrir : seul Bob a la clé.
+:::
 
-1. Le serveur envoie son **certificat**, qui contient sa clé publique.
-2. Le navigateur vérifie le certificat.
-3. Le navigateur crée une **clé de session** et l'envoie chiffrée avec la clé publique du serveur.
-4. Tout le reste de l'échange est chiffré en **symétrique** avec cette clé.
+Le cadenas ouvert est la clé publique de Bob, et sa clé est la clé privée. Pour écrire à Bob, Alice chiffre donc avec la **clé publique de Bob**.
 
-Le certificat empêche un intermédiaire de se faire passer pour le serveur.
+Plus besoin de partager un secret au départ, puisque la clé privée ne circule jamais. En revanche, ce chiffrement est **beaucoup plus lent**.
+
+## 3. HTTPS combine les deux
+
+HTTPS prend le meilleur des deux méthodes :
+
+1. le serveur envoie son **certificat**, qui contient sa clé publique ;
+2. le navigateur vérifie que ce certificat est authentique ;
+3. le navigateur fabrique une **clé de session**, une clé symétrique tirée au hasard ;
+4. il l'envoie au serveur, chiffrée avec la clé publique du serveur : seul le serveur peut la lire ;
+5. tout le reste de l'échange est chiffré en **symétrique** avec cette clé de session, rapidement.
+
+L'asymétrique sert seulement à échanger la clé, et le symétrique fait le gros du travail.
+
+## 4. Pourquoi un certificat ?
+
+Sans certificat, Ève pourrait se placer entre le navigateur et le serveur, et envoyer **sa propre** clé publique en prétendant être le serveur. Le navigateur chiffrerait alors la clé de session pour Ève, qui lirait tout : c'est l'attaque de l'**homme du milieu**.
+
+Le certificat est signé par une autorité de confiance. Il permet au navigateur de vérifier que la clé publique appartient bien au site annoncé.
 
 ## L'essentiel
 
-- Symétrique : une seule clé partagée, rapide.
-- Asymétrique : clé publique pour chiffrer, clé privée pour déchiffrer.
-- HTTPS : l'asymétrique sert à échanger une clé de session, puis on chiffre en symétrique.
+- Symétrique : une seule clé, rapide, mais il faut la partager en secret au préalable.
+- Asymétrique : on chiffre avec la clé publique du destinataire, il déchiffre avec sa clé privée ; plus lent.
+- HTTPS : l'asymétrique sert à échanger une clé de session, puis tout est chiffré en symétrique.
+- Le certificat protège contre l'attaque de l'homme du milieu.
 
 ## Exercices
 

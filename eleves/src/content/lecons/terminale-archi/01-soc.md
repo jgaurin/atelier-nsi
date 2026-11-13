@@ -8,39 +8,42 @@ objectifs:
   - "Situer l'évolution des rôles du logiciel et du matériel"
 ---
 
-Dans un téléphone, presque tout tient sur une seule puce : un **système sur puce** (SoC, *System on Chip*).
+Ouvre un ordinateur de bureau : tu y vois une carte mère, avec un processeur, des barrettes de mémoire, une carte graphique, une carte Wi-Fi, chacun séparé. Ouvre un téléphone : presque tout tient sur **une seule puce**. C'est un **système sur puce**, ou SoC (*System on Chip*).
 
-## 1. Ce qu'il contient
+## 1. Ce que contient un système sur puce
 
-| Composant | Rôle |
-| --- | --- |
-| **Cœurs de processeur** | exécuter les programmes |
-| **Mémoire locale** | stocker au plus près du calcul |
-| **Accélérateur graphique** (GPU) | afficher et calculer les images |
-| **Interfaces radio** | Wi-Fi, 4G/5G, Bluetooth |
-| **Interfaces filaires** | USB, écran |
-| **Gestion d'énergie** | adapter la consommation |
-| **Réseau sur puce** | faire communiquer les blocs |
+| Composant | Son rôle | Dans un téléphone |
+| --- | --- | --- |
+| **Cœurs de processeur** | exécuter les programmes | faire tourner les applications |
+| **Mémoire locale** | garder les données au plus près du calcul | accélérer les calculs en cours |
+| **Accélérateur graphique** (GPU) | calculer les images | afficher un jeu ou une vidéo |
+| **Interfaces radio** | communiquer sans fil | Wi-Fi, 4G ou 5G, Bluetooth |
+| **Interfaces filaires** | brancher des appareils | USB, écran |
+| **Gestion d'énergie** | adapter la consommation | ralentir quand on ne fait rien |
+| **Réseau sur puce** | faire communiquer les blocs entre eux | transmettre les données d'un bloc à l'autre |
 
-## 2. Pourquoi intégrer ?
+## 2. Pourquoi tout intégrer sur une puce ?
 
-- **Vitesse** : les distances sont plus courtes, les échanges plus rapides.
-- **Consommation** : moins d'énergie perdue, essentiel sur batterie.
-- **Taille** et **coût** réduits en grande série.
+- **Vitesse** : les signaux électriques mettent du temps à voyager. Sur une seule puce, les composants sont à quelques millimètres les uns des autres, au lieu de plusieurs centimètres sur une carte mère : les échanges sont plus rapides.
+- **Consommation** : faire circuler un signal sur une longue piste coûte de l'énergie. Des distances courtes consomment moins, ce qui est essentiel sur batterie.
+- **Taille et coût** : une seule puce prend très peu de place, et coûte peu cher à fabriquer en grande série.
 
-Sur un ordinateur classique, ces composants sont séparés sur une carte mère. En les intégrant, on perd une possibilité : on ne peut pas remplacer un seul composant.
+En contrepartie, on ne peut **pas remplacer un seul composant**. Si le module Wi-Fi d'un ordinateur de bureau tombe en panne, on change la carte Wi-Fi ; sur un système sur puce, il faut changer la puce entière.
 
-## 3. Logiciel et matériel
+## 3. Le logiciel et le matériel
 
 :::histoire
-Les premiers ordinateurs étaient programmés en recâblant la machine. Le logiciel a ensuite pris une place croissante. Aujourd'hui, une puce est elle-même conçue de façon logicielle, et ses blocs sont accessibles par des API, comme une bibliothèque.
+Les premiers ordinateurs se programmaient en recâblant la machine à la main. Le logiciel a ensuite pris une place de plus en plus grande. Aujourd'hui, une puce est elle-même conçue à l'aide de logiciels, et ses blocs sont commandés par des **API**, comme on appelle les fonctions d'une bibliothèque.
 :::
+
+Un programme qui veut afficher une image ne parle pas directement au circuit graphique : il appelle une fonction de l'API, sans connaître le détail du circuit.
 
 ## L'essentiel
 
-- Un SoC regroupe sur une puce processeur, mémoire, graphique, radio, gestion d'énergie.
-- Avantages : vitesse, faible consommation, petite taille, coût.
+- Un système sur puce regroupe processeur, mémoire, graphique, radio et gestion d'énergie sur une seule puce.
+- Avantages : vitesse et faible consommation (distances courtes), petite taille, faible coût.
 - Limite : on ne peut pas remplacer un composant seul.
+- Ses blocs sont commandés par des API.
 
 ## Exercices
 

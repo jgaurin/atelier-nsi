@@ -7,44 +7,65 @@ objectifs:
   - "Identifier la route empruntée selon le protocole RIP ou OSPF"
 ---
 
-Sur Internet, chaque **routeur** décide vers où envoyer un paquet grâce à sa **table de routage**.
+Sur Internet, un paquet traverse en général une dizaine de **routeurs** avant d'arriver. À chaque étape, le routeur doit décider à qui le transmettre. Il s'aide de sa **table de routage**.
 
-## 1. Table de routage
+## 1. La table de routage
 
 | Destination | Passerelle | Métrique |
 | --- | --- | --- |
 | Réseau N5 | R3 | 2 |
+| Réseau N7 | R2 | 4 |
 
-« Pour atteindre N5, envoyer le paquet à R3. » Chaque routeur ne connaît que le **prochain** routeur. Pour trouver la route complète, on lit la table de chaque routeur, l'un après l'autre.
+La première ligne se lit : « pour atteindre le réseau N5, envoie le paquet à R3 ; la route coûte 2 ». La **passerelle** est le routeur voisin à qui l'on transmet, et la **métrique** mesure la qualité de la route.
 
-## 2. RIP : le nombre de sauts
+Chaque routeur ne connaît que le **prochain** routeur, pas tout le trajet. Pour retrouver la route complète d'un paquet, on lit la table du premier routeur, puis celle du suivant, et ainsi de suite.
 
-**RIP** choisit la route qui traverse le **moins de routeurs**. Chaque routeur échange sa table avec ses voisins. Une distance de 16 signifie « inaccessible ».
+Comment les routeurs remplissent-ils ces tables ? Grâce à un **protocole de routage**. Le programme en étudie deux.
 
-## 3. OSPF : le coût
+## 2. RIP : le moins de sauts
 
-**OSPF** tient compte du **débit** des liaisons. Chaque liaison a un **coût** :
+**RIP** compte le nombre de **sauts**, c'est-à-dire le nombre de routeurs à traverser. Il choisit la route qui en compte le moins.
 
-coût = 10⁸ / débit (en bit/s)
-
-| Débit | Coût |
-| --- | --- |
-| 100 Mbit/s | 1 |
-| 10 Mbit/s | 10 |
-| 1 Mbit/s | 100 |
-
-OSPF choisit la route de **coût total minimal**. Chaque routeur connaît toute la carte du réseau, un **graphe** pondéré, et calcule le plus court chemin avec l'algorithme de **Dijkstra**.
+Chaque routeur envoie régulièrement sa table à ses **voisins**. Un routeur apprend ainsi les routes de proche en proche :
 
 :::exemple
-Route 1 : deux liaisons à 10 Mbit/s, coût 20. Route 2 : trois liaisons à 100 Mbit/s, coût 3.
-RIP choisit la route 1, plus courte en sauts. OSPF choisit la route 2, plus rapide.
+R2 annonce à R1 : « je suis à 1 saut du réseau N5 ». R1 en déduit qu'il est lui-même à 2 sauts de N5 en passant par R2. Si un autre voisin annonce mieux, R1 garde la meilleure route.
 :::
+
+Une distance de **16** signifie « inaccessible ». RIP est simple, mais il ignore la vitesse des liaisons.
+
+## 3. OSPF : le coût le plus faible
+
+**OSPF** tient compte du **débit** des liaisons. Chaque liaison reçoit un **coût**, d'autant plus faible qu'elle est rapide :
+
+**coût = 10⁸ / débit**, avec le débit en bit/s.
+
+| Débit | Calcul | Coût |
+| --- | --- | --- |
+| 100 Mbit/s | 10⁸ / 10⁸ | 1 |
+| 10 Mbit/s | 10⁸ / 10⁷ | 10 |
+| 1 Mbit/s | 10⁸ / 10⁶ | 100 |
+
+Le coût d'une route est la **somme** des coûts de ses liaisons. OSPF choisit la route de coût total minimal.
+
+Contrairement à RIP, chaque routeur OSPF connaît **toute la carte** du réseau. Cette carte est un **graphe pondéré** : les routeurs sont les sommets, les liaisons les arêtes, et les coûts leurs poids. Le routeur y calcule le plus court chemin avec l'**algorithme de Dijkstra**.
+
+## 4. Comparer sur un exemple
+
+Pour aller de R1 à R4, il existe deux routes.
+
+| Route | Liaisons | Sauts (RIP) | Coût (OSPF) |
+| --- | --- | --- | --- |
+| R1, R2, R4 | deux liaisons à 10 Mbit/s | 2 | 10 + 10 = 20 |
+| R1, R3, R5, R4 | trois liaisons à 100 Mbit/s | 3 | 1 + 1 + 1 = 3 |
+
+RIP choisit la première route, plus courte en nombre de routeurs. OSPF choisit la seconde, plus longue mais bien plus rapide.
 
 ## L'essentiel
 
-- Une table de routage donne le prochain routeur pour chaque destination.
-- RIP : le moins de sauts.
-- OSPF : le coût total minimal, coût = 10⁸ / débit.
+- La table de routage donne, pour chaque destination, le prochain routeur et une métrique.
+- RIP : le moins de sauts ; les routeurs échangent leurs tables avec leurs voisins ; 16 signifie inaccessible.
+- OSPF : coût = 10⁸ / débit ; le coût d'une route est la somme de ses coûts ; carte complète et algorithme de Dijkstra.
 
 ## Exercices
 
