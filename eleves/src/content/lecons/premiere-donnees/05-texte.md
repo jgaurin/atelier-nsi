@@ -9,46 +9,62 @@ objectifs:
 prerequis: [premiere-donnees/bases]
 ---
 
-Un ordinateur ne stocke que des nombres. Pour stocker du texte, on associe un nombre à chaque caractère : c'est un **encodage**.
+Un ordinateur ne stocke que des nombres. Pour stocker du texte, on numérote chaque caractère : A vaut 65, B vaut 66… Une telle correspondance s'appelle un **encodage**. Le problème : plusieurs encodages existent.
 
-## 1. ASCII
+## 1. ASCII : l'anglais
 
-L'**ASCII** (1963) code 128 caractères sur **7 bits** : les lettres sans accent, les chiffres, la ponctuation.
+L'**ASCII**, créé en 1963, code **128 caractères** sur **7 bits** : les lettres de l'alphabet anglais, les chiffres, la ponctuation et quelques caractères de contrôle.
 
 | Caractère | `A` | `B` | `a` | `0` | espace |
 | --- | --- | --- | --- | --- | --- |
 | Code | 65 | 66 | 97 | 48 | 32 |
 
-Mais l'ASCII ne contient **ni accents ni autres alphabets**.
+Les lettres se suivent : si A vaut 65, alors D vaut 68. Les minuscules sont décalées de 32 par rapport aux majuscules.
 
-## 2. ISO-8859-1
+Mais l'ASCII ne contient **aucun accent**, ni aucun autre alphabet : impossible d'écrire « élève ».
 
-L'**ISO-8859-1** (ou Latin-1) utilise **8 bits**, soit 256 caractères. Il ajoute les lettres accentuées de l'Europe de l'Ouest, comme `é`. Il reste limité : pas d'alphabets grec, arabe ou chinois, par exemple.
+## 2. ISO-8859-1 : les accents d'Europe de l'Ouest
 
-## 3. Unicode et UTF-8
+L'**ISO-8859-1**, aussi appelé Latin-1, utilise **8 bits**, soit 256 caractères. Les 128 premiers sont ceux de l'ASCII ; les suivants ajoutent les lettres accentuées d'Europe de l'Ouest, comme é, è ou ç.
 
-**Unicode** donne un numéro à **tous les caractères** du monde, y compris les émojis. **UTF-8** est sa façon la plus courante de les stocker, sur **1 à 4 octets** :
+Il reste très limité : pas de grec, d'arabe, de chinois, ni d'émojis. Chaque région du monde avait donc son propre encodage, incompatible avec les autres.
 
-- les caractères ASCII prennent 1 octet ;
-- `é` prend 2 octets ;
-- `€` prend 3 octets.
+## 3. Unicode et UTF-8 : tous les caractères du monde
 
-C'est l'encodage presque universel du Web.
+Il faut distinguer deux choses :
 
-## 4. Quand ça s'affiche mal
+- **Unicode** donne un **numéro** unique à chaque caractère du monde, plus de 150 000 en tout, émojis compris.
+- **UTF-8** est la façon d'**écrire ces numéros en octets** dans un fichier.
 
-Si un fichier est écrit dans un encodage et lu dans un autre, on voit apparaître des caractères incorrects : `é` s'affiche `Ã©`.
+UTF-8 utilise un nombre d'octets **variable** :
 
-Pour **convertir un fichier**, on l'ouvre dans un éditeur de texte avec son encodage d'origine, puis on l'enregistre en choisissant un autre encodage.
+| Caractère | Octets en UTF-8 |
+| --- | --- |
+| `A`, et tous les caractères ASCII | 1 |
+| `é` | 2 |
+| `€` | 3 |
+| un émoji | 4 |
 
-En Python, `ord("A")` donne 65, le numéro d'un caractère, et `chr(65)` donne `"A"`.
+Les caractères ASCII gardent exactement le même code sur 1 octet : un vieux fichier ASCII est donc aussi un fichier UTF-8 valide. C'est l'encodage presque universel du Web.
+
+## 4. Quand le texte s'affiche mal
+
+Un fichier est écrit en UTF-8 : « é » y est stocké sur deux octets. Un logiciel le lit en croyant qu'il est en ISO-8859-1, où chaque octet est un caractère. Il affiche donc **deux caractères** au lieu d'un : « Ã© » au lieu de « é ».
+
+Le texte n'est pas abîmé : il est seulement **lu avec le mauvais encodage**. Il suffit de le rouvrir en précisant le bon.
+
+:::methode[Convertir un fichier]
+On l'ouvre dans un éditeur de texte en indiquant son encodage d'origine, puis on l'enregistre en choisissant un autre encodage, en général UTF-8.
+:::
+
+En Python, `ord("A")` donne le numéro du caractère, 65, et `chr(65)` donne le caractère `"A"`.
 
 ## L'essentiel
 
-- Un **encodage** associe des nombres aux caractères.
-- **ASCII** : 7 bits, sans accents. **ISO-8859-1** : 8 bits, avec les accents d'Europe de l'Ouest.
-- **Unicode** couvre tous les caractères ; **UTF-8** les stocke sur 1 à 4 octets.
-- Lire un fichier avec le mauvais encodage donne des caractères incorrects.
+- Un encodage associe un nombre à chaque caractère.
+- ASCII : 7 bits, 128 caractères, sans accents. ISO-8859-1 : 8 bits, avec les accents d'Europe de l'Ouest.
+- Unicode numérote tous les caractères ; UTF-8 les écrit sur 1 à 4 octets.
+- « Ã© » au lieu de « é » : un fichier UTF-8 lu comme de l'ISO-8859-1.
 
 ## Exercices
 

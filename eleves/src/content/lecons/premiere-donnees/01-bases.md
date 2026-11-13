@@ -7,66 +7,102 @@ objectifs:
   - "Dire quel plus grand entier s'écrit sur un nombre de bits donné"
 ---
 
-Un ordinateur ne manipule que des **bits**, qui valent 0 ou 1. Pour écrire des nombres avec seulement ces deux chiffres, on utilise la **base 2**.
+Un ordinateur est fait de milliards de minuscules interrupteurs, qui ne connaissent que deux états : éteint ou allumé, 0 ou 1. Chacun de ces chiffres s'appelle un **bit**. Pour écrire n'importe quel nombre avec seulement 0 et 1, on utilise la **base 2**, ou **binaire**.
 
 ## 1. Le principe d'une base
 
-En base 10, chaque chiffre a une valeur selon sa position : 345 = 3×100 + 4×10 + 5×1.
+En base 10, celle de tous les jours, la valeur d'un chiffre dépend de sa **position** :
 
-En **base 2**, c'est pareil avec les puissances de 2.
+345 = 3 × 100 + 4 × 10 + 5 × 1
 
-| 128 | 64 | 32 | 16 | 8 | 4 | 2 | 1 |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| 2⁷ | 2⁶ | 2⁵ | 2⁴ | 2³ | 2² | 2¹ | 2⁰ |
+Les positions valent 1, 10, 100, 1 000 : les puissances de 10. On utilise dix chiffres, de 0 à 9.
 
-Un **octet** est un groupe de 8 bits.
+En **base 2**, c'est exactement le même principe, mais les positions valent les **puissances de 2**, et on n'utilise que deux chiffres, 0 et 1.
 
-:::histoire
-Leibniz décrit le calcul en binaire vers 1700. Claude Shannon montre en 1937 que les circuits électriques peuvent réaliser les opérations logiques.
-:::
+| Position | 2⁷ | 2⁶ | 2⁵ | 2⁴ | 2³ | 2² | 2¹ | 2⁰ |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Valeur | 128 | 64 | 32 | 16 | 8 | 4 | 2 | 1 |
+
+Chaque position vaut le double de celle de droite. Un groupe de 8 bits s'appelle un **octet**.
 
 ## 2. Du binaire au décimal
 
-On additionne les puissances de 2 là où il y a un 1.
+On additionne les valeurs des positions où il y a un 1.
 
 :::exemple
-1011 en binaire vaut 8 + 2 + 1 = **11**.
+1011 en binaire : on place les chiffres sous leurs positions.
+
+| 8 | 4 | 2 | 1 |
+| --- | --- | --- | --- |
+| 1 | 0 | 1 | 1 |
+
+Les 1 sont sous 8, 2 et 1 : la valeur est 8 + 2 + 1 = **11**.
 :::
 
 ## 3. Du décimal au binaire
 
-:::methode[Divisions successives]
-On divise par 2 jusqu'à obtenir 0, puis on lit les restes **de bas en haut**.
-:::
+**Méthode 1 : retirer les puissances de 2.** On prend la plus grande puissance de 2 qui tient dans le nombre, on la retire, et on recommence avec le reste.
 
 :::exemple
-Pour 13 : 13 = 2×6 + **1** ; 6 = 2×3 + **0** ; 3 = 2×1 + **1** ; 1 = 2×0 + **1**.
-On lit de bas en haut : 13 s'écrit **1101**.
+Pour 13 : 8 tient dans 13, il reste 5 ; 4 tient dans 5, il reste 1 ; 2 ne tient pas dans 1 ; 1 tient, il reste 0.
+
+| 8 | 4 | 2 | 1 |
+| --- | --- | --- | --- |
+| 1 | 1 | 0 | 1 |
+
+13 s'écrit **1101**.
 :::
+
+**Méthode 2 : les divisions successives.** On divise par 2 et on note le reste, jusqu'à obtenir un quotient nul. On lit ensuite les restes **de bas en haut**.
+
+| Division | Quotient | Reste |
+| --- | --- | --- |
+| 13 ÷ 2 | 6 | **1** |
+| 6 ÷ 2 | 3 | **0** |
+| 3 ÷ 2 | 1 | **1** |
+| 1 ÷ 2 | 0 | **1** |
+
+De bas en haut : **1101**. Pourquoi de bas en haut ? Le premier reste dit si le nombre est pair ou impair : c'est le bit des unités, tout à droite.
 
 ## 4. L'hexadécimal
 
-La **base 16** utilise 16 chiffres : 0 à 9, puis A = 10, B = 11, C = 12, D = 13, E = 14, F = 15.
+Une longue suite de bits est difficile à lire : 10100111. On utilise donc souvent la **base 16**, ou **hexadécimal**. Il faut 16 chiffres : de 0 à 9, puis A, B, C, D, E, F.
 
-Un chiffre hexadécimal correspond exactement à **4 bits**. C'est une façon courte d'écrire du binaire.
+| Hexadécimal | 0 à 9 | A | B | C | D | E | F |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Décimal | 0 à 9 | 10 | 11 | 12 | 13 | 14 | 15 |
+
+Comme 16 = 2⁴, un chiffre hexadécimal correspond **exactement à 4 bits**. Pour convertir, on découpe le binaire en paquets de 4, en partant de la droite.
 
 :::exemple
-1010 0111 se découpe en 1010 (A) et 0111 (7) : cela donne **A7**.
-A7 en décimal vaut 10×16 + 7 = **167**.
+1010 0111 : 1010 vaut 8 + 2 = 10, soit A ; 0111 vaut 4 + 2 + 1 = 7. On obtient **A7**.
+
+Dans l'autre sens, A7 en décimal vaut 10 × 16 + 7 = **167**.
 :::
 
-En Python, on écrit `0b1101` pour le binaire et `0xA7` pour l'hexadécimal.
+Tu rencontres l'hexadécimal dans les couleurs Web : `#FF8000` code le rouge, le vert et le bleu en trois octets, FF, 80 et 00.
 
-## 5. Combien de valeurs ?
+En Python, on écrit `0b1101` pour un nombre binaire et `0xA7` pour un nombre hexadécimal.
 
-Avec n bits, on peut écrire **2ⁿ** valeurs, de 0 à 2ⁿ − 1. Sur 8 bits : 256 valeurs, de 0 à 255.
+## 5. Combien de valeurs avec n bits ?
+
+Avec 1 bit, on écrit 2 valeurs : 0 et 1. Chaque bit ajouté **double** le nombre de possibilités, puisqu'il peut valoir 0 ou 1 devant chacune des anciennes.
+
+| Nombre de bits | Valeurs possibles | De… à… |
+| --- | --- | --- |
+| 1 | 2 | 0 à 1 |
+| 4 | 16 | 0 à 15 |
+| 8 | 256 | 0 à 255 |
+| n | 2ⁿ | 0 à 2ⁿ − 1 |
+
+Combien de bits faut-il pour écrire 200 ? Avec 7 bits, on va jusqu'à 127 : pas assez. Avec 8 bits, on va jusqu'à 255 : il faut **8 bits**.
 
 ## L'essentiel
 
-- En base 2, les positions valent 1, 2, 4, 8, 16…
-- Décimal vers binaire : divisions successives par 2, restes lus de bas en haut.
-- Un chiffre hexadécimal = 4 bits.
-- Sur n bits : 2ⁿ valeurs, de 0 à 2ⁿ − 1.
+- En base 2, les positions valent 1, 2, 4, 8, 16… ; on additionne celles qui portent un 1.
+- Décimal vers binaire : retirer les puissances de 2, ou divisions successives avec les restes lus de bas en haut.
+- Un chiffre hexadécimal correspond à 4 bits ; A = 10, …, F = 15.
+- Avec n bits : 2ⁿ valeurs, de 0 à 2ⁿ − 1.
 
 ## Exercices
 

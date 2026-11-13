@@ -8,9 +8,18 @@ objectifs:
   - "Expliquer l'évaluation séquentielle de and et de or"
 ---
 
-Un **booléen** ne peut prendre que deux valeurs : vrai ou faux, 1 ou 0. Ils servent dans les conditions des programmes, et les circuits du processeur en sont faits.
+« Tu peux sortir si tu as fini tes devoirs **et** rangé ta chambre. » Cette phrase est vraie ou fausse selon deux conditions. Un **booléen** est une valeur qui ne peut être que **vraie** ou **fausse** : `True` ou `False`, 1 ou 0. Les conditions des programmes en sont faites, et les circuits des processeurs aussi.
 
 ## 1. Les opérateurs
+
+| Opérateur | Sens | Exemple de la vie courante |
+| --- | --- | --- |
+| `not a` | l'inverse de a | « pas en retard » |
+| `a and b` | vrai si **les deux** sont vrais | « devoirs faits **et** chambre rangée » |
+| `a or b` | vrai si **au moins un** est vrai | « par carte **ou** en espèces » |
+| `a xor b` | vrai si **exactement un** est vrai | « fromage **ou** dessert », pas les deux |
+
+Leur **table de vérité** donne le résultat pour toutes les combinaisons :
 
 | a | b | not a | a and b | a or b | a xor b |
 | --- | --- | --- | --- | --- | --- |
@@ -19,44 +28,56 @@ Un **booléen** ne peut prendre que deux valeurs : vrai ou faux, 1 ou 0. Ils ser
 | 1 | 0 | 0 | 0 | 1 | 1 |
 | 1 | 1 | 0 | 1 | 1 | 0 |
 
-- **not** inverse la valeur.
-- **and** vaut 1 si les deux valent 1.
-- **or** vaut 1 si au moins un vaut 1.
-- **xor** (ou exclusif) vaut 1 si **exactement un** vaut 1.
+Attention : `or` est vrai quand **les deux** sont vrais ; `xor` ne l'est pas.
 
-## 2. Dresser une table
+## 2. Dresser la table d'une expression
 
 :::methode[Table de vérité]
-On écrit toutes les combinaisons des variables (4 pour 2 variables, 8 pour 3), puis on ajoute une colonne par morceau de l'expression.
+1. On écrit toutes les combinaisons des variables : 4 lignes pour 2 variables, 8 pour 3. Chaque variable ajoutée double le nombre de lignes.
+2. On ajoute une colonne pour chaque morceau de l'expression, du plus simple au plus compliqué.
+3. On remplit ligne par ligne.
 :::
 
 :::exemple
-Pour `not a or b`, on calcule d'abord `not a`, puis on fait le `or` avec `b`.
+Table de `not a or b` : on calcule d'abord `not a`, puis on fait le `or` avec `b`.
+
+| a | b | not a | not a or b |
+| --- | --- | --- | --- |
+| 0 | 0 | 1 | 1 |
+| 0 | 1 | 1 | 1 |
+| 1 | 0 | 0 | 0 |
+| 1 | 1 | 0 | 1 |
 :::
 
-## 3. Évaluation séquentielle
+## 3. L'évaluation séquentielle
 
-Python lit `and` et `or` **de gauche à droite** et s'arrête dès que le résultat est connu.
+Python lit `and` et `or` **de gauche à droite**, et s'arrête **dès que le résultat est connu** :
 
-- Dans `a and b`, si `a` est faux, `b` n'est pas évalué.
-- Dans `a or b`, si `a` est vrai, `b` n'est pas évalué.
+- dans `a and b`, si `a` est faux, le résultat est forcément faux : `b` n'est même pas évalué ;
+- dans `a or b`, si `a` est vrai, le résultat est forcément vrai : `b` n'est pas évalué.
 
-Cela évite des erreurs :
+Cela permet d'éviter des erreurs :
 
 ```python
 if i < len(t) and t[i] == 5:
 ```
 
-Si `i` est trop grand, `t[i]` n'est jamais lu.
+Si `i` est trop grand, la première condition est fausse : Python n'essaie jamais de lire `t[i]`, qui provoquerait une erreur. Dans l'autre ordre, `t[i] == 5 and i < len(t)`, l'erreur se produirait.
 
 ## 4. Additionner avec des booléens
 
-Pour additionner deux bits a et b :
+Additionner deux bits, c'est comme une addition posée :
 
-- la **somme** vaut `a xor b` ;
-- la **retenue** vaut `a and b`.
+| a | b | a + b en binaire | Somme | Retenue |
+| --- | --- | --- | --- | --- |
+| 0 | 0 | 00 | 0 | 0 |
+| 0 | 1 | 01 | 1 | 0 |
+| 1 | 0 | 01 | 1 | 0 |
+| 1 | 1 | 10 | 0 | 1 |
 
-C'est le **demi-additionneur**. Un **circuit combinatoire** réalise ainsi une fonction booléenne : les processeurs sont faits de tels circuits.
+On reconnaît deux tables : la colonne **somme** est celle de `a xor b`, et la colonne **retenue** celle de `a and b`.
+
+Ce petit circuit s'appelle un **demi-additionneur**. Un circuit qui réalise une fonction booléenne s'appelle un **circuit combinatoire**. En enchaînant de tels circuits, le processeur additionne des nombres entiers : tout le calcul de l'ordinateur repose sur ces opérations logiques.
 
 :::histoire
 George Boole invente en 1847 ce calcul sur le vrai et le faux, un siècle avant les premiers ordinateurs.
@@ -65,8 +86,8 @@ George Boole invente en 1847 ce calcul sur le vrai et le faux, un siècle avant 
 ## L'essentiel
 
 - `and` : les deux. `or` : au moins un. `not` : l'inverse. `xor` : exactement un.
-- Une table de vérité liste toutes les combinaisons.
-- `and` et `or` s'évaluent de gauche à droite et s'arrêtent dès que possible.
+- Une table de vérité liste toutes les combinaisons : 2ⁿ lignes pour n variables.
+- `and` et `or` s'évaluent de gauche à droite et s'arrêtent dès que le résultat est connu.
 - Somme de deux bits : `xor`. Retenue : `and`.
 
 ## Exercices

@@ -9,46 +9,79 @@ objectifs:
 prerequis: [premiere-donnees/bases]
 ---
 
-Les nombres à virgule sont stockés sous une forme appelée **nombre flottant**. Cette forme est souvent **approximative**, et cela a des conséquences très concrètes.
+Comment l'ordinateur stocke-t-il 0,1 ou 3,14 ? Sous une forme appelée **nombre flottant**. Tu vas voir que ce stockage est souvent **approximatif**, et pourquoi.
 
-## 1. La virgule en binaire
+## 1. La virgule en base 10
 
-Après la virgule, les positions valent ½, ¼, ⅛…
+En base 10, les positions après la virgule valent un dixième, un centième, un millième :
 
-| ½ | ¼ | ⅛ | 1/16 |
-| --- | --- | --- | --- |
-| 0,5 | 0,25 | 0,125 | 0,0625 |
+0,375 = 3/10 + 7/100 + 5/1 000
 
-:::exemple
-0,101 en binaire vaut 0,5 + 0,125 = **0,625**.
-:::
+## 2. La virgule en base 2
 
-:::methode[Partie décimale vers le binaire]
-On multiplie par 2. La partie entière obtenue donne le bit suivant. On recommence avec la partie décimale.
-:::
+En base 2, c'est pareil, mais chaque position vaut la **moitié** de la précédente.
+
+| Position | 1/2 | 1/4 | 1/8 | 1/16 |
+| --- | --- | --- | --- | --- |
+| Valeur | 0,5 | 0,25 | 0,125 | 0,0625 |
 
 :::exemple
-Pour 0,75 : 0,75 × 2 = **1**,5 ; 0,5 × 2 = **1**,0. Donc 0,75 s'écrit **0,11** en binaire.
+0,101 en binaire : il y a un 1 sous 0,5 et un 1 sous 0,125. La valeur est 0,5 + 0,125 = **0,625**.
 :::
 
-## 2. Des nombres sans écriture exacte
+## 3. Convertir un nombre décimal en binaire
 
-0,25 s'écrit exactement. Mais 0,1 ne tombe jamais juste :
+:::methode[Les multiplications par 2]
+On multiplie la partie après la virgule par 2. La partie entière obtenue, 0 ou 1, est le bit suivant. On recommence avec ce qui reste après la virgule, jusqu'à obtenir 0.
+:::
 
-0,1 → 0,2 → 0,4 → 0,8 → 1,6 → 1,2 → 0,4 → …
+Pourquoi ? Multiplier par 2 décale tous les bits d'un cran vers la gauche : le premier bit après la virgule passe devant la virgule, où on peut le lire.
 
-Les bits **0011** se répètent à l'infini : 0,1 s'écrit 0,0001100110011… De même, 1/3 s'écrit 0,010101… sans fin.
+:::exemple
+Pour 0,625 :
 
-Or la mémoire est limitée. L'ordinateur **coupe** cette écriture : il garde une valeur **approchée**.
+| Calcul | Bit obtenu | Il reste |
+| --- | --- | --- |
+| 0,625 × 2 = **1**,25 | 1 | 0,25 |
+| 0,25 × 2 = **0**,5 | 0 | 0,5 |
+| 0,5 × 2 = **1**,0 | 1 | 0 |
 
-## 3. La conséquence
+On lit les bits de haut en bas : 0,625 s'écrit **0,101**.
+:::
+
+## 4. Des nombres qui ne tombent jamais juste
+
+Essayons avec 0,1 :
+
+| Calcul | Bit | Il reste |
+| --- | --- | --- |
+| 0,1 × 2 = 0,2 | 0 | 0,2 |
+| 0,2 × 2 = 0,4 | 0 | 0,4 |
+| 0,4 × 2 = 0,8 | 0 | 0,8 |
+| 0,8 × 2 = 1,6 | 1 | 0,6 |
+| 0,6 × 2 = 1,2 | 1 | 0,2 |
+| 0,2 × 2 = 0,4 | 0 | 0,4 |
+
+On retombe sur 0,2 : les calculs recommencent à l'identique, sans jamais atteindre 0. 0,1 s'écrit 0,000110011001100… avec **0011** qui se répète à l'infini. De même, 1/3 s'écrit 0,010101… sans fin.
+
+C'est comme 1/3 en base 10 : 0,3333… ne s'arrête jamais. Or la mémoire est limitée : l'ordinateur **coupe** l'écriture et garde une valeur **approchée**.
+
+Seuls les nombres qui sont des sommes de 1/2, 1/4, 1/8… s'écrivent exactement : 0,5, 0,25 ou 0,75 tombent juste, 0,1 ou 0,2 non.
+
+## 5. La conséquence
+
+0,1 et 0,2 sont tous les deux légèrement faux en mémoire. Leurs petites erreurs s'additionnent :
 
 ```python
 >>> 0.1 + 0.2
 0.30000000000000004
 >>> 0.1 + 0.2 == 0.3
 False
+>>> 0.5 + 0.25 == 0.75
+True
 ```
+
+La dernière égalité est vraie, car 0,5, 0,25 et 0,75 s'écrivent exactement en binaire.
 
 :::attention[Ne jamais tester l'égalité de deux flottants]
 On vérifie plutôt que les deux nombres sont **très proches** :
@@ -61,9 +94,9 @@ abs(a - b) < 0.000001
 ## L'essentiel
 
 - Après la virgule, les positions binaires valent 0,5 ; 0,25 ; 0,125…
-- Beaucoup de nombres, comme 0,1 ou 1/3, n'ont pas d'écriture binaire finie.
-- Un flottant est donc souvent une **valeur approchée**.
-- On ne teste pas l'égalité de deux flottants avec `==`.
+- Pour convertir : on multiplie par 2, et la partie entière donne le bit suivant.
+- 0,1 ou 1/3 n'ont pas d'écriture binaire finie : l'ordinateur en garde une valeur approchée.
+- On ne teste jamais l'égalité de deux flottants avec `==`.
 
 ## Exercices
 
