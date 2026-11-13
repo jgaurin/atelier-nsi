@@ -8,46 +8,50 @@ objectifs:
   - "Connaître les ressources pour lutter contre la cyberviolence"
 ---
 
-Sur les réseaux sociaux, la violence peut suivre une personne partout, à toute heure, et devant un large public.
+Sur les réseaux sociaux, la violence ne s'arrête pas à la sortie du lycée. Elle peut suivre une personne partout, à toute heure, devant un large public, et les contenus peuvent être copiés à l'infini. Il est essentiel de la reconnaître, de connaître la loi, et de savoir réagir.
 
 ## 1. Les formes de cyberviolence
 
 | Forme | Exemple |
 | --- | --- |
-| **Harcèlement** | messages insultants répétés |
-| **Discrimination** | moqueries sur l'origine, le sexe, le handicap, la religion |
-| **Sexting non consenti** | diffuser une image intime sans accord |
-| **Fausses nouvelles, calomnies** | inventer et diffuser une rumeur |
-| **Usurpation d'identité** | se faire passer pour quelqu'un |
+| **Harcèlement** | des messages insultants ou humiliants, envoyés de façon répétée |
+| **Discrimination** | des moqueries sur l'origine, le sexe, l'apparence, le handicap, la religion |
+| **Diffusion d'images intimes sans accord** | transférer une photo intime reçue en privé |
+| **Fausses nouvelles, rumeurs, calomnies** | inventer et diffuser une histoire pour nuire à quelqu'un |
+| **Usurpation d'identité** | créer un faux compte au nom de quelqu'un |
 
 ## 2. Ce que dit la loi
 
-L'**article 222-33-2-2 du code pénal** punit le harcèlement moral : des propos ou comportements **répétés**, qui dégradent les conditions de vie d'une personne et altèrent sa santé physique ou mentale.
+L'**article 222-33-2-2 du code pénal** punit le **harcèlement moral** : des propos ou comportements **répétés**, qui dégradent les conditions de vie d'une personne et altèrent sa santé physique ou mentale.
 
 | Situation | Peine maximale |
 | --- | --- |
 | Cas de base | 1 an de prison et 15 000 € d'amende |
-| Une circonstance aggravante | 2 ans et 30 000 € |
-| Deux circonstances aggravantes | 3 ans et 45 000 € |
+| Avec une circonstance aggravante | 2 ans et 30 000 € |
+| Avec deux circonstances aggravantes | 3 ans et 45 000 € |
 
-Le fait d'agir **en ligne** et le fait de viser un **mineur** sont des circonstances aggravantes. Le harcèlement à plusieurs est aussi puni, même si chacun n'a pas agi de façon répétée, lorsque les auteurs se sont concertés ou savent que les propos se répètent.
+Parmi les circonstances aggravantes : agir **en ligne**, ou viser un **mineur**. Un harcèlement en ligne contre un élève de 15 ans cumule donc les deux.
 
-## 3. Réagir
+Le harcèlement à plusieurs est aussi puni, même si chacun n'a envoyé qu'un seul message, lorsque les auteurs se sont concertés ou savent que les propos se répètent. Transférer une moquerie, ce n'est donc pas « rien » : c'est participer.
 
-1. **Ne pas répondre**, et ne pas partager.
-2. **Garder des preuves** : captures d'écran avec la date.
-3. **Bloquer** et **signaler** le compte.
-4. **En parler** à un adulte de confiance.
-5. Appeler le **3018**, numéro national gratuit contre le cyberharcèlement.
+## 3. Réagir quand on est victime
 
-Un **témoin** qui partage participe. Celui qui soutient la victime ou alerte un adulte l'aide.
+1. **Ne pas répondre** : répondre alimente souvent le harcèlement.
+2. **Garder des preuves** : des captures d'écran, avec la date et le nom du compte.
+3. **Bloquer** l'auteur et **signaler** les contenus au réseau social.
+4. **En parler** à un adulte de confiance : parent, professeur, CPE, infirmier.
+5. Appeler le **3018**, le numéro national gratuit et anonyme contre le cyberharcèlement.
+
+## 4. Le rôle des témoins
+
+Un témoin qui like, commente ou partage un contenu humiliant **participe** à la violence. Celui qui refuse de le partager, qui soutient la victime ou qui alerte un adulte peut tout changer.
 
 ## L'essentiel
 
-- Harcèlement, discrimination, sexting non consenti, rumeurs, usurpation d'identité.
-- Article 222-33-2-2 : jusqu'à 3 ans de prison et 45 000 € selon les circonstances.
-- Ne pas répondre, garder des preuves, bloquer, signaler, en parler.
-- Numéro d'aide : le 3018.
+- Harcèlement, discrimination, diffusion d'images intimes, rumeurs, usurpation d'identité.
+- Article 222-33-2-2 : jusqu'à 3 ans de prison et 45 000 € d'amende, notamment en ligne contre un mineur.
+- Victime : ne pas répondre, garder des preuves, bloquer, signaler, en parler, appeler le 3018.
+- Partager un contenu humiliant, c'est participer.
 
 ## Exercices
 

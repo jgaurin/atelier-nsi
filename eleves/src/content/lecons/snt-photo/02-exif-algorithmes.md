@@ -17,11 +17,11 @@ Quand tu prends une photo, l'appareil enregistre dans le fichier, en plus des pi
 
 | Métadonnée | Exemple |
 | --- | --- |
-| modèle de l'appareil | Exemple X10 |
-| date et heure | 14 juin 2026, 18 h 32 |
+| modèle de l'appareil | Modèle Z5 |
+| date et heure | 3 mars 2025, 9 h 10 |
 | réglages | temps de pose 1/250 s, ouverture f/2 |
-| position GPS | 45,1885 ; 5,7245 |
-| auteur | Lina |
+| position GPS | 48,8584 ; 2,2945 |
+| auteur | Sam |
 
 On les lit dans les **propriétés** du fichier, ou avec un logiciel de photo.
 

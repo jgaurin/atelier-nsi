@@ -10,50 +10,58 @@ objectifs:
 prerequis: [snt-web/html-css]
 ---
 
-Chaque page a une adresse unique : son **URL**.
+Chaque page du Web a une adresse unique : son **URL**. Quand tu la tapes, ton navigateur dialogue avec une machine lointaine pour obtenir la page.
 
 ## 1. Lire une URL
 
 `https://www.exemple.fr/cours/snt.html?page=2`
 
-| Partie | Exemple | Sens |
+| Partie | Dans l'exemple | Sens |
 | --- | --- | --- |
-| protocole | `https` | la façon de communiquer |
-| nom de domaine | `www.exemple.fr` | le serveur |
-| chemin | `/cours/snt.html` | la ressource demandée |
-| paramètres | `page=2` | des valeurs envoyées au serveur |
+| **protocole** | `https` | la façon de communiquer |
+| **nom de domaine** | `www.exemple.fr` | la machine, le serveur, à contacter |
+| **chemin** | `/cours/snt.html` | la page demandée sur ce serveur |
+| **paramètres** | `page=2` | des informations envoyées au serveur, après le `?` |
 
-**HTTPS** chiffre les échanges : une page dont l'adresse commence par `https` est sécurisée. **HTTP** ne chiffre rien.
+Plusieurs paramètres sont séparés par `&` : `?mot=chat&page=3`.
 
-## 2. Le client et le serveur
+## 2. HTTP et HTTPS
 
-Le **client** est l'application qui demande, souvent un navigateur. Le **serveur** est la machine qui répond.
+**HTTP** est le protocole qui permet de demander et d'envoyer des pages. Avec HTTP, tout circule **en clair** : quelqu'un qui écoute le réseau, sur un Wi-Fi public par exemple, peut lire ce qui passe.
 
-1. Le client envoie une **requête HTTP**.
-2. Le serveur renvoie une page, stockée ou créée à ce moment.
-3. Le client l'affiche, et exécute son éventuel JavaScript.
+**HTTPS** est sa version sécurisée : les échanges sont **chiffrés**. Une page dont l'adresse commence par `https` est donc sécurisée. Elle est indispensable dès qu'on saisit un mot de passe ou un numéro de carte bancaire.
+
+## 3. Le client et le serveur
+
+Le **client** est l'application qui demande, en général ton navigateur. Le **serveur** est la machine qui répond.
+
+1. Le client envoie une **requête HTTP**, qui précise la page voulue.
+2. Le serveur renvoie la page. Elle peut être **stockée** telle quelle, ou **fabriquée** au moment de la demande, comme la page de tes notes.
+3. Le client l'affiche, et exécute son éventuel programme JavaScript.
+
+Une requête ressemble à ceci :
 
 ```
 GET /cours/snt.html?page=2 HTTP/1.1
 Host: www.exemple.fr
 ```
 
-Cette requête utilise la méthode `GET`, demande le chemin `/cours/snt.html` et transmet le paramètre `page`, de valeur 2.
+Elle se lit : « avec la méthode GET, je demande le chemin `/cours/snt.html` au serveur `www.exemple.fr`, avec le paramètre `page` qui vaut 2 ».
 
-## 3. Qui exécute quoi ?
+## 4. Qui exécute quoi ?
 
-| Sur le client | Sur le serveur |
+| Sur le client, ton navigateur | Sur le serveur |
 | --- | --- |
-| affichage de la page | recherche dans une base de données |
-| code JavaScript | code PHP |
+| afficher la page | chercher des informations dans une base de données |
+| exécuter le code JavaScript | exécuter le code PHP, ou un autre programme du site |
 
-Dans le navigateur, le **code source** d'une page montre le HTML reçu. Le code exécuté sur le serveur n'y apparaît pas.
+Dans le navigateur, on peut afficher le **code source** d'une page : on y voit le HTML et le JavaScript reçus. Le code PHP, lui, n'y apparaît jamais : il s'est exécuté sur le serveur, qui n'a envoyé que son résultat.
 
 ## L'essentiel
 
-- URL : protocole, nom de domaine, chemin, paramètres.
-- `https` : échanges chiffrés.
-- Le client demande, le serveur répond.
+- Une URL contient un protocole, un nom de domaine, un chemin et éventuellement des paramètres.
+- `https` : les échanges sont chiffrés.
+- Le client envoie une requête, le serveur répond avec la page.
 - JavaScript s'exécute sur le client, PHP sur le serveur.
 
 ## Exercices

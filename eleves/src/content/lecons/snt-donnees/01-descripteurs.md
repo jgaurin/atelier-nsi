@@ -9,50 +9,56 @@ objectifs:
   - "Identifier les principaux formats de données et retrouver des métadonnées"
 ---
 
-Une **donnée** est une valeur qui décrit un objet, une personne ou un événement.
+Ton carnet de contacts, la liste des films que tu as vus, les résultats d'une compétition : ce sont des **données**. Pour pouvoir les retrouver, les trier ou les compter, il faut les organiser.
 
-## 1. Organiser en table
+## 1. Données, descripteurs, valeurs
 
-- Un **descripteur** est une caractéristique : nom, âge, ville.
-- Une **valeur** est le contenu pour un objet précis : `Lyon`.
-- Une **collection** regroupe des objets qui ont les mêmes descripteurs.
+Une **donnée** est une valeur qui décrit un objet, une personne ou un événement. Le numéro de téléphone d'un ami est une donnée.
+
+Pour décrire un contact, on utilise plusieurs **descripteurs** : nom, prénom, ville, téléphone. Pour chaque contact, chaque descripteur a une **valeur**.
 
 | Nom | Âge | Ville |
 | --- | --- | --- |
 | Léa | 15 | Lyon |
 | Tom | 16 | Nantes |
 
-Les objets sont en **lignes**, les descripteurs en **colonnes**, les données à l'intersection. Ces données sont dites **structurées**.
+- Le **descripteur**, c'est le titre de la colonne : `Ville`.
+- La **valeur**, c'est le contenu d'une case : `Lyon`.
+- Une **collection** regroupe des objets qui ont les mêmes descripteurs : tous tes contacts.
 
-Une **base de données** regroupe plusieurs collections reliées entre elles : livres, abonnés et emprunts d'une bibliothèque, par exemple.
+Les objets sont en **lignes**, les descripteurs en **colonnes**, et chaque valeur se trouve à leur croisement. Des données rangées ainsi sont dites **structurées** : un ordinateur peut facilement les trier ou les filtrer.
 
-## 2. Les formats
+Une **base de données** regroupe plusieurs collections reliées entre elles. Celle d'une bibliothèque contient les livres, les abonnés, et les emprunts qui relient les deux.
+
+## 2. Les formats de fichiers
 
 | Format | Usage |
 | --- | --- |
-| CSV | une table, avec des valeurs séparées |
-| vCard | des contacts |
+| **CSV** | une table, avec les valeurs séparées par des virgules ou des points-virgules |
+| **vCard** | des contacts, compris par tous les téléphones |
 
-Les données ont des **types** : nombre, texte, date. Le type détermine les traitements possibles.
+Les données ont aussi des **types** : nombre, texte, date. Le type décide de ce qu'on peut en faire : on calcule une moyenne d'âges, mais pas une moyenne de prénoms.
 
 ## 3. Les métadonnées
 
-Les **métadonnées** sont des données qui décrivent un fichier : date, auteur, taille, lieu d'une photo. Certaines sont enregistrées par l'appareil, d'autres saisies par une personne. On les consulte dans les propriétés du fichier.
+Les **métadonnées** sont des **données sur les données** : elles décrivent un fichier. Pour une photo : la date, l'appareil, le lieu. Pour un document : l'auteur, la date de création, la taille.
+
+Certaines sont enregistrées **automatiquement** par l'appareil, comme la date d'une photo. D'autres sont **saisies** par une personne, comme le titre d'un document. On les consulte dans les **propriétés** du fichier.
 
 ## 4. Les données personnelles
 
-Une **donnée personnelle** permet d'identifier une personne, directement ou indirectement : nom, adresse, numéro de téléphone, photo.
+Une **donnée personnelle** permet d'identifier une personne, **directement** (nom, photo, numéro de téléphone) ou **indirectement**, par recoupement (date de naissance + ville + lycée).
 
-Le **RGPD** protège ces données en Europe : on doit pouvoir savoir ce qui est collecté, et demander à y accéder ou à l'effacer.
+En Europe, le **RGPD** les protège. Tu as notamment le droit de savoir quelles données une entreprise collecte sur toi, d'y accéder, et de demander leur effacement.
 
-Les **données ouvertes** (*open data*) sont publiques et réutilisables, comme sur `data.gouv.fr`.
+À l'inverse, les **données ouvertes**, ou *open data*, sont des données publiques que chacun peut télécharger et réutiliser librement, par exemple sur `data.gouv.fr`.
 
 ## L'essentiel
 
-- Descripteur : la colonne. Valeur : le contenu d'une case.
-- Une table présente une collection.
-- Métadonnées : les informations sur un fichier.
-- Donnée personnelle : permet d'identifier une personne. Le RGPD la protège.
+- Descripteur : le titre de la colonne. Valeur : le contenu d'une case. Collection : des objets aux mêmes descripteurs.
+- Une table présente une collection : objets en lignes, descripteurs en colonnes.
+- Métadonnées : des données qui décrivent un fichier.
+- Donnée personnelle : permet d'identifier une personne, même indirectement. Le RGPD la protège.
 
 ## Exercices
 

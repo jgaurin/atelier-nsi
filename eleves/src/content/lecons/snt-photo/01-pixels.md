@@ -8,57 +8,68 @@ objectifs:
   - "Comprendre la profondeur de couleur"
 ---
 
-La photographie numérique doit désormais plus aux algorithmes qu'à l'optique.
-
-## 1. Du capteur à l'image
-
-Le **capteur** est une matrice de **photosites**, groupés par quatre : **deux verts, un bleu, un rouge**. Chacun mesure l'intensité d'une seule couleur.
-
-L'**image** est faite de **pixels**. Chacun a trois valeurs : rouge, vert, bleu (**RVB**). Un calcul reconstruit ces trois valeurs à partir des photosites.
-
-La résolution du capteur se compte en millions de photosites. Celle de l'image se compte en **mégapixels** (millions de pixels). Elles ne sont pas forcément égales.
-
-## 2. Compter les pixels
-
-**Nombre de pixels = largeur × hauteur.**
-
-:::exemple
-Une image de 4 000 × 3 000 contient 12 000 000 de pixels, soit **12 mégapixels**.
-:::
-
-## 3. La profondeur de couleur
-
-En général, chaque couleur est codée sur **8 bits** : 256 niveaux, de 0 à 255. Un pixel occupe donc 3 octets, ce qui donne plus de 16 millions de couleurs.
-
-| R, V, B | Couleur |
-| --- | --- |
-| 255, 0, 0 | rouge |
-| 0, 255, 0 | vert |
-| 0, 0, 255 | bleu |
-| 255, 255, 255 | blanc |
-| 0, 0, 0 | noir |
-
-## 4. Les formats
-
-| Format | Compression |
-| --- | --- |
-| RAW | données brutes du capteur |
-| BMP | sans compression |
-| TIFF | souvent sans perte |
-| JPEG | avec perte |
-
-Sans compression, **taille en octets = nombre de pixels × 3**.
+Un téléphone actuel prend des photos d'une qualité qui demandait autrefois un appareil professionnel. Ce progrès vient surtout des **calculs** faits sur l'image. Pour les comprendre, il faut savoir de quoi une photo numérique est faite.
 
 :::histoire
 1826 : première photographie. 1969 : premiers capteurs CCD. 1975 : premiers appareils numériques. 2007 : arrivée du smartphone.
 :::
 
+## 1. Du capteur à l'image
+
+Le **capteur** de l'appareil est une grille de minuscules cellules sensibles à la lumière, les **photosites**. Chaque photosite ne mesure qu'**une seule couleur**, grâce à un petit filtre. Ils sont groupés par quatre : **deux verts, un rouge, un bleu**, car notre œil est plus sensible au vert.
+
+L'**image** finale est faite de **pixels**. Chaque pixel a **trois** valeurs : rouge, vert, bleu, notées **RVB**. Un calcul reconstruit ces trois valeurs à partir des photosites voisins.
+
+Photosites et pixels ne sont donc pas la même chose, et leur nombre peut être différent : un appareil de 24 millions de photosites peut produire des images de 6 millions de pixels si on le règle ainsi.
+
+## 2. La définition d'une image
+
+Le nombre de pixels se calcule comme l'aire d'un rectangle :
+
+**nombre de pixels = largeur × hauteur**
+
+:::exemple
+Une image de 4 000 × 3 000 contient 4 000 × 3 000 = 12 000 000 pixels, soit **12 mégapixels**. Un mégapixel vaut un million de pixels.
+:::
+
+## 3. La profondeur de couleur
+
+Chaque couleur d'un pixel est codée en général sur **8 bits**, soit 256 niveaux, de 0 (pas du tout) à 255 (au maximum).
+
+| R, V, B | Couleur obtenue |
+| --- | --- |
+| 255, 0, 0 | rouge |
+| 0, 255, 0 | vert |
+| 0, 0, 255 | bleu |
+| 255, 255, 0 | jaune : rouge + vert |
+| 255, 255, 255 | blanc : tout au maximum |
+| 0, 0, 0 | noir : tout éteint |
+
+Un pixel occupe donc 3 × 8 = 24 bits, soit **3 octets**. Cela permet 256 × 256 × 256, plus de 16 millions de couleurs.
+
+## 4. La taille d'un fichier
+
+Sans compression, **taille en octets = nombre de pixels × 3**.
+
+:::exemple
+Une image de 12 mégapixels occupe 12 000 000 × 3 = 36 000 000 octets, soit 36 Mo.
+:::
+
+C'est beaucoup : on **compresse** donc les images.
+
+| Format | Compression |
+| --- | --- |
+| RAW | aucune : les données brutes du capteur, idéales pour la retouche |
+| BMP | aucune |
+| TIFF | souvent sans perte : on retrouve exactement l'image |
+| JPEG | avec perte : des détails peu visibles sont supprimés, et le fichier est bien plus léger |
+
 ## L'essentiel
 
 - Photosites : sur le capteur, une couleur chacun. Pixels : dans l'image, trois valeurs RVB.
-- Pixels = largeur × hauteur.
-- 8 bits par couleur, soit 3 octets par pixel.
-- JPEG compresse avec perte.
+- Nombre de pixels = largeur × hauteur ; 1 mégapixel = 1 million de pixels.
+- 8 bits par couleur, donc 3 octets par pixel et plus de 16 millions de couleurs.
+- Sans compression : taille = pixels × 3 octets. JPEG compresse avec perte.
 
 ## Exercices
 

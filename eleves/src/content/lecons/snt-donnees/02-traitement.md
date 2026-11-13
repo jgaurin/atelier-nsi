@@ -9,20 +9,22 @@ objectifs:
 prerequis: [snt-donnees/descripteurs]
 ---
 
-Une table devient utile quand on l'interroge. Un **tableur** permet de le faire sans programmer.
+Une table de données ne sert à rien si on ne sait pas l'interroger. Un **tableur** permet de chercher, trier et calculer sans programmer.
 
-## 1. Les opérations
+## 1. Les quatre opérations
 
-| Opération | Exemple |
-| --- | --- |
-| **Rechercher** | trouver la note de Léa |
-| **Filtrer** | garder les élèves de Lyon |
-| **Trier** | classer par note décroissante |
-| **Calculer** | obtenir la moyenne des notes |
+| Opération | Ce qu'elle fait | Exemple |
+| --- | --- | --- |
+| **Rechercher** | trouver une information précise | la note de Léa |
+| **Filtrer** | ne garder que les lignes qui vérifient une condition | les élèves de Lyon |
+| **Trier** | ranger les lignes dans un ordre | du meilleur au moins bon |
+| **Calculer** | obtenir un résultat à partir des valeurs | la moyenne de la classe |
 
-Un filtre **cache** des lignes. Un tri les **réordonne**.
+Attention à la différence : un **filtre** cache des lignes, sans changer leur ordre. Un **tri** garde toutes les lignes, mais change leur ordre.
 
-## 2. Dans un tableur
+## 2. Calculer dans un tableur
+
+Dans un tableur, chaque case s'appelle une **cellule** et porte un nom : la lettre de sa colonne et le numéro de sa ligne. `B3` est la cellule de la colonne B, ligne 3.
 
 | | A | B |
 | --- | --- | --- |
@@ -31,16 +33,22 @@ Un filtre **cache** des lignes. Un tri les **réordonne**.
 | **3** | Tom | 9 |
 | **4** | Inès | 18 |
 
-| Formule | Résultat |
-| --- | --- |
-| `=SOMME(B2:B4)` | 42 |
-| `=MOYENNE(B2:B4)` | 14 |
-| `=MAX(B2:B4)` | 18 |
-| `=NB.SI(B2:B4;">=10")` | 2 |
+Une **formule** commence par `=`. `B2:B4` désigne toutes les cellules de B2 à B4.
+
+| Formule | Ce qu'elle calcule | Résultat |
+| --- | --- | --- |
+| `=SOMME(B2:B4)` | 15 + 9 + 18 | 42 |
+| `=MOYENNE(B2:B4)` | 42 ÷ 3 | 14 |
+| `=MAX(B2:B4)` | la plus grande valeur | 18 |
+| `=NB.SI(B2:B4;">=10")` | le nombre de notes au moins égales à 10 | 2 |
+
+L'avantage d'une formule : si une note change, le résultat se met à jour tout seul.
 
 ## 3. Croiser deux tables
 
-Deux tables qui partagent un **descripteur commun** peuvent être croisées. On évite ainsi de répéter les mêmes informations.
+Pourquoi utiliser deux tables plutôt qu'une ? Pour ne pas répéter les mêmes informations. Si le nom d'un élève était recopié sur chaque ligne de chacune de ses notes, il faudrait le corriger partout en cas d'erreur.
+
+On relie deux tables grâce à un **descripteur commun** :
 
 | id | nom |
 | --- | --- |
@@ -52,17 +60,17 @@ Deux tables qui partagent un **descripteur commun** peuvent être croisées. On 
 | 2 | judo |
 | 1 | tennis |
 
-Grâce à `id`, on sait que Léa fait du tennis et Tom du judo.
+Le descripteur commun est `id`. En associant les lignes qui ont le même `id`, on obtient une information nouvelle : Léa fait du tennis, et Tom du judo.
 
 ## 4. Récupérer des données ouvertes
 
-Sur `data.gouv.fr`, on choisit un jeu de données, on lit sa description, puis on télécharge souvent un fichier CSV à ouvrir dans un tableur.
+Sur `data.gouv.fr`, on choisit un jeu de données, on lit sa description pour savoir ce que signifie chaque colonne, puis on télécharge souvent un fichier CSV. On l'ouvre ensuite dans un tableur pour le trier, le filtrer et calculer.
 
 ## L'essentiel
 
-- Rechercher, filtrer, trier, calculer.
-- Formules : `SOMME`, `MOYENNE`, `MAX`, `NB.SI`.
-- Un descripteur commun permet de croiser deux tables.
+- Rechercher, filtrer, trier, calculer. Un filtre cache des lignes ; un tri les réordonne.
+- Une formule commence par `=` : `SOMME`, `MOYENNE`, `MAX`, `NB.SI`.
+- Un descripteur commun permet de croiser deux tables, sans répéter les informations.
 
 ## Exercices
 

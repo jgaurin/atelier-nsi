@@ -10,52 +10,60 @@ objectifs:
 prerequis: [snt-web/url-http]
 ---
 
-Un **moteur de recherche** trouve des pages dont on ne connaît pas l'adresse.
+Un moteur de recherche trouve en une fraction de seconde des pages dont tu ignorais l'existence, parmi des milliards. Comment fait-il ? Et que faut-il savoir pour l'utiliser sans risque ?
 
-## 1. Trois étapes
+## 1. Les trois étapes d'un moteur de recherche
 
-1. **Collecter** : des robots parcourent le Web en suivant les liens.
-2. **Indexer** : un **index** associe chaque mot aux adresses des pages qui le contiennent.
-3. **Classer** : à chaque requête, le moteur construit une liste ordonnée selon la **popularité** et la **pertinence** des pages.
+**1. Collecter.** Des programmes, appelés **robots**, parcourent le Web sans arrêt. Ils partent de pages connues, suivent leurs liens, puis les liens de ces nouvelles pages, et ainsi de suite.
 
-| Mot | Pages |
+**2. Indexer.** Le moteur ne relit pas tout le Web à chaque recherche : ce serait bien trop long. Il prépare à l'avance un **index**, qui associe à chaque mot les adresses des pages qui le contiennent, comme l'index à la fin d'un livre.
+
+| Mot | Pages qui le contiennent |
 | --- | --- |
 | chat | A, C |
 | chien | B, C |
 
-Une page qui reçoit beaucoup de liens est considérée comme populaire.
+**3. Classer.** Quand tu cherches « chat chien », le moteur lit dans l'index les pages qui contiennent les deux mots : ici, la page C. S'il y en a beaucoup, il les classe selon leur **pertinence** (les mots sont-ils dans le titre ?) et leur **popularité** : une page vers laquelle beaucoup d'autres pages font des liens est jugée importante.
 
 ## 2. Garder un esprit critique
 
-- Les premiers résultats peuvent être des **publicités**.
-- Une page bien classée n'est pas forcément vraie : on **vérifie la source**.
-- Les recommandations peuvent enfermer dans une **bulle informationnelle**.
-- Ce qui est publié peut rester longtemps : c'est la question du **droit à l'oubli**.
+- Les premiers résultats sont parfois des **publicités** : des sites paient pour apparaître en haut.
+- Une page bien classée n'est pas forcément **vraie** : on vérifie qui l'a écrite, et on compare plusieurs sources.
+- Les recommandations te montrent surtout ce qui ressemble à ce que tu as déjà vu : tu risques de t'enfermer dans une **bulle informationnelle**.
+- Ce qui est publié peut rester en ligne très longtemps, et il est difficile de l'effacer : c'est la question du **droit à l'oubli**.
 
-## 3. Se protéger
+## 3. Se protéger en naviguant
 
-| Risque | Protection |
+| Risque | Comment se protéger |
 | --- | --- |
-| Cookies de suivi | les refuser ou les effacer |
-| Historique conservé | l'effacer, utiliser la navigation privée |
-| Programmes malveillants | bloquer les scripts douteux, se méfier des téléchargements |
-| **Hameçonnage** : une fausse page réclame tes informations | examiner l'adresse avant de cliquer |
+| des **cookies** de suivi enregistrent tes visites pour te cibler | les refuser, ou les effacer dans les réglages du navigateur |
+| l'**historique** garde la liste des sites visités | l'effacer, ou utiliser la navigation privée |
+| un programme malveillant s'exécute sur ton appareil | bloquer les scripts douteux, se méfier des téléchargements |
+| l'**hameçonnage** : une fausse page imite un vrai site pour voler ton mot de passe | examiner l'**adresse** avant de cliquer et avant de saisir quoi que ce soit |
 
-La navigation privée n'efface les traces que **sur ton appareil** : les sites et le réseau peuvent encore te repérer.
+:::exemple
+Un message dit : « Votre compte sera fermé aujourd'hui, cliquez vite ». Le lien mène à `ent-lycee.secure-login.exemple.net` au lieu du vrai site `ent.lycee.exemple.fr`. L'urgence et l'adresse différente doivent alerter : c'est de l'hameçonnage.
+:::
 
-## 4. Le droit
+:::attention
+La navigation privée efface seulement les traces **sur ton appareil**. Les sites visités et le réseau, celui du lycée par exemple, peuvent toujours voir tes connexions.
+:::
 
-- Le **droit d'auteur** protège une œuvre dès sa création.
-- Une **licence** indique ce qu'on a le droit de faire avec. Les licences **Creative Commons** autorisent certains usages, à condition par exemple de citer l'auteur.
-- Le **droit d'usage** permet d'utiliser un bien sans le posséder, comme un film acheté en streaming.
+## 4. Ce que dit le droit
+
+- Le **droit d'auteur** protège une œuvre, texte, photo ou musique, **dès sa création**, sans aucune démarche.
+- Une **licence** indique ce qu'on a le droit de faire avec une œuvre. Les licences **Creative Commons** autorisent certains usages, à condition par exemple de citer l'auteur.
+- Le **droit d'usage** permet d'utiliser un bien sans le posséder : un film acheté en streaming se regarde, mais ne se revend pas.
 - Un bien numérique a une **valeur**, même si le copier ne coûte presque rien.
+
+Une image trouvée avec un moteur de recherche n'est donc pas libre d'usage : il faut vérifier sa licence.
 
 ## L'essentiel
 
-- Moteur : collecter, indexer, classer.
-- Vérifier les sources, repérer les publicités.
-- Examiner l'adresse d'un lien, gérer ses cookies et son historique.
-- Une œuvre est protégée : la licence dit ce qui est permis.
+- Un moteur collecte les pages, les indexe, puis les classe selon leur pertinence et leur popularité.
+- Vérifier les sources, repérer les publicités, se méfier des bulles.
+- Examiner l'adresse avant de cliquer ; gérer cookies et historique ; la navigation privée ne cache pas tout.
+- Une œuvre est protégée dès sa création ; la licence dit ce qui est permis.
 
 ## Exercices
 

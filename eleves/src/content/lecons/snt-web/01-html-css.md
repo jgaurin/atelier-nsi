@@ -9,22 +9,22 @@ objectifs:
   - "Connaître les étapes du développement du Web"
 ---
 
-Le **Web** est un ensemble de pages reliées par des liens et accessibles grâce à Internet. Internet est le réseau, le Web est un service qui l'utilise.
+Internet et le Web, ce n'est pas la même chose. **Internet** est le **réseau** qui relie les machines. Le **Web** est un **service** qui l'utilise : un ensemble de pages reliées entre elles par des liens. Le courriel, par exemple, utilise Internet sans être le Web.
 
 ## 1. Quelques dates
 
 | Année | Événement |
 | --- | --- |
-| 1965 | Ted Nelson invente l'hypertexte |
-| 1989 | Tim Berners-Lee crée le Web au CERN |
-| 1993 | le Web passe dans le domaine public, premier navigateur Mosaic |
+| 1965 | Ted Nelson invente l'hypertexte : un texte avec des renvois vers d'autres contenus |
+| 1989 | Tim Berners-Lee crée le Web au CERN, près de Genève |
+| 1993 | le Web passe dans le domaine public ; Mosaic, le premier navigateur grand public |
 | 1995 | JavaScript et PHP rendent les sites interactifs et dynamiques |
-| 2001 | le DOM standardise les pages |
+| 2001 | le DOM standardise la structure des pages |
 | 2010 | des technologies pour développer des applications sur mobiles |
 
 ## 2. HTML : le contenu
 
-Le langage **HTML** décrit le contenu avec des **balises**.
+Une page Web est écrite en **HTML**. Ce langage décrit le **contenu** à l'aide de **balises**, écrites entre chevrons.
 
 ```html
 <h1>Mon lycée</h1>
@@ -33,19 +33,25 @@ Le langage **HTML** décrit le contenu avec des **balises**.
 <img src="photo.jpg" alt="La cour">
 ```
 
-| Balise | Rôle |
-| --- | --- |
-| `<h1>` | titre |
-| `<p>` | paragraphe |
-| `<strong>` | texte important |
-| `<a href="...">` | lien hypertexte |
-| `<img src="...">` | image |
+La plupart des balises vont par deux : une balise ouvrante, comme `<p>`, et une balise fermante, comme `</p>`. Ce qui est entre les deux est concerné.
 
-Un **hypertexte** contient des liens vers d'autres contenus, qui peuvent se trouver sur n'importe quelle machine.
+| Balise | Rôle | Dans l'exemple |
+| --- | --- | --- |
+| `<h1>` | un titre principal | « Mon lycée » |
+| `<p>` | un paragraphe | « Bienvenue sur notre site. » |
+| `<strong>` | un texte important, en gras | « notre » |
+| `<a href="...">` | un lien hypertexte | le lien « Voir le menu » |
+| `<img src="...">` | une image | la photo de la cour |
 
-## 3. CSS : le style
+Dans `<a href="https://exemple.fr/menu.html">Voir le menu</a>`, l'attribut `href` donne l'adresse de destination, et « Voir le menu » est le texte sur lequel on clique.
 
-Le langage **CSS** décrit la présentation.
+## 3. L'hypertexte
+
+Un **hypertexte** est un texte qui contient des **liens** vers d'autres contenus. Sur le Web, ces contenus peuvent se trouver sur **n'importe quelle machine** du monde. Les pages et leurs liens forment ainsi une immense toile, d'où le nom de Web, « toile » en anglais.
+
+## 4. CSS : le style
+
+Le langage **CSS** décrit la **présentation** : couleurs, tailles, polices, disposition.
 
 ```css
 h1 {
@@ -56,13 +62,19 @@ p {
 }
 ```
 
-On peut changer tout le style d'un site sans toucher à son contenu.
+Chaque règle dit : « pour tous les éléments `h1`, mettre la couleur bleue ». On sépare ainsi le fond et la forme : pour changer l'apparence de tout un site, on modifie seulement le fichier CSS, sans toucher au contenu des pages.
+
+| Je veux changer… | Je modifie… |
+| --- | --- |
+| le texte d'un titre, ajouter un lien | le HTML |
+| la couleur, la taille, la police | le CSS |
 
 ## L'essentiel
 
-- HTML : le contenu, avec des balises. CSS : le style.
-- `<a href="adresse">texte</a>` crée un lien.
-- Web : 1989, au CERN, par Tim Berners-Lee.
+- Internet est le réseau ; le Web est un service de pages reliées par des liens.
+- HTML décrit le contenu avec des balises ; CSS décrit la présentation.
+- `<a href="adresse">texte</a>` crée un lien hypertexte.
+- Le Web est créé en 1989 au CERN par Tim Berners-Lee.
 
 ## Exercices
 

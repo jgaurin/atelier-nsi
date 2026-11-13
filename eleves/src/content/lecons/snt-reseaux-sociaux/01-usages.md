@@ -9,16 +9,18 @@ objectifs:
   - "Identifier les sources de revenus des réseaux sociaux"
 ---
 
-Un **réseau social** met des internautes en relation et leur permet d'échanger des textes, des photos ou des vidéos.
+Un **réseau social** est une application qui met des personnes en relation et leur permet de partager des textes, des photos ou des vidéos. Plusieurs milliards de personnes en utilisent chaque jour. Il faut comprendre ce qu'on y laisse, et comment ces services gagnent de l'argent.
 
 ## 1. Ton identité en ligne
 
-- L'**identité numérique** rassemble tout ce qui te concerne en ligne : profils, publications, traces.
-- L'**e-réputation** est l'image que ces informations donnent de toi.
-- L'**identification** consiste à dire qui on est, avec un identifiant.
-- L'**authentification** consiste à le prouver, avec un mot de passe ou un code.
+| Notion | Sens | Exemple |
+| --- | --- | --- |
+| **Identité numérique** | tout ce qui te concerne en ligne | tes profils, tes publications, tes commentaires, les photos où tu apparais |
+| **E-réputation** | l'image que ces informations donnent de toi | ce que pense un recruteur qui tape ton nom |
+| **Identification** | dire qui on est | saisir son pseudo ou son adresse électronique |
+| **Authentification** | prouver qu'on est bien cette personne | saisir son mot de passe, ou un code reçu par SMS |
 
-Une publication peut être copiée et rester visible longtemps, même après sa suppression.
+Une publication peut être copiée, capturée et partagée par d'autres : elle peut rester visible longtemps, même après que tu l'as supprimée. Ce que tu publies à 15 ans peut encore être lu dans dix ans.
 
 ## 2. Quelques réseaux
 
@@ -28,31 +30,40 @@ Une publication peut être copiée et rester visible longtemps, même après sa 
 | Facebook | 2004 | relations, groupes |
 | Twitter, devenu X | 2006 | messages courts |
 | WhatsApp | 2009 | messagerie |
-| Instagram | 2010 | photos, vidéos |
+| Instagram | 2010 | photos et vidéos |
 | Snapchat | 2011 | contenus à durée limitée |
 
-En ordre de grandeur, les plus grands réseaux comptent **plusieurs milliards** d'utilisateurs, et d'autres **quelques centaines de millions**.
+En ordre de grandeur, les plus grands réseaux comptent **plusieurs milliards** d'utilisateurs, d'autres **quelques centaines de millions**.
 
-## 3. Paramétrer son compte
+## 3. Régler ses paramètres
 
-Dans les réglages, on choisit qui voit ses publications, qui peut écrire, et quelles applications tierces ont accès au compte.
+Dans les paramètres de confidentialité, on choisit :
+
+- qui peut voir ses publications : tout le monde, ses amis, ou soi seul ;
+- qui peut écrire ou commenter ;
+- quelles applications extérieures ont accès au compte ;
+- si sa position est partagée.
+
+Un compte **public** montre tout à n'importe qui. Un compte **privé** limite l'accès aux personnes acceptées.
 
 ## 4. « Quand c'est gratuit, c'est toi le produit »
 
+Un réseau social coûte très cher à faire fonctionner. Pourtant, il est gratuit pour toi. Comment gagne-t-il de l'argent ?
+
 | Source de revenus | Principe |
 | --- | --- |
-| **Publicité ciblée** | les annonceurs paient pour viser certains profils |
-| **Exploitation des données** | les comportements servent à mieux cibler et à améliorer le service |
-| **Abonnements et options** | des fonctions payantes |
+| **Publicité ciblée** | les annonceurs paient pour montrer leurs publicités aux personnes qui ont le plus de chances d'être intéressées |
+| **Exploitation des données** | tes centres d'intérêt, tes clics et tes contacts permettent de mieux te cibler |
+| **Abonnements et options** | certaines fonctions sont payantes |
 
-Les **algorithmes de recommandation** proposent des amis, des contenus et des publicités.
+Plus tu passes de temps sur l'application, plus elle te montre de publicités. Les **algorithmes de recommandation**, qui proposent des amis et des contenus, sont donc conçus pour te garder le plus longtemps possible.
 
 ## L'essentiel
 
+- Identité numérique : ce qui te concerne en ligne ; e-réputation : l'image qu'elle donne.
 - Identification : dire qui on est. Authentification : le prouver.
-- Ce qu'on publie peut durer et construire son e-réputation.
-- La confidentialité se règle dans les paramètres.
-- La principale source de revenus est la publicité ciblée.
+- La confidentialité se règle dans les paramètres : public ou privé, accès des applications.
+- La principale source de revenus est la publicité ciblée, grâce aux données des utilisateurs.
 
 ## Exercices
 

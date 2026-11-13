@@ -8,58 +8,68 @@ objectifs:
   - "Régler le partage de sa position"
 ---
 
-Le **GPS**, conçu par l'armée américaine, a lancé son premier satellite en 1978. **Galileo** est le système européen.
+Ton téléphone sait où tu es, à quelques mètres près, n'importe où sur Terre. Il n'envoie pourtant rien aux satellites : il se contente d'**écouter**.
 
-## 1. Le principe
-
-Chaque satellite possède une **horloge atomique** et envoie régulièrement l'heure exacte. Le signal voyage à la vitesse de la lumière, environ 300 000 km/s.
-
-Le récepteur compare l'heure d'envoi et l'heure d'arrivée :
-
-**distance = vitesse × durée**
-
-Avec les distances à plusieurs satellites, il calcule sa position : trois satellites la situent, et un **quatrième** corrige l'erreur d'horloge du récepteur.
-
-:::attention
-Le téléphone ne « parle » pas au satellite : il reçoit seulement ses signaux.
+:::histoire
+Le **GPS** a été conçu par l'armée américaine. Son premier satellite est lancé en 1978. Il en existe aujourd'hui une trentaine. **Galileo** est le système européen, plus précis.
 :::
 
-En ville, le signal peut être gêné : le téléphone s'aide alors des bornes Wi-Fi proches.
+## 1. Calculer une distance avec l'heure
 
-## 2. Une trame NMEA
+Chaque satellite contient une **horloge atomique**, extrêmement précise. Il envoie sans arrêt un message qui dit : « je suis tel satellite, et il est exactement telle heure ».
 
-Le protocole **NMEA 0183** donne la position sous forme de texte, avec des champs séparés par des virgules.
+Ce message voyage à la vitesse de la lumière, environ 300 000 km par seconde. Le récepteur compare l'heure d'envoi et l'heure d'arrivée, et en déduit la distance :
+
+**distance = vitesse × durée du trajet**
+
+:::exemple
+Le message met 0,07 seconde à arriver : le satellite est à 300 000 × 0,07 = **21 000 km**.
+:::
+
+## 2. Trouver sa position
+
+Connaître la distance à **un** satellite ne suffit pas : tu pourrais être n'importe où sur une sphère autour de lui. Avec la distance à **trois** satellites, les possibilités se réduisent à un seul point. Un **quatrième** satellite est nécessaire pour corriger l'horloge du téléphone, bien moins précise que celles des satellites.
+
+C'est pourquoi un récepteur a besoin d'**au moins quatre satellites** visibles. En ville, les immeubles masquent une partie du ciel : le téléphone s'aide alors des bornes Wi-Fi proches, dont la position est connue.
+
+## 3. Lire une trame NMEA
+
+Un récepteur GPS donne la position sous forme de texte, selon le protocole **NMEA 0183**. Chaque ligne, appelée **trame**, contient des champs séparés par des virgules.
 
 `$GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,*47`
 
 | Champ | Valeur | Sens |
 | --- | --- | --- |
-| Type | `GPGGA` | position GPS |
+| Type | `GPGGA` | une position GPS |
 | Heure | `123519` | 12 h 35 min 19 s |
 | Latitude | `4807.038,N` | 48° 07,038′ Nord |
 | Longitude | `01131.000,E` | 11° 31,000′ Est |
-| Satellites | `08` | 8 satellites |
+| Satellites | `08` | 8 satellites utilisés |
 | Altitude | `545.4,M` | 545,4 mètres |
 
-## 3. Convertir en degrés décimaux
+Dans la latitude `4807.038`, les deux premiers chiffres sont les **degrés** (48), et le reste les **minutes** (07,038). Pour la longitude, les degrés ont trois chiffres : `011`.
 
-Une minute vaut 1/60 de degré.
+## 4. Convertir en degrés décimaux
+
+Les cartes numériques utilisent des degrés décimaux. Une minute vaut 1/60 de degré :
+
+**degrés décimaux = degrés + minutes ÷ 60**
 
 :::exemple
-48° 07,038′ donne 48 + 7,038 / 60 = **48,1173°**.
+48° 07,038′ donne 48 + 7,038 ÷ 60 = 48 + 0,1173 = **48,1173°**.
 :::
 
-Une latitude Sud ou une longitude Ouest est comptée négativement.
+Une latitude **Sud** ou une longitude **Ouest** est comptée **négativement**.
 
-## 4. Sa position, une donnée sensible
+## 5. Ta position, une donnée sensible
 
-Le GPS peut être brouillé, et de nombreuses applications ont accès à la position. Dans les réglages du téléphone, on choisit quelles applications peuvent l'utiliser, et on peut consulter ou effacer son historique.
+De nombreuses applications ont accès à ta position : elles peuvent t'envoyer des publicités ciblées, retracer tes trajets, ou permettre à quelqu'un de te localiser. Le GPS peut aussi être brouillé. Dans les réglages du téléphone, tu choisis quelles applications peuvent utiliser ta position, et tu peux consulter ou effacer ton historique de localisation.
 
 ## L'essentiel
 
-- Distance = vitesse × durée, avec au moins 4 satellites.
-- Une trame NMEA donne l'heure, la latitude, la longitude, l'altitude.
-- Degrés décimaux = degrés + minutes / 60.
+- Distance = vitesse × durée ; il faut au moins 4 satellites : 3 pour la position, 1 pour corriger l'horloge.
+- Une trame NMEA donne l'heure, la latitude, la longitude, le nombre de satellites et l'altitude.
+- Degrés décimaux = degrés + minutes ÷ 60 ; Sud et Ouest sont négatifs.
 - La position se règle dans les paramètres du téléphone.
 
 ## Exercices

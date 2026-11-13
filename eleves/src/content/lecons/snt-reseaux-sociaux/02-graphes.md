@@ -9,50 +9,69 @@ objectifs:
   - "Expliquer comment le choix des amis conditionne l'information reçue"
 ---
 
-Un réseau social peut se représenter par un **graphe** : les **sommets** sont les personnes, les **arêtes** sont les liens d'amitié.
+Comment représenter les relations entre des millions de personnes ? Par un **graphe** : chaque personne est un **sommet**, et chaque lien d'amitié est une **arête** entre deux sommets.
 
-## 1. Distance et excentricité
+## 1. La distance entre deux personnes
 
-- La **distance** entre deux sommets est le plus petit nombre d'arêtes pour aller de l'un à l'autre.
-- L'**excentricité** d'un sommet est sa distance au sommet le plus éloigné.
+La **distance** entre deux sommets est le **plus petit nombre d'arêtes** à parcourir pour aller de l'un à l'autre. Si Ali est ami avec Bea, et Bea avec Cleo, la distance entre Ali et Cleo vaut 2 : Cleo est une amie d'amie.
 
-## 2. Diamètre, rayon et centre
+## 2. L'excentricité
 
-| Mesure | Définition |
-| --- | --- |
-| **Diamètre** | la plus grande excentricité |
-| **Rayon** | la plus petite excentricité |
-| **Centre** | les sommets dont l'excentricité est égale au rayon |
+L'**excentricité** d'un sommet est sa distance au sommet **le plus éloigné** de lui. Elle mesure à quel point une personne est loin de tout le réseau.
 
-:::exemple
-Graphe : A–B, B–C, C–D, B–E.
+Prenons ce graphe : A–B, B–C, C–D et B–E.
 
-| Sommet | A | B | C | D | E |
-| --- | --- | --- | --- | --- | --- |
-| Excentricité | 3 | 2 | 2 | 3 | 3 |
+```mermaid
+flowchart LR
+    A((A)) --- B((B))
+    B --- C((C))
+    C --- D((D))
+    B --- E((E))
+```
 
-Le diamètre vaut 3, le rayon vaut 2, et le centre est formé de B et C.
-:::
+Calculons l'excentricité de A : B est à distance 1, C et E à distance 2, D à distance 3. Le plus éloigné est D : l'excentricité de A vaut **3**.
 
-## 3. Un petit monde
+De la même façon pour chaque sommet :
 
-En 1967, l'expérience de **Milgram** suggère que deux personnes sont reliées par environ six intermédiaires. Un graphe où les distances restent petites malgré un grand nombre de sommets est un **petit monde**.
+| Sommet | Distances aux autres | Excentricité |
+| --- | --- | --- |
+| A | B : 1, C : 2, D : 3, E : 2 | 3 |
+| B | A : 1, C : 1, D : 2, E : 1 | 2 |
+| C | A : 2, B : 1, D : 1, E : 2 | 2 |
+| D | A : 3, B : 2, C : 1, E : 3 | 3 |
+| E | A : 2, B : 1, C : 2, D : 3 | 3 |
 
-## 4. L'information que tu reçois
+## 3. Diamètre, rayon et centre
 
-Tu vois surtout ce que partagent tes contacts, et ce que recommande l'algorithme : tes choix **conditionnent** l'information reçue.
+| Mesure | Définition | Ici |
+| --- | --- | --- |
+| **Diamètre** | la plus grande excentricité | 3 |
+| **Rayon** | la plus petite excentricité | 2 |
+| **Centre** | les sommets dont l'excentricité est égale au rayon | B et C |
 
-- **Bonding** : renforcer les liens dans un même groupe.
-- **Bridging** : créer de nouveaux liens vers d'autres groupes.
+Le diamètre est la plus grande distance entre deux personnes du réseau. Le centre regroupe les personnes les mieux placées pour atteindre tout le monde rapidement.
 
-Trop de bonding peut enfermer dans une bulle et appauvrir l'esprit critique.
+## 4. Un petit monde
+
+En 1967, le chercheur Stanley **Milgram** demande à des personnes de faire parvenir une lettre à un inconnu, en la transmettant seulement à des connaissances. Les lettres arrivées ont fait en moyenne environ **six** intermédiaires.
+
+Cette expérience suggère que, même dans un réseau immense, deux personnes sont reliées par une chaîne courte. Un tel graphe est appelé un **petit monde**.
+
+## 5. Ce que tu vois dépend de tes amis
+
+Tu vois surtout ce que partagent tes contacts, et ce que l'algorithme te recommande à partir de tes choix. Si tous tes amis pensent pareil, tu ne vois qu'un seul point de vue.
+
+- Le **bonding** renforce les liens à l'intérieur d'un même groupe.
+- Le **bridging** crée des liens vers d'autres groupes.
+
+Un réseau fait seulement de bonding peut enfermer dans une **bulle**, et appauvrir l'esprit critique. Les liens de bridging font circuler des idées nouvelles.
 
 ## L'essentiel
 
-- Excentricité : distance au sommet le plus éloigné.
-- Diamètre : la plus grande excentricité. Rayon : la plus petite.
-- Centre : les sommets d'excentricité égale au rayon.
-- Petit monde : de courtes distances, même dans un immense réseau.
+- Distance : le plus petit nombre d'arêtes entre deux sommets.
+- Excentricité : la distance au sommet le plus éloigné.
+- Diamètre : la plus grande excentricité. Rayon : la plus petite. Centre : les sommets d'excentricité égale au rayon.
+- Petit monde : de courtes distances, même dans un immense réseau, comme l'a suggéré Milgram.
 
 ## Exercices
 

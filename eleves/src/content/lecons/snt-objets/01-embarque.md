@@ -8,16 +8,18 @@ objectifs:
   - "Comprendre les enjeux de sûreté et de sécurité"
 ---
 
-Un **système embarqué** est un ordinateur intégré à un objet : voiture, ascenseur, lave-linge, montre.
+Une voiture moderne contient des dizaines de petits ordinateurs : pour les freins, le moteur, les airbags. Un **système embarqué** est un ordinateur intégré à un objet, conçu pour une tâche précise. Quand il communique par Internet, l'objet devient **connecté**.
 
 ## 1. Mesurer, décider, agir
 
-| Élément | Rôle | Exemple |
+| Élément | Rôle | Exemple dans une voiture |
 | --- | --- | --- |
-| **Capteur** | mesure le monde | thermomètre, caméra |
-| **Actionneur** | agit sur le monde | moteur, résistance, LED |
-| **IHM** | échange avec la personne | écran, boutons, application |
-| **Programme** | décide | algorithme de contrôle |
+| **Capteur** | mesurer le monde | la vitesse de rotation des roues |
+| **Actionneur** | agir sur le monde | le frein |
+| **IHM** | échanger avec la personne | le tableau de bord, les boutons |
+| **Programme** | décider | l'algorithme de freinage |
+
+Le programme répète sans fin la même boucle :
 
 ```
 répéter sans fin :
@@ -27,15 +29,19 @@ répéter sans fin :
 ```
 
 :::exemple
-Un frein ABS mesure la rotation des roues. Si une roue se bloque, le programme relâche brièvement le frein.
+Le frein **ABS** empêche les roues de se bloquer. Le capteur mesure la vitesse de rotation de chaque roue. Si une roue s'arrête alors que la voiture avance, elle se bloque : le programme relâche alors brièvement le frein de cette roue, puis le remet, plusieurs fois par seconde. La voiture reste dirigeable.
 :::
 
 ## 2. Des contraintes fortes
 
-- **Temps réel** : la réponse doit arriver dans un délai imposé.
-- **Consommation** : un objet sur pile doit durer longtemps.
-- **Sûreté** : le système ne doit pas commettre d'erreur dangereuse.
-- **Sécurité** : il doit résister aux attaques. Des objets connectés mal protégés servent à lancer des attaques sur Internet.
+| Contrainte | Sens | Exemple |
+| --- | --- | --- |
+| **Temps réel** | la réponse doit arriver dans un délai imposé | un airbag doit se déclencher en quelques millisecondes |
+| **Consommation** | l'énergie est limitée | un capteur sur pile doit durer des années |
+| **Sûreté** | le système ne doit pas commettre d'erreur dangereuse | les commandes d'un avion |
+| **Sécurité** | le système doit résister aux attaques | une caméra connectée ne doit pas être piratable |
+
+Des objets connectés mal protégés sont parfois piratés en masse, puis utilisés ensemble pour attaquer des sites Internet.
 
 ## 3. Quelques dates
 
@@ -43,16 +49,18 @@ Un frein ABS mesure la rotation des roues. Si une roue se bloque, le programme r
 | --- | --- |
 | 1967 | système de guidage embarqué de la mission Apollo |
 | 1971 | premier processeur d'Intel |
-| 1984 | Airbus A320, commandes électriques informatisées |
-| 1998 | métro sans conducteur Météor, à Paris |
-| 1999 | expression « internet des objets » |
+| 1984 | Airbus A320, premier avion à commandes électriques informatisées |
+| 1998 | métro sans conducteur Météor, ligne 14 à Paris |
+| 1999 | apparition de l'expression « internet des objets » |
 | 2007 | arrivée du smartphone |
+
+Aujourd'hui, le téléphone sert souvent d'IHM pour commander les objets connectés de la maison.
 
 ## L'essentiel
 
-- Capteur : il mesure. Actionneur : il agit. IHM : elle échange avec la personne.
-- Un programme répète : lire, décider, agir.
-- Temps réel, consommation, sûreté, sécurité.
+- Capteur : il mesure. Actionneur : il agit. IHM : elle échange avec la personne. Programme : il décide.
+- Un système embarqué répète : lire, décider, agir.
+- Contraintes : temps réel, consommation, sûreté (pas d'erreur), sécurité (pas d'attaque).
 
 ## Exercices
 

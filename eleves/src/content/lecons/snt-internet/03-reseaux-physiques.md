@@ -9,46 +9,66 @@ objectifs:
 prerequis: [snt-internet/tcp-ip]
 ---
 
-Les protocoles d'Internet sont des **logiciels**. Ils peuvent donc fonctionner sur n'importe quel réseau physique.
+Internet fonctionne aussi bien par la fibre que par la 4G ou le Wi-Fi. Comment est-ce possible ? Parce que ses protocoles sont des **logiciels**, installés dans chaque appareil : ils peuvent fonctionner sur n'importe quel réseau physique, comme une lettre peut voyager en camion, en train ou en avion.
 
 ## 1. Les réseaux physiques
 
 | Réseau | Support | Débit, en ordre de grandeur |
 | --- | --- | --- |
 | Modem téléphonique (obsolète) | filaire | 50 kbit/s |
-| ADSL | filaire | 10 Mbit/s |
-| Fibre optique | filaire | 1 Gbit/s |
-| Ethernet | filaire | 1 Gbit/s |
+| ADSL | filaire, par la ligne téléphonique | 10 Mbit/s |
+| Fibre optique | filaire, par la lumière | 1 Gbit/s |
+| Ethernet | filaire, en câble réseau | 1 Gbit/s |
 | Wi-Fi | sans fil | 100 Mbit/s |
 | 4G | sans fil | 50 Mbit/s |
-| Bluetooth | sans fil | 2 Mbit/s |
+| Bluetooth | sans fil, à courte portée | 2 Mbit/s |
 
-Un octet vaut 8 bits. Pour estimer un temps : **temps = taille en bits ÷ débit**.
+Le **débit** mesure la quantité de données transmise chaque seconde, en **bits par seconde**. 1 Mbit/s vaut un million de bits par seconde, et 1 Gbit/s vaut mille Mbit/s.
 
-:::exemple
-Un fichier de 100 Mo fait 800 Mbit. À 10 Mbit/s, il faut 800 ÷ 10 = **80 secondes**.
+## 2. Calculer un temps de téléchargement
+
+:::methode[Trois étapes]
+1. Convertir la taille du fichier en bits : 1 octet = 8 bits.
+2. Diviser par le débit.
+3. Vérifier les unités : des Mbit divisés par des Mbit/s donnent des secondes.
 :::
 
-## 2. Le trafic
+:::exemple
+Un fichier de 100 Mo.
 
-Le trafic prévu pour 2021 était de 3,3 × 10²¹ octets par an, soit 3 300 milliards de milliards d'octets. Il ne cesse d'augmenter, surtout à cause de la vidéo.
+1. 100 Mo = 100 × 8 = **800 Mbit**.
+2. Avec l'ADSL, à 10 Mbit/s : 800 ÷ 10 = **80 secondes**.
+3. Avec la fibre, à 1 000 Mbit/s : 800 ÷ 1 000 = **0,8 seconde**.
+:::
 
-## 3. Le pair-à-pair
+:::attention
+Les tailles de fichiers sont en **octets**, les débits en **bits**. Oublier la multiplication par 8 donne un temps huit fois trop court.
+:::
 
-Dans un réseau **pair-à-pair**, chaque ordinateur est à la fois **émetteur et récepteur**. Un fichier est récupéré par morceaux auprès de plusieurs machines : on ne dépend pas d'un seul serveur.
+## 3. Le trafic sur Internet
 
-Ce système sert à distribuer légalement de gros fichiers, mais aussi, de façon **illicite**, à partager des œuvres sans l'accord de leurs auteurs.
+Le trafic prévu pour 2021 était de 3,3 × 10²¹ octets dans l'année, soit 3 300 milliards de milliards d'octets. Il ne cesse d'augmenter, surtout à cause de la vidéo, qui représente la plus grande part du trafic.
 
-## 4. Les enjeux
+## 4. Le pair-à-pair
 
-- La **neutralité du Net** : les routeurs transmettent les paquets indépendamment de leur contenu.
-- Le **déni de service** : un site est saturé par un très grand nombre de messages.
+Dans un réseau classique, tout le monde télécharge depuis un **serveur unique**, qui peut être saturé. Dans un réseau **pair-à-pair**, chaque ordinateur est à la fois **émetteur et récepteur** : dès qu'il a reçu un morceau de fichier, il peut le transmettre aux autres.
+
+:::exemple
+1 000 personnes veulent une vidéo de 1 Go. Avec un serveur unique, il doit envoyer 1 000 Go. En pair-à-pair, chacun récupère des morceaux auprès de plusieurs autres participants : le travail est réparti entre tous.
+:::
+
+Le pair-à-pair sert à distribuer légalement de gros fichiers, comme des logiciels libres. Il est aussi utilisé de façon **illicite**, pour partager des films ou de la musique sans l'accord de leurs auteurs.
+
+## 5. Les enjeux
+
+- La **neutralité du Net** : les routeurs doivent transmettre les paquets **sans tenir compte de leur contenu**. Un opérateur ne devrait pas ralentir un service pour en favoriser un autre.
+- Le **déni de service** : une attaque qui envoie un très grand nombre de messages à un site, pour le saturer et le rendre inaccessible.
 
 ## L'essentiel
 
-- Internet fonctionne sur tout réseau physique.
+- Internet fonctionne sur tout réseau physique, car ses protocoles sont des logiciels.
 - Temps = taille en bits ÷ débit, avec 1 octet = 8 bits.
-- Pair-à-pair : chaque machine émet et reçoit.
+- Pair-à-pair : chaque machine émet et reçoit ; légal ou illicite selon ce qu'on partage.
 - Neutralité du Net : aucun contenu n'est privilégié.
 
 ## Exercices

@@ -8,44 +8,54 @@ objectifs:
   - "Distinguer fiabilité de transmission et garantie de délai"
 ---
 
-**Internet** est un réseau mondial de réseaux. Les réseaux généraux naissent avec ArpaNet (1970) aux États-Unis et Cyclades (1971) en France. Internet lui-même naît en 1983.
+Quand tu envoies une photo à un ami à l'autre bout du monde, elle arrive en une seconde. Pourtant, aucun câble ne relie directement vos deux téléphones. Voici comment Internet s'y prend.
+
+:::histoire
+Les premiers réseaux indépendants des constructeurs naissent avec ArpaNet en 1970, aux États-Unis, et Cyclades en 1971, en France. Internet, tel qu'on le connaît, naît en 1983.
+:::
 
 ## 1. Des paquets
 
-Les données sont découpées en **paquets**. Chaque paquet contient :
+Ta photo n'est pas envoyée d'un seul bloc. Elle est **découpée en petits morceaux**, les **paquets**, tous de taille limitée. Chaque paquet contient :
 
-- un morceau du **contenu** : texte, image, son, vidéo ;
-- les **adresses** de l'émetteur et du destinataire.
+- un morceau du **contenu** : du texte, une partie d'image, de son ou de vidéo ;
+- l'**adresse de l'émetteur** et l'**adresse du destinataire**, comme sur une enveloppe.
 
-## 2. IP et TCP
+Les paquets ont tous la même forme, quel que soit leur contenu : Internet transporte de la même façon un message, une photo ou une vidéo.
 
-| Protocole | Son rôle |
-| --- | --- |
-| **IP** | identifier les machines et acheminer les paquets |
-| **TCP** | fiabiliser l'échange : redemander les paquets manquants, les remettre en ordre |
+## 2. Le routage : de proche en proche
 
-IP ne garantit pas que le paquet arrive. C'est TCP qui s'en charge, dans les ordinateurs aux deux extrémités.
+Les paquets traversent une série de machines spécialisées, les **routeurs**. Chaque routeur fonctionne comme un carrefour : il lit l'adresse du destinataire, et envoie le paquet vers le routeur voisin qui le rapproche de sa destination.
 
-## 3. Le routage
+Aucun routeur ne connaît la carte complète d'Internet. Chacun connaît seulement une **carte locale**, construite en échangeant en permanence avec ses voisins. Si un routeur tombe en panne, ses voisins s'en rendent compte et font passer les paquets ailleurs. C'est ce qui permet à Internet de relier des milliards de machines.
 
-Les **routeurs** font passer les paquets de proche en proche. Chaque routeur connaît seulement une **carte locale**, établie en échangeant avec ses voisins. Il envoie le paquet au routeur suivant selon la destination.
+## 3. IP et TCP : deux rôles différents
 
-Il n'y a pas de carte globale d'Internet : c'est ce qui permet au réseau de grandir. Si un routeur disparaît, ses voisins s'adaptent.
+| Protocole | Son rôle | Une image |
+| --- | --- | --- |
+| **IP** | donner une adresse à chaque machine, et acheminer chaque paquet | l'adresse sur l'enveloppe, et la poste qui achemine |
+| **TCP** | vérifier que tout est arrivé : redemander les paquets manquants, les remettre dans l'ordre | le destinataire qui vérifie qu'il a toutes les pages numérotées d'une lettre |
 
-## 4. Les limites
+IP achemine chaque paquet du mieux qu'il peut, mais **ne garantit pas** qu'il arrive. TCP, lui, travaille dans les deux ordinateurs, aux extrémités : il numérote les paquets au départ, et à l'arrivée il réclame ceux qui manquent.
 
-Un paquet peut être perdu :
+## 4. Pourquoi un paquet se perd
 
-- à cause d'une **panne** de ligne ou de routeur ;
-- parce qu'il a atteint son **nombre maximal de routeurs** à traverser : il est alors détruit, pour ne pas encombrer le réseau.
+Un paquet peut disparaître pour deux raisons :
 
-TCP assure la **fiabilité** : tout finit par arriver, sauf panne définitive. Mais il n'y a **aucune garantie de délai**. C'est gênant pour une visioconférence : une image perdue est acceptable, un retard ne l'est pas.
+- une **panne**, d'une ligne ou d'un routeur ;
+- sa **destruction volontaire** : chaque paquet indique un nombre maximal de routeurs à traverser. S'il l'atteint, il est détruit. Sans cette règle, un paquet perdu tournerait sans fin et encombrerait le réseau.
+
+## 5. Fiable, mais sans garantie de délai
+
+Grâce à TCP, la transmission est **fiable** : tout finit par arriver, sauf panne définitive. Mais rien ne garantit **quand**. Sur un réseau encombré, les paquets et leurs renvois mettent plus de temps.
+
+Pour un fichier, ce n'est pas grave : on attend un peu. Pour une visioconférence, c'est gênant : une image qui arrive en retard ne sert plus à rien. On peut perdre une image isolée, mais pas le fil du temps.
 
 ## L'essentiel
 
-- IP adresse et achemine, TCP fiabilise.
-- Chaque routeur a une carte locale et transmet au suivant.
-- Un paquet peut être perdu : panne, ou trop de routeurs traversés.
+- Les données voyagent en paquets, avec les adresses de l'émetteur et du destinataire.
+- Les routeurs transmettent de proche en proche, avec une simple carte locale.
+- IP adresse et achemine ; TCP vérifie, redemande et remet en ordre.
 - Internet est fiable grâce à TCP, mais sans garantie de délai.
 
 ## Exercices
