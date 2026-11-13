@@ -8,11 +8,35 @@ objectifs:
 prerequis: [premiere-algo/tris]
 ---
 
-Un algorithme **glouton** construit sa solution étape par étape, en prenant à chaque fois **le meilleur choix immédiat**, sans revenir en arrière.
+Un algorithme **glouton** construit sa solution étape par étape. À chaque étape, il fait le choix qui paraît **le meilleur sur le moment**, et il ne revient **jamais** en arrière.
+
+C'est rapide et simple, mais le meilleur choix immédiat ne mène pas toujours à la meilleure solution finale.
 
 ## 1. Le rendu de monnaie
 
-On veut rendre une somme avec le moins de pièces possible. Le glouton rend à chaque fois la **plus grande pièce** possible.
+### Le problème
+
+Un commerçant doit rendre une somme avec **le moins de pièces possible**. Il dispose de pièces de 50, 20, 10, 5, 2 et 1.
+
+### L'idée gloutonne
+
+Rendre à chaque fois **la plus grande pièce possible**, tant qu'il reste quelque chose à rendre.
+
+### À la main
+
+On rend 87.
+
+| Reste à rendre | Plus grande pièce possible | Reste ensuite |
+| --- | --- | --- |
+| 87 | 50 | 37 |
+| 37 | 20 | 17 |
+| 17 | 10 | 7 |
+| 7 | 5 | 2 |
+| 2 | 2 | 0 |
+
+On rend 5 pièces : 50 + 20 + 10 + 5 + 2.
+
+### Le code, ligne par ligne
 
 ```python exec
 def rendu(somme, pieces):
@@ -24,27 +48,74 @@ def rendu(somme, pieces):
     return resultat
 
 print(rendu(87, [50, 20, 10, 5, 2, 1]))
-print(rendu(6, [4, 3, 1]))
+print(rendu(40, [50, 20, 10, 5, 2, 1]))
 ```
 
-Avec les euros, le glouton est optimal. Mais avec des pièces de 4, 3 et 1, il rend 4 + 1 + 1 pour 6, alors que 3 + 3 suffit.
+- `for p in pieces` : on essaie les pièces dans l'ordre donné. Cet ordre doit aller de la **plus grande** à la plus petite.
+- `while somme >= p` : on peut rendre **plusieurs fois** la même pièce, comme 20 + 20 pour 40. Avec un `if`, on la rendrait au plus une fois.
+- À chaque pièce rendue, on l'ajoute au résultat et on diminue la somme.
+
+### Quand le glouton se trompe
+
+Avec des pièces de 4, 3 et 1, pour rendre 6 :
+
+| Méthode | Pièces | Nombre de pièces |
+| --- | --- | --- |
+| Glouton | 4 + 1 + 1 | 3 |
+| Meilleure solution | 3 + 3 | 2 |
+
+Le glouton prend 4, la plus grande pièce, et ne remet jamais ce choix en cause. Avec les pièces en euros, en revanche, il donne toujours la meilleure solution.
 
 ## 2. Le sac à dos
 
-On choisit des objets pour **maximiser la valeur**, sans dépasser une masse maximale. On prend les objets par **rapport valeur / masse** décroissant, tant qu'ils rentrent.
+### Le problème
 
-Cette méthode est rapide, mais elle ne donne **pas toujours** la meilleure solution.
+On veut remplir un sac qui supporte une masse maximale, avec des objets qui ont chacun une masse et une valeur. Le but est d'obtenir la **plus grande valeur totale**.
 
-:::exemple
-Sac de 6 kg. A : 5 kg, 11 €, rapport 2,2. B : 3 kg, 6 €, rapport 2. C : 3 kg, 6 €, rapport 2. Le glouton prend A et ne peut plus rien ajouter : 11 €. Pourtant, B et C rapportent 12 €.
-:::
+### L'idée gloutonne
+
+Prendre les objets par **rapport valeur / masse** décroissant, c'est-à-dire les plus « rentables » au kilo d'abord, tant qu'ils rentrent.
+
+### À la main
+
+Le sac supporte 10 kg.
+
+| Objet | Masse | Valeur | Valeur / masse |
+| --- | --- | --- | --- |
+| A | 2 kg | 10 € | 5 |
+| B | 5 kg | 20 € | 4 |
+| C | 4 kg | 12 € | 3 |
+| D | 3 kg | 6 € | 2 |
+
+| Objet examiné | Rentre-t-il ? | Masse dans le sac | Valeur |
+| --- | --- | --- | --- |
+| A | oui | 2 kg | 10 € |
+| B | oui | 7 kg | 30 € |
+| C | non : 7 + 4 = 11 kg | 7 kg | 30 € |
+| D | oui | 10 kg | 36 € |
+
+Le glouton obtient 36 €.
+
+### Quand le glouton se trompe
+
+Sac de 6 kg. A : 5 kg et 11 €, soit un rapport de 2,2. B et C : 3 kg et 6 € chacun, soit un rapport de 2.
+
+Le glouton prend A, puis plus rien ne rentre : il obtient 11 €. Pourtant, B et C ensemble rapportent 12 €.
+
+## 3. Ce qu'il faut retenir sur les gloutons
+
+- Ils sont **rapides** : un seul choix par étape, sans essayer toutes les possibilités.
+- Ils ne sont **pas toujours optimaux**. Un seul contre-exemple suffit à le prouver.
+- Réussir sur dix exemples ne prouve pas qu'un glouton est toujours optimal.
+
+Trouver la meilleure solution exacte demande d'autres méthodes, que tu verras en terminale.
 
 ## L'essentiel
 
 - Glouton : le meilleur choix immédiat, sans retour en arrière.
-- Rendu de monnaie : la plus grande pièce possible.
-- Sac à dos : le meilleur rapport valeur / masse.
-- Un glouton est rapide, mais pas toujours optimal.
+- Rendu de monnaie : la plus grande pièce possible, avec des pièces triées de la plus grande à la plus petite.
+- Sac à dos : le meilleur rapport valeur / masse d'abord.
+- Rapide, mais pas toujours optimal : un contre-exemple suffit à le montrer.
 
 ## Exercices
 

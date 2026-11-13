@@ -8,9 +8,26 @@ objectifs:
 prerequis: [premiere-construits/tableaux]
 ---
 
-Beaucoup d'algorithmes examinent un tableau **case par case** : c'est un **parcours séquentiel**.
+Beaucoup d'algorithmes examinent un tableau **case par case**, du début à la fin : c'est un **parcours séquentiel**. C'est ce que tu fais quand tu cherches un nom dans une liste qui n'est pas rangée : tu lis les lignes une à une.
 
-## 1. Chercher une occurrence
+## 1. Chercher une valeur
+
+### L'idée
+
+On regarde chaque case. Dès qu'on trouve la valeur, on s'arrête et on donne sa position. Si on arrive au bout sans l'avoir trouvée, elle est absente : on renvoie -1 par convention, puisque -1 n'est jamais une position valide.
+
+### À la main
+
+On cherche 8 dans `[4, 8, 1]`.
+
+| Tour | `i` | `t[i]` | Est-ce 8 ? | Ce qu'on fait |
+| --- | --- | --- | --- | --- |
+| 1 | 0 | 4 | non | on continue |
+| 2 | 1 | 8 | oui | on renvoie 1 |
+
+On cherche maintenant 5 : les trois cases sont examinées, aucune ne vaut 5, donc on renvoie -1.
+
+### Le code, ligne par ligne
 
 ```python exec
 def indice(t, x):
@@ -22,9 +39,32 @@ def indice(t, x):
 print(indice([4, 8, 1], 8), indice([4, 8, 1], 5))
 ```
 
-Le `return -1` est **après** la boucle : on ne conclut à l'absence qu'après avoir tout vu.
+- `for i in range(len(t))` : `i` prend chaque position, de 0 à `len(t) - 1`.
+- `if t[i] == x: return i` : dès qu'on trouve, `return` arrête la fonction.
+- `return -1` est **après** la boucle, au même niveau que le `for`. On n'y arrive que si toutes les cases ont été examinées sans succès.
 
-## 2. Chercher un extremum
+:::attention
+Mettre `return -1` dans un `else`, à l'intérieur de la boucle, est une erreur classique : la fonction s'arrêterait dès la première case différente de `x`. On ne peut conclure à l'absence qu'après avoir tout regardé.
+:::
+
+## 2. Chercher le maximum
+
+### L'idée
+
+Imagine que tu lis des notes une par une, en retenant la meilleure vue jusqu'ici. À chaque nouvelle note, tu la compares à celle que tu retiens : si elle est meilleure, elle la remplace.
+
+### À la main
+
+On cherche le maximum de `[5, 9, 2, 9]`. La variable `m` retient le meilleur vu jusqu'ici.
+
+| Valeur lue | Comparaison | `m` après |
+| --- | --- | --- |
+| départ | on prend la première case | 5 |
+| 9 | 9 > 5, oui | 9 |
+| 2 | 2 > 9, non | 9 |
+| 9 | 9 > 9, non | 9 |
+
+### Le code, ligne par ligne
 
 ```python exec
 def maximum(t):
@@ -34,12 +74,22 @@ def maximum(t):
             m = x
     return m
 
-print(maximum([-4, -1, -7]))
+print(maximum([5, 9, 2, 9]), maximum([-4, -1, -7]))
 ```
 
-On initialise avec `t[0]`, et non avec 0 : sinon, le résultat est faux pour des nombres négatifs.
+- `m = t[0]` : on part d'une vraie valeur du tableau.
+- `for x in t` : on n'a besoin que des valeurs, pas des positions.
+- `if x > m: m = x` : une valeur plus grande remplace l'ancien maximum.
+
+:::attention
+Si on écrit `m = 0` au départ, le résultat est faux pour un tableau de nombres négatifs : avec `[-4, -1, -7]`, aucune valeur ne dépasse 0, et la fonction renverrait 0, qui n'est même pas dans le tableau.
+:::
+
+Pourquoi le résultat est-il juste ? Au début de chaque tour, `m` est le maximum des valeurs déjà lues. C'est vrai au départ, chaque tour le conserve, donc à la fin `m` est le maximum de tout le tableau. Une telle phrase s'appelle un **invariant** : tu la retrouveras dans les tris.
 
 ## 3. Calculer une moyenne
+
+On additionne toutes les valeurs dans une variable, puis on divise par leur nombre. Cette variable qui grossit à chaque tour s'appelle un **accumulateur**.
 
 ```python exec
 def moyenne(t):
@@ -51,17 +101,31 @@ def moyenne(t):
 print(moyenne([12, 15, 9]))
 ```
 
-## 4. Le coût est linéaire
+Pour `[12, 15, 9]`, `s` vaut successivement 0, 12, 27 puis 36, et on renvoie 36 / 3 = 12.
 
-Le **coût** est le nombre d'opérations en fonction de la taille n du tableau. Ici, on examine au plus n cases : le coût est **linéaire**. Si le tableau est deux fois plus grand, le temps double.
+Le tableau ne doit pas être vide : sinon, on diviserait par 0.
 
-Pour la recherche, le **pire cas** est l'élément absent.
+## 4. Le coût
+
+Le **coût** d'un algorithme est le nombre d'opérations qu'il fait, selon la taille n des données.
+
+- Pour le maximum et la moyenne, on regarde toujours les n cases.
+- Pour la recherche, cela dépend de la position de la valeur. Le **meilleur cas** est une valeur en première case : une seule comparaison. Le **pire cas** est une valeur absente ou en dernière case : n comparaisons.
+
+| Taille du tableau | Comparaisons dans le pire cas |
+| --- | --- |
+| 10 | 10 |
+| 1 000 | 1 000 |
+| 1 000 000 | 1 000 000 |
+
+Le nombre d'opérations est proportionnel à la taille : si le tableau est deux fois plus grand, il faut deux fois plus de temps. On dit que le coût est **linéaire**.
 
 ## L'essentiel
 
-- Occurrence : conclure à l'absence après la boucle.
-- Extremum : initialiser avec `t[0]`.
-- Coût linéaire : proportionnel à la taille du tableau.
+- Recherche : on s'arrête dès qu'on trouve ; on ne conclut à l'absence qu'**après** la boucle.
+- Maximum : on part de `t[0]`, jamais de 0, et on garde le meilleur vu jusqu'ici.
+- Moyenne : un accumulateur, puis une division ; le tableau ne doit pas être vide.
+- Le coût d'un parcours est **linéaire**. Pour la recherche, le pire cas est une valeur absente.
 
 ## Exercices
 

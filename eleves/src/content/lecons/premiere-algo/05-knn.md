@@ -8,34 +8,103 @@ objectifs:
 prerequis: [premiere-algo/tris, premiere-construits/dictionnaires]
 ---
 
-Pour deviner la classe d'un nouvel élément, on regarde les **k** éléments connus les **plus proches**. C'est un exemple d'algorithme d'**apprentissage**.
+« Dis-moi qui sont tes voisins, je te dirai qui tu es. » L'algorithme des **k plus proches voisins** devine la classe d'un nouvel élément en regardant les éléments connus qui lui **ressemblent le plus**.
 
-## 1. L'algorithme
+C'est un exemple d'algorithme d'**apprentissage** : il s'appuie sur des exemples dont on connaît déjà la classe.
 
-1. Calculer la **distance** entre le nouvel élément et chaque élément connu.
-2. **Trier** par distance croissante.
-3. Garder les **k** premiers.
-4. Prédire la **classe majoritaire** parmi eux.
+## 1. L'idée
 
-Avec deux caractéristiques, on utilise la distance euclidienne :
+On dispose de données déjà classées, par exemple des fruits décrits par leur taille et leur masse, avec leur espèce. Pour un nouveau fruit :
+
+1. on calcule sa **distance** à chaque donnée connue ;
+2. on **trie** les données par distance croissante ;
+3. on garde les **k plus proches** ;
+4. on prédit la **classe majoritaire** parmi ces k voisins.
+
+## 2. La distance
+
+Chaque donnée est un point (x, y). La distance entre deux points se calcule avec le théorème de Pythagore :
 
 $$d = \sqrt{(x_2 - x_1)^2 + (y_2 - y_1)^2}$$
 
-## 2. Le choix de k
-
-- **k trop petit** : une seule donnée erronée peut tromper l'algorithme.
-- **k trop grand** : on fait voter des éléments qui ne ressemblent plus au nouvel élément.
-- Avec deux classes, on choisit k **impair** pour éviter les égalités.
-
 :::exemple
-Avec k = 3, les trois voisins les plus proches sont de classes A, B, A : on prédit **A**.
+Entre (1, 2) et (4, 6) : les écarts valent 3 et 4, donc d = √(9 + 16) = √25 = **5**.
 :::
+
+## 3. À la main
+
+Données connues : (1, 2) de classe A, (2, 4) de classe B, (3, 1) de classe A, (5, 5) de classe A, (4, 3) de classe B. On veut classer le point P = (3, 3).
+
+**Étape 1 : les distances à P.**
+
+| Point | Classe | Calcul | Distance |
+| --- | --- | --- | --- |
+| (1, 2) | A | √(2² + 1²) = √5 | 2,24 |
+| (2, 4) | B | √(1² + 1²) = √2 | 1,41 |
+| (3, 1) | A | √(0² + 2²) = √4 | 2 |
+| (5, 5) | A | √(2² + 2²) = √8 | 2,83 |
+| (4, 3) | B | √(1² + 0²) = √1 | 1 |
+
+**Étape 2 : le tri par distance croissante.** (4, 3) B, puis (2, 4) B, (3, 1) A, (1, 2) A et (5, 5) A.
+
+**Étape 3 : le vote.**
+
+| k | Voisins retenus | Votes | Prédiction |
+| --- | --- | --- | --- |
+| 1 | B | B : 1 | B |
+| 3 | B, B, A | B : 2, A : 1 | B |
+| 5 | B, B, A, A, A | B : 2, A : 3 | A |
+
+Le résultat **dépend de k**.
+
+## 4. Le code, ligne par ligne
+
+```python exec
+from math import sqrt
+
+donnees = [((1, 2), "A"), ((2, 4), "B"), ((3, 1), "A"), ((5, 5), "A"), ((4, 3), "B")]
+
+def distance(p, q):
+    return sqrt((p[0] - q[0]) ** 2 + (p[1] - q[1]) ** 2)
+
+def knn(donnees, nouveau, k):
+    distances = []
+    for point, classe in donnees:
+        distances.append((distance(point, nouveau), classe))
+    distances.sort()
+    votes = {}
+    for i in range(k):
+        classe = distances[i][1]
+        if classe in votes:
+            votes[classe] = votes[classe] + 1
+        else:
+            votes[classe] = 1
+    gagnante = None
+    for c in votes:
+        if gagnante is None or votes[c] > votes[gagnante]:
+            gagnante = c
+    return gagnante
+
+print(knn(donnees, (3, 3), 3), knn(donnees, (3, 3), 5))
+```
+
+- On construit une liste de couples `(distance, classe)`.
+- `distances.sort()` trie ces couples selon leur premier élément, la distance.
+- Les `k` premiers couples sont les k plus proches voisins.
+- Un dictionnaire compte les votes de chaque classe, puis on garde la classe qui en a le plus.
+
+## 5. Bien choisir k
+
+- **k trop petit**, par exemple 1 : un seul voisin décide. S'il est mal classé, la prédiction est fausse.
+- **k trop grand** : des données éloignées, qui ne ressemblent plus au nouvel élément, votent aussi. Si k vaut le nombre total de données, on prédit toujours la classe la plus nombreuse.
+- Avec **deux** classes, on choisit k **impair** pour éviter les égalités. Avec trois classes ou plus, une égalité reste possible : il faut prévoir une règle pour départager.
 
 ## L'essentiel
 
-- Distances, tri, k premiers, classe majoritaire.
-- Distance euclidienne : √((x₂ − x₁)² + (y₂ − y₁)²).
-- Le choix de k influence le résultat ; k impair pour deux classes.
+- Distances, tri par distance, k plus proches, vote majoritaire.
+- Distance : √((x₂ − x₁)² + (y₂ − y₁)²).
+- Le résultat dépend de k ; k impair avec deux classes.
+- C'est un algorithme d'apprentissage : il faut des données dont on connaît déjà la classe.
 
 ## Exercices
 

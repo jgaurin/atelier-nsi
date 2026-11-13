@@ -8,15 +8,43 @@ objectifs:
 prerequis: [premiere-algo/parcours]
 ---
 
-Dans un tableau **trié**, on peut éliminer la moitié des cases à chaque comparaison.
+Le jeu du nombre mystère : il faut deviner un nombre entre 1 et 100, et on te répond seulement « plus grand » ou « plus petit ». La meilleure stratégie est de proposer 50. Si on te répond « plus grand », tu élimines d'un coup tous les nombres de 1 à 50. Tu proposes ensuite 75, et ainsi de suite.
 
-## 1. Le principe
+C'est exactement la **recherche dichotomique**, qu'on applique à un tableau **trié**.
 
-On garde une zone entre `debut` et `fin`. On regarde le **milieu** :
+## 1. L'idée
 
-- si c'est la valeur cherchée, c'est fini ;
-- si la valeur cherchée est plus petite, on garde la moitié **gauche** ;
-- sinon, la moitié **droite**.
+On garde une zone de recherche, entre les indices `debut` et `fin`. Au départ, c'est tout le tableau. À chaque étape, on regarde la case du **milieu** :
+
+- si elle contient la valeur cherchée, c'est fini ;
+- si la valeur cherchée est plus petite, elle ne peut être qu'à **gauche** du milieu : on garde la moitié gauche ;
+- sinon, elle ne peut être qu'à **droite** : on garde la moitié droite.
+
+Ce raisonnement n'est possible que parce que le tableau est trié.
+
+## 2. À la main
+
+On cherche 23 dans ce tableau.
+
+| Indice | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Valeur | 2 | 5 | 8 | 12 | 16 | 23 | 38 | 56 |
+
+| Étape | `debut` | `fin` | `milieu` | `t[milieu]` | Décision |
+| --- | --- | --- | --- | --- | --- |
+| 1 | 0 | 7 | 3 | 12 | 23 > 12 : on garde la droite, `debut = 4` |
+| 2 | 4 | 7 | 5 | 23 | trouvé, on renvoie 5 |
+
+On cherche maintenant 7, qui n'est pas dans le tableau.
+
+| Étape | `debut` | `fin` | `milieu` | `t[milieu]` | Décision |
+| --- | --- | --- | --- | --- | --- |
+| 1 | 0 | 7 | 3 | 12 | 7 < 12 : on garde la gauche, `fin = 2` |
+| 2 | 0 | 2 | 1 | 5 | 7 > 5 : on garde la droite, `debut = 2` |
+| 3 | 2 | 2 | 2 | 8 | 7 < 8 : on garde la gauche, `fin = 1` |
+| 4 | 2 | 1 | | | `debut > fin` : la zone est vide, on renvoie -1 |
+
+## 3. Le code, ligne par ligne
 
 ```python exec
 def dichotomie(t, x):
@@ -32,23 +60,48 @@ def dichotomie(t, x):
             debut = milieu + 1
     return -1
 
-print(dichotomie([2, 5, 8, 12, 16], 12), dichotomie([2, 5, 8, 12, 16], 3))
+print(dichotomie([2, 5, 8, 12, 16, 23, 38, 56], 23), dichotomie([2, 5, 8, 12, 16, 23, 38, 56], 7))
 ```
 
-## 2. Terminaison
+- `fin = len(t) - 1` : la dernière case a l'indice `len(t) - 1`, pas `len(t)`.
+- `while debut <= fin` : tant que la zone contient au moins une case. Avec `<`, une zone d'une seule case ne serait jamais examinée.
+- `milieu = (debut + fin) // 2` : `//` donne un entier, car un indice ne peut pas valoir 3,5.
+- `fin = milieu - 1` et `debut = milieu + 1` : la case du milieu a déjà été examinée, on l'exclut de la zone.
 
-La quantité `fin - debut` est un entier qui **diminue à chaque tour** : c'est un **variant**. Quand elle devient négative, la boucle s'arrête.
+:::attention
+Écrire `debut = milieu` au lieu de `debut = milieu + 1` peut bloquer la boucle. En cherchant 3 dans `[1, 3]`, `milieu` vaut 0, donc `debut` resterait à 0 indéfiniment.
+:::
 
-## 3. Coût
+## 4. Pourquoi la boucle s'arrête
 
-La zone est divisée par 2 à chaque étape : le coût est **logarithmique**. Pour un million de valeurs, il faut environ 20 comparaisons.
+Regarde la quantité `fin - debut`. À chaque étape, on exclut au moins la case du milieu, donc cette quantité **diminue strictement**. C'est un entier : il finit forcément par devenir négatif, et la boucle s'arrête. Une telle quantité s'appelle un **variant**.
+
+## 5. Pourquoi le résultat est juste
+
+Si la valeur cherchée est dans le tableau, elle se trouve toujours entre `debut` et `fin` : chaque étape n'élimine que des cases où elle ne peut pas être, grâce au tri. Donc si la zone devient vide, la valeur était absente.
+
+## 6. Le coût
+
+À chaque étape, la zone est divisée par deux. Pour un million de valeurs :
+
+1 000 000 → 500 000 → 250 000 → … → 1, soit environ **20 étapes**.
+
+| Taille du tableau | Étapes au plus, environ |
+| --- | --- |
+| 1 000 | 10 |
+| 1 000 000 | 20 |
+| 1 000 000 000 | 30 |
+
+Quand la taille double, il ne faut qu'**une étape de plus**. On dit que le coût est **logarithmique**. La recherche séquentielle, elle, ferait un million de comparaisons dans le pire cas.
+
+Le tableau doit être trié. Pour une seule recherche dans un tableau non trié, mieux vaut un parcours séquentiel : trier coûte plus cher qu'un parcours.
 
 ## L'essentiel
 
-- Le tableau doit être **trié**.
+- Tableau **trié** ; on regarde le milieu et on élimine une moitié à chaque étape.
 - `milieu = (debut + fin) // 2`, puis `fin = milieu - 1` ou `debut = milieu + 1`.
-- Variant : `fin - debut`, qui décroît strictement.
-- Coût logarithmique.
+- Le variant `fin - debut` diminue strictement : la boucle s'arrête.
+- Coût **logarithmique** : environ 20 étapes pour un million de valeurs.
 
 ## Exercices
 
