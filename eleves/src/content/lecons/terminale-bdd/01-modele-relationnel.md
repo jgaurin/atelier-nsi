@@ -8,46 +8,69 @@ objectifs:
   - "Repérer clés primaires et clés étrangères"
 ---
 
-Quand les données deviennent nombreuses et partagées, on utilise une **base de données relationnelle** : des tables reliées entre elles.
+Un lycée doit gérer des milliers d'élèves, de notes, de classes, consultés en même temps par des centaines de personnes. Un simple tableur ne suffit plus : on utilise une **base de données relationnelle**, c'est-à-dire un ensemble de tables reliées entre elles.
 
-## 1. Vocabulaire
+## 1. Le vocabulaire
 
-| Terme | Sens |
-| --- | --- |
-| **Relation** | une table |
-| **Attribut** | une colonne |
-| **Domaine** | le type de valeurs d'un attribut : entier, texte, date |
-| **Enregistrement** | une ligne |
-| **Schéma** | la structure de la base : relations, attributs, clés |
+Voici une table d'élèves.
 
-## 2. Les clés
+| <u>id_eleve</u> | nom | prenom | #id_classe |
+| --- | --- | --- | --- |
+| 1 | Martin | Léa | 1G2 |
+| 2 | Durand | Hugo | 1G2 |
+| 3 | Petit | Inès | TG1 |
 
-- La **clé primaire** identifie **de façon unique** chaque ligne. On la souligne.
-- Une **clé étrangère** fait référence à la clé primaire d'une autre relation. On la note avec `#`.
+| Terme | Sens | Dans l'exemple |
+| --- | --- | --- |
+| **relation** | une table | la table `eleve` |
+| **attribut** | une colonne | `nom` |
+| **enregistrement** | une ligne | Martin, Léa, 1G2 |
+| **domaine** | le type de valeurs permis pour un attribut | `nom` est un texte, `id_eleve` un entier |
+| **schéma** | la description de la structure | eleve(<u>id_eleve</u>, nom, prenom, #id_classe) |
 
-Une clé primaire doit rester unique pour **toutes** les lignes possibles. Un nom ne convient donc pas : deux personnes peuvent le porter. On ajoute souvent un identifiant.
+## 2. La clé primaire
 
-Exemple :
+Comment distinguer deux élèves qui s'appellent tous les deux Léa Martin ? Il faut un attribut dont la valeur est **différente pour chaque ligne** : c'est la **clé primaire**. Dans un schéma, on la souligne.
+
+Le nom ne convient pas, car deux personnes peuvent porter le même. On ajoute donc souvent un identifiant numéroté, comme `id_eleve`.
+
+## 3. La clé étrangère
+
+La classe d'un élève est décrite dans une autre table :
+
+| <u>id_classe</u> | niveau | salle |
+| --- | --- | --- |
+| 1G2 | Première | C203 |
+| TG1 | Terminale | B104 |
+
+Dans la table `eleve`, l'attribut `id_classe` **fait référence** à la clé primaire de la table `classe`. C'est une **clé étrangère**, notée avec `#`. Elle relie les deux tables : pour connaître la salle de Léa, on lit sa classe, 1G2, puis on cherche 1G2 dans la table `classe`.
+
+Le schéma complet de la base :
 
 - classe(<u>id_classe</u>, niveau, salle)
 - eleve(<u>id_eleve</u>, nom, prenom, #id_classe)
 - note(<u>id_note</u>, #id_eleve, valeur)
 
-## 3. Les contraintes d'intégrité
+## 4. Les contraintes d'intégrité
 
-| Contrainte | Garantit que… | Exemple refusé |
+Le système refuse automatiquement les données incohérentes, grâce à trois contraintes.
+
+| Contrainte | Elle garantit que… | Exemple refusé |
 | --- | --- | --- |
-| de **domaine** | chaque valeur a le bon type | une note égale à `"bien"` |
-| de **relation** | la clé primaire est unique et non vide | deux élèves avec le même identifiant |
-| de **référence** | une clé étrangère désigne une ligne existante | une note pour un élève inexistant |
+| de **domaine** | chaque valeur est du bon type | une note égale à `"bien"` |
+| de **relation** | la clé primaire est unique et toujours renseignée | deux élèves avec l'identifiant 3 |
+| de **référence** | une clé étrangère désigne une ligne qui existe | une note pour l'élève 99, qui n'existe pas |
 
-Le **schéma** est la **structure** de la base. Les lignes en sont le **contenu**.
+## 5. Structure et contenu
+
+Le **schéma** décrit la **structure** de la base : ses tables, leurs attributs, leurs clés. Les lignes en sont le **contenu**. Ajouter une colonne modifie la structure ; ajouter un élève modifie seulement le contenu.
 
 ## L'essentiel
 
-- Relation = table, attribut = colonne, enregistrement = ligne.
-- Clé primaire : unique. Clé étrangère : référence une autre relation.
-- Contraintes : de domaine, de relation, de référence.
+- Relation = table, attribut = colonne, enregistrement = ligne, domaine = type de valeurs.
+- Clé primaire : identifie chaque ligne de façon unique (soulignée).
+- Clé étrangère : fait référence à la clé primaire d'une autre table (notée #).
+- Contraintes de domaine, de relation et de référence.
 
 ## Exercices
 

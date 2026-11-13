@@ -9,19 +9,25 @@ objectifs:
 prerequis: [terminale-bdd/modele-relationnel]
 ---
 
-**SQL** est le langage des bases de données : on décrit ce qu'on veut obtenir. Les exemples utilisent la base d'un lycée : `classe`, `eleve`, `matiere`, `note`.
+**SQL** est le langage qui permet d'interroger une base de données. On y décrit **ce qu'on veut obtenir**, pas la façon de le chercher : le SGBD s'en charge.
 
-## 1. Sélectionner
+Les exemples utilisent la base d'un lycée, avec les tables `classe`, `eleve`, `matiere` et `note`. Tu peux modifier et relancer chaque requête.
+
+## 1. Sélectionner des lignes et des colonnes
 
 ```sql exec base=lycee
 SELECT nom, prenom FROM eleve WHERE id_classe = 'TG1';
 ```
 
-- `FROM` : la table ;
-- `SELECT` : les colonnes ;
-- `WHERE` : la condition sur les lignes.
+Lis cette requête dans l'ordre où le SGBD la traite :
 
-Les conditions utilisent `=`, `<>`, `<`, `>`, `AND`, `OR`, `NOT`. Une valeur absente se teste avec `IS NULL`.
+1. `FROM eleve` : on part de la table des élèves.
+2. `WHERE id_classe = 'TG1'` : on garde seulement les lignes des élèves de TG1.
+3. `SELECT nom, prenom` : de ces lignes, on n'affiche que deux colonnes.
+
+`SELECT *` affiche toutes les colonnes. Les textes et les dates s'écrivent entre apostrophes : `'TG1'`.
+
+Les conditions utilisent `=`, `<>` (différent), `<`, `>`, `<=`, `>=`, et se combinent avec `AND`, `OR` et `NOT`. Une valeur absente se teste avec `IS NULL`, jamais avec `= NULL`.
 
 ## 2. Trier et éliminer les doublons
 
@@ -29,18 +35,35 @@ Les conditions utilisent `=`, `<>`, `<`, `>`, `AND`, `OR`, `NOT`. Une valeur abs
 SELECT DISTINCT niveau FROM classe ORDER BY niveau;
 ```
 
-`ORDER BY` trie (`DESC` pour l'ordre décroissant). `DISTINCT` supprime les doublons.
+- Plusieurs classes ont le même niveau. Sans `DISTINCT`, chaque niveau apparaîtrait plusieurs fois.
+- `ORDER BY niveau` trie le résultat par ordre croissant. On ajoute `DESC` pour l'ordre décroissant.
 
-## 3. Agréger
+## 3. Calculer un résumé
 
 ```sql exec base=lycee
 SELECT COUNT(*) AS nb, AVG(valeur) AS moyenne, MAX(valeur) AS maxi
 FROM note WHERE id_matiere = 2;
 ```
 
-`COUNT`, `SUM`, `AVG`, `MIN`, `MAX` résument les lignes en une seule valeur.
+Les **fonctions d'agrégation** résument toutes les lignes retenues en une seule valeur : `COUNT` les compte, `SUM` additionne, `AVG` fait la moyenne, `MIN` et `MAX` donnent les extrêmes. `AS nb` donne un nom à la colonne du résultat.
 
-## 4. Joindre
+## 4. Relier deux tables : la jointure
+
+La table `note` ne contient pas le nom des élèves, seulement leur `id_eleve`. Pour afficher le nom à côté de la note, il faut aller chercher l'élève correspondant dans la table `eleve`.
+
+À la main, avec deux petites tables :
+
+| <u>id_note</u> | #id_eleve | valeur |
+| --- | --- | --- |
+| 10 | 2 | 14 |
+| 11 | 1 | 9 |
+
+| <u>id_eleve</u> | nom |
+| --- | --- |
+| 1 | Martin |
+| 2 | Durand |
+
+La jointure associe chaque note à l'élève qui a le même `id_eleve` : la note 14 va avec Durand, la note 9 avec Martin.
 
 ```sql exec base=lycee
 SELECT eleve.nom, note.valeur
@@ -49,9 +72,9 @@ JOIN eleve ON note.id_eleve = eleve.id_eleve
 WHERE note.id_matiere = 2;
 ```
 
-`JOIN … ON` associe les lignes de deux tables grâce à leur clé.
+`JOIN eleve ON note.id_eleve = eleve.id_eleve` signifie : « colle à chaque note la ligne de l'élève dont l'identifiant est le même ». Comme les deux tables ont une colonne `id_eleve`, on précise la table devant chaque nom de colonne.
 
-On peut donner un nom court à une table, et enchaîner les jointures :
+On peut donner un nom court à chaque table, et enchaîner plusieurs jointures :
 
 ```sql exec base=lycee
 SELECT e.nom, m.intitule, n.valeur
@@ -61,11 +84,17 @@ JOIN matiere m ON n.id_matiere = m.id_matiere
 WHERE n.valeur >= 18;
 ```
 
+Ici, `n`, `e` et `m` désignent les tables `note`, `eleve` et `matiere`. Chaque note est reliée à son élève, puis à sa matière.
+
+:::attention
+Si tu oublies la condition `ON`, chaque note est associée à **tous** les élèves : le résultat contient beaucoup trop de lignes et n'a pas de sens.
+:::
+
 ## L'essentiel
 
-- `SELECT colonnes FROM table WHERE condition ORDER BY colonne`.
-- `DISTINCT` retire les doublons ; `COUNT`, `SUM`, `AVG`, `MIN`, `MAX` agrègent.
-- `FROM a JOIN b ON a.cle = b.cle` joint deux tables.
+- `SELECT colonnes FROM table WHERE condition ORDER BY colonne` ; le SGBD part de `FROM`, filtre avec `WHERE`, puis garde les colonnes du `SELECT`.
+- `DISTINCT` retire les doublons ; `COUNT`, `SUM`, `AVG`, `MIN`, `MAX` résument les lignes.
+- `FROM a JOIN b ON a.cle = b.cle` relie les lignes qui ont la même clé.
 
 ## Exercices
 

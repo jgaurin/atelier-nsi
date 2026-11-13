@@ -8,44 +8,61 @@ objectifs:
 prerequis: [terminale-bdd/sql-interroger]
 ---
 
-Une base de données évolue : on ajoute, on modifie et on supprime des lignes.
+Une base de données vit : des élèves arrivent, des notes sont corrigées, des lignes sont supprimées. Trois instructions SQL permettent de **modifier** le contenu.
 
-## 1. Les trois requêtes
+## 1. Ajouter une ligne : `INSERT`
 
 ```sql exec base=lycee
 INSERT INTO matiere (id_matiere, intitule, coefficient) VALUES (6, 'SVT', 3);
 SELECT * FROM matiere WHERE id_matiere = 6;
 ```
 
+On donne la table, la liste des colonnes, puis les valeurs **dans le même ordre**. La seconde requête vérifie que la ligne a bien été ajoutée.
+
+## 2. Modifier des lignes : `UPDATE`
+
 ```sql exec base=lycee
 UPDATE classe SET salle = 'C305' WHERE id_classe = 'TG2';
 SELECT * FROM classe WHERE id_classe = 'TG2';
 ```
+
+`SET` indique la nouvelle valeur, et `WHERE` les lignes concernées. Ici, seule la classe TG2 change de salle.
+
+## 3. Supprimer des lignes : `DELETE`
 
 ```sql exec base=lycee
 DELETE FROM note WHERE id_note = 1;
 SELECT COUNT(*) AS nb FROM note;
 ```
 
+Seule la note numéro 1 est supprimée.
+
 :::attention
-Sans `WHERE`, `UPDATE` et `DELETE` s'appliquent à **toutes** les lignes.
+Sans `WHERE`, `UPDATE` et `DELETE` s'appliquent à **toutes** les lignes de la table. `DELETE FROM note;` efface toutes les notes du lycée.
 :::
 
-## 2. L'ordre compte
+## 4. L'ordre des opérations
 
-Les contraintes de référence imposent un ordre :
+Les contraintes de référence imposent un ordre. Une note fait référence à un élève par sa clé étrangère :
 
-- on insère un élève **avant** ses notes ;
-- on supprime ses notes **avant** l'élève.
+- pour enregistrer un nouvel élève et sa note, on insère d'abord l'**élève**, puis la **note** : sinon, la note désignerait un élève qui n'existe pas encore ;
+- pour supprimer un élève, on supprime d'abord ses **notes**, puis l'**élève** : sinon, ses notes désigneraient un élève disparu.
 
-Une requête qui viole une contrainte est **refusée** : la base ne change pas. Pour changer une clé déjà référencée, on insère la nouvelle ligne, on met à jour les références, puis on supprime l'ancienne ligne.
+Une requête qui viole une contrainte est **refusée** : la base ne change pas.
+
+:::methode[Changer une clé déjà utilisée]
+Pour renommer la classe 1G2 en 1G5, alors que des élèves y sont rattachés :
+1. on insère la nouvelle classe 1G5 ;
+2. on rattache les élèves à 1G5 avec un `UPDATE` ;
+3. on supprime l'ancienne classe 1G2, qui n'est plus référencée.
+:::
 
 ## L'essentiel
 
-- `INSERT INTO t (c1, c2) VALUES (v1, v2);`
-- `UPDATE t SET c = v WHERE condition;`
-- `DELETE FROM t WHERE condition;`
-- Les contraintes de référence imposent l'ordre des opérations.
+- `INSERT INTO t (c1, c2) VALUES (v1, v2);` ajoute une ligne.
+- `UPDATE t SET c = v WHERE condition;` modifie des lignes.
+- `DELETE FROM t WHERE condition;` supprime des lignes. Sans `WHERE`, toute la table est touchée.
+- Les contraintes de référence imposent l'ordre : l'élève avant ses notes, ses notes avant lui à la suppression.
 
 ## Exercices
 

@@ -8,37 +8,58 @@ objectifs:
 prerequis: [terminale-bdd/modele-relationnel]
 ---
 
-Un mauvais schéma provoque des erreurs. Un **SGBD** est le logiciel qui gère la base et protège les données.
+Pourquoi découper les données en plusieurs tables plutôt que tout mettre dans une seule ? Et quel logiciel gère tout cela ? C'est l'objet de cette leçon.
 
-## 1. Les anomalies
+## 1. Le problème d'une table unique
 
-Une seule grande table répète les mêmes informations : c'est de la **redondance**.
+Imagine qu'on range tout dans une seule table.
 
 | nom | classe | salle |
 | --- | --- | --- |
 | Léa | 2D1 | B104 |
 | Hugo | 2D1 | B104 |
+| Inès | 2D1 | B104 |
 
-- **Anomalie de mise à jour** : si la 2D1 change de salle, il faut modifier toutes ses lignes.
-- **Anomalie d'insertion** : impossible d'enregistrer une classe sans élève.
-- **Anomalie de suppression** : supprimer le dernier élève d'une classe fait disparaître sa salle.
+La salle de la 2D1 est écrite trois fois : c'est de la **redondance**. Elle provoque trois problèmes, appelés **anomalies**.
 
-La solution : découper en plusieurs relations reliées par des **clés étrangères**. Ici, une relation `classe` garde la salle une seule fois, et chaque élève référence sa classe.
-
-## 2. Les services d'un SGBD
-
-| Service | Sens |
+| Anomalie | Ce qui se passe |
 | --- | --- |
-| **Persistance** | les données restent stockées durablement |
-| **Accès concurrents** | plusieurs utilisateurs travaillent en même temps sans erreur |
-| **Efficacité** | les requêtes sont traitées rapidement |
-| **Sécurisation des accès** | comptes et droits d'accès |
+| **de mise à jour** | la 2D1 change de salle : il faut modifier les trois lignes. Si on en oublie une, la base devient incohérente. |
+| **d'insertion** | une nouvelle classe est créée, sans élève pour l'instant : impossible d'enregistrer sa salle, car chaque ligne doit contenir un élève. |
+| **de suppression** | le dernier élève de la 2D1 part : en supprimant sa ligne, on perd aussi la salle de la classe. |
+
+## 2. La solution : découper
+
+On sépare les informations en deux tables reliées par une clé :
+
+| <u>id_classe</u> | salle |
+| --- | --- |
+| 2D1 | B104 |
+
+| <u>id_eleve</u> | nom | #id_classe |
+| --- | --- | --- |
+| 1 | Léa | 2D1 |
+| 2 | Hugo | 2D1 |
+| 3 | Inès | 2D1 |
+
+La salle n'est plus écrite qu'**une seule fois**. Changer de salle ne modifie qu'une ligne, une classe peut exister sans élève, et supprimer un élève ne supprime pas la classe.
+
+## 3. Le SGBD
+
+Un **système de gestion de bases de données** (SGBD) est le logiciel qui stocke la base et répond aux requêtes. Il rend quatre services.
+
+| Service | Ce qu'il garantit | Exemple |
+| --- | --- | --- |
+| **persistance** | les données restent enregistrées durablement | après une panne de courant, les notes sont toujours là |
+| **gestion des accès concurrents** | plusieurs personnes travaillent en même temps sans s'abîmer leurs données | deux guichets ne vendent pas la même dernière place |
+| **efficacité** | les requêtes sont traitées rapidement, même sur des millions de lignes | retrouver un élève parmi des millions instantanément |
+| **sécurisation des accès** | chacun ne voit et ne modifie que ce qu'il a le droit de voir | un élève consulte ses notes mais ne peut pas les changer |
 
 ## L'essentiel
 
 - La redondance provoque des anomalies de mise à jour, d'insertion et de suppression.
-- On découpe en relations reliées par des clés.
-- Un SGBD assure persistance, accès concurrents, efficacité et sécurisation des accès.
+- On découpe en tables reliées par des clés : chaque information n'est écrite qu'une fois.
+- Un SGBD assure la persistance, les accès concurrents, l'efficacité et la sécurisation des accès.
 
 ## Exercices
 
