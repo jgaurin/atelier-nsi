@@ -1,7 +1,7 @@
 ---
 titre: Tris par sélection et par insertion
 resume: "Les deux tris au programme, à la main et en Python, avec leur invariant, leur terminaison et leur coût."
-duree: 50
+duree: 60
 objectifs:
   - "Dérouler et écrire les tris par sélection et par insertion"
   - "Décrire leur invariant de boucle"
@@ -9,18 +9,33 @@ objectifs:
 prerequis: [premiere-algo/parcours]
 ---
 
-Trier permet ensuite de chercher beaucoup plus vite. Il faut connaître deux tris.
+Trier, c'est ranger des valeurs dans l'ordre. C'est utile, car on cherche beaucoup plus vite dans un tableau trié : c'est le principe de la recherche dichotomique, vue dans la leçon suivante.
+
+Il existe de nombreux tris. Le programme en demande deux, simples à faire à la main : le tri par **sélection** et le tri par **insertion**.
 
 ## 1. Le tri par sélection
 
-On cherche le **minimum** du reste, et on l'échange avec le premier élément du reste.
+### L'idée
 
-| Tour | Tableau après le tour |
-| --- | --- |
-| départ | `5 3 8 1` |
-| 1 | `1 3 8 5` |
-| 2 | `1 3 8 5` |
-| 3 | `1 3 5 8` |
+Imagine que tu dois classer des copies par note. Tu cherches la plus petite note et tu la mets en premier. Puis tu cherches la plus petite parmi les copies **restantes**, et tu la mets en deuxième. Et ainsi de suite.
+
+Dans un tableau, on ne peut pas « mettre » une valeur au début : on **échange** deux cases.
+
+### À la main
+
+On trie `[5, 3, 8, 1]`. La barre `|` sépare la partie déjà triée, à gauche, du reste.
+
+| Tour | On cherche le minimum dans | Minimum trouvé | Ce qu'on fait | Tableau après le tour |
+| --- | --- | --- | --- | --- |
+| 1 | `5 3 8 1` | 1, case 3 | on échange les cases 0 et 3 | `1 \| 3 8 5` |
+| 2 | `3 8 5` | 3, case 1 | 3 est déjà à sa place, rien ne bouge | `1 3 \| 8 5` |
+| 3 | `8 5` | 5, case 3 | on échange les cases 2 et 3 | `1 3 5 \| 8` |
+
+Il reste une seule valeur, 8 : c'est forcément la plus grande, elle est déjà à sa place. Pour 4 valeurs, il suffit donc de **3 tours**.
+
+À gauche de la barre, les valeurs sont triées **et à leur place définitive** : elles ne bougeront plus.
+
+### Le code, ligne par ligne
 
 ```python exec
 def tri_selection(t):
@@ -36,18 +51,49 @@ tri_selection(t)
 print(t)
 ```
 
-**Invariant** : au début du tour i, les i premières cases contiennent les i plus petits éléments, triés.
+- `for i in range(len(t) - 1)` : `i` est la case qu'on remplit à ce tour. Le dernier tour est inutile, d'où le `- 1`.
+- `i_min = i` : on suppose d'abord que le minimum est en case `i`.
+- La boucle sur `j` regarde chaque case suivante. Si elle contient une valeur plus petite, on retient sa **position** dans `i_min`.
+- On retient la position, et non la valeur, car on en a besoin pour faire l'échange.
+- La dernière ligne échange les cases `i` et `i_min`.
+
+:::attention
+Écrire `t[i] = t[i_min]` puis `t[i_min] = t[i]` ne marche pas : la première ligne efface l'ancienne valeur de `t[i]`. En Python, on échange en une seule ligne : `t[i], t[i_min] = t[i_min], t[i]`.
+:::
+
+La fonction ne renvoie rien : elle modifie le tableau qu'elle reçoit. On dit qu'elle trie **en place**.
 
 ## 2. Le tri par insertion
 
-On prend chaque élément et on l'**insère** à sa place dans la partie gauche déjà triée.
+### L'idée
 
-| Tour | Tableau après le tour |
-| --- | --- |
-| départ | `5 3 8 1` |
-| 1 | `3 5 8 1` |
-| 2 | `3 5 8 1` |
-| 3 | `1 3 5 8` |
+Pense à des cartes que tu ramasses une par une. À chaque nouvelle carte, tu la glisses à sa place parmi celles que tu as déjà en main. Les cartes en main sont donc toujours rangées.
+
+### À la main
+
+On trie de nouveau `[5, 3, 8, 1]`. Au départ, la première case, seule, est déjà triée.
+
+| Tour | Valeur à insérer | Ce qu'on fait | Tableau après le tour |
+| --- | --- | --- | --- |
+| 1 | 3 | 5 est plus grand que 3 : on décale 5 d'un cran à droite, puis on pose 3 au début | `3 5 \| 8 1` |
+| 2 | 8 | 5 est plus petit que 8 : rien à décaler, 8 reste en place | `3 5 8 \| 1` |
+| 3 | 1 | 8, 5 et 3 sont plus grands que 1 : on les décale tous, puis on pose 1 au début | `1 3 5 8` |
+
+Ici, la partie gauche est triée, mais **pas définitive** : au tour 3, le 1 est venu se glisser devant tout le monde.
+
+### Le détail d'une insertion
+
+Voici le tour 3 au ralenti. On met d'abord 1 de côté, puis on décale vers la droite les valeurs plus grandes, une par une.
+
+| Étape | Tableau | `j` |
+| --- | --- | --- |
+| on garde `valeur = 1` de côté | `3 5 8 1` | 3 |
+| 8 > 1 : on recopie 8 un cran à droite | `3 5 8 8` | 2 |
+| 5 > 1 : on recopie 5 un cran à droite | `3 5 5 8` | 1 |
+| 3 > 1 : on recopie 3 un cran à droite | `3 3 5 8` | 0 |
+| on est au début : on pose 1 en case 0 | `1 3 5 8` | 0 |
+
+### Le code, ligne par ligne
 
 ```python exec
 def tri_insertion(t):
@@ -64,30 +110,69 @@ tri_insertion(t)
 print(t)
 ```
 
-**Invariant** : au début du tour i, les i premières cases sont triées.
+- `range(1, len(t))` : on commence à la case 1, car la case 0 seule est déjà triée.
+- `valeur = t[i]` : on met la valeur de côté, car le premier décalage va écraser `t[i]`.
+- La boucle `while` continue tant qu'on n'est pas au début du tableau et que la case de gauche est plus grande. Elle recopie alors cette case un cran à droite.
+- Quand elle s'arrête, `j` est la place libre : on y pose `valeur`.
 
-## 3. Prouver avec un invariant
+## 3. Les deux tris côte à côte
 
-Un **invariant** est une propriété vraie à chaque tour. Pour prouver qu'un algorithme est correct :
+| | Sélection | Insertion |
+| --- | --- | --- |
+| À chaque tour | on cherche le minimum du reste, puis on échange | on insère la valeur suivante dans la partie triée |
+| La partie de gauche | triée et définitive | triée, mais elle peut encore bouger |
+| Sur un tableau déjà trié | autant de travail que d'habitude | très rapide : une seule comparaison par tour |
 
-1. on vérifie qu'elle est vraie au départ ;
-2. on montre qu'un tour la conserve ;
-3. on regarde ce qu'elle dit à la fin de la boucle.
+## 4. Prouver que le tri est correct : l'invariant
 
-Pour la sélection, à la fin, les n − 1 premières cases contiennent les n − 1 plus petits éléments, triés. La dernière case contient donc le plus grand : tout est trié.
+Un **invariant de boucle** est une phrase vraie au début de **chaque** tour. Pour prouver un algorithme, on vérifie trois choses :
 
-## 4. Terminaison et coût
+1. la phrase est vraie au départ ;
+2. si elle est vraie au début d'un tour, elle l'est encore au tour suivant ;
+3. à la fin de la boucle, elle donne le résultat voulu.
 
-**Terminaison** : dans le `while`, `j` diminue à chaque tour et s'arrête au plus tard à 0. C'est un **variant**.
+C'est comme une chaîne de dominos : le premier tombe, et chacun fait tomber le suivant.
 
-**Coût** : dans le pire cas, on fait environ n²/2 comparaisons. Le coût est **quadratique** : si la taille double, le temps est multiplié par 4.
+**Pour la sélection**, l'invariant est : « au début du tour `i`, les `i` premières cases contiennent les `i` plus petites valeurs, triées ».
+
+1. Au départ, `i` vaut 0 : il n'y a aucune case, c'est vrai.
+2. Pendant un tour, on place le plus petit du reste en case `i`. Il est plus grand que les valeurs déjà placées, et plus petit que toutes les autres. La phrase devient vraie pour `i + 1` cases.
+3. À la fin, les n − 1 premières cases contiennent les n − 1 plus petites valeurs, triées. La dernière case contient donc la plus grande : tout le tableau est trié.
+
+**Pour l'insertion**, l'invariant est : « au début du tour `i`, les `i` premières cases sont triées ». Elles ne contiennent pas forcément les plus petites valeurs, puisqu'une valeur peut encore venir s'y glisser.
+
+## 5. Prouver que le tri s'arrête : le variant
+
+Une boucle `for` s'arrête toujours : elle fait un nombre de tours fixé à l'avance. Il faut seulement vérifier la boucle `while` du tri par insertion.
+
+À chaque tour, `j` diminue de 1. Comme la condition `j > 0` est testée, `j` ne peut pas descendre sous 0 : la boucle fait au plus `j` tours. Un entier qui diminue strictement à chaque tour sans pouvoir descendre indéfiniment s'appelle un **variant**. Il prouve que la boucle s'arrête.
+
+## 6. Le coût
+
+Comptons les comparaisons du tri par sélection sur 5 valeurs. Au tour 1, on compare le minimum provisoire aux 4 autres valeurs ; au tour 2, aux 3 restantes, et ainsi de suite.
+
+4 + 3 + 2 + 1 = **10 comparaisons**.
+
+Pour n valeurs, on fait (n − 1) + … + 1 = n(n − 1) / 2 comparaisons, soit environ n² / 2.
+
+| Nombre de valeurs | Comparaisons |
+| --- | --- |
+| 10 | 45 |
+| 100 | 4 950 |
+| 1 000 | 499 500 |
+
+Quand le nombre de valeurs est multiplié par 10, le nombre de comparaisons est multiplié par environ 100. Si la taille **double**, le temps est multiplié par **4**. On dit que le coût est **quadratique**.
+
+Le tri par insertion a le même coût dans le **pire cas**, un tableau trié à l'envers, car chaque valeur doit être décalée jusqu'au début. Dans le **meilleur cas**, un tableau déjà trié, il ne fait qu'une comparaison par tour.
+
+Pour un million de valeurs, un tri quadratique ferait environ 500 milliards de comparaisons. C'est pourquoi `sorted` utilise une méthode bien plus rapide, que tu verras en terminale.
 
 ## L'essentiel
 
-- Sélection : chercher le minimum du reste et l'échanger.
-- Insertion : insérer chaque élément dans la partie gauche triée.
-- Un invariant prouve la correction ; un variant prouve la terminaison.
-- Coût quadratique dans le pire cas.
+- **Sélection** : on cherche le minimum du reste et on l'échange avec la première case du reste. La partie gauche est définitive.
+- **Insertion** : on glisse chaque valeur à sa place dans la partie gauche, en décalant les plus grandes vers la droite.
+- Un **invariant** prouve que le tri est correct, un **variant** prouve que la boucle s'arrête.
+- Les deux tris ont un coût **quadratique** dans le pire cas. L'insertion est très rapide sur un tableau déjà trié.
 
 ## Exercices
 
