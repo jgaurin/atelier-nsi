@@ -8,34 +8,52 @@ objectifs:
 prerequis: [premiere-langages/constructions]
 ---
 
-Inutile de tout réécrire : Python fournit des **bibliothèques** de fonctions prêtes à l'emploi.
+Pour calculer une racine carrée ou tirer un nombre au hasard, inutile de tout réécrire : Python fournit des **bibliothèques**, appelées aussi modules, remplies de fonctions prêtes à l'emploi et déjà testées.
 
-## 1. Importer
+## 1. Importer une bibliothèque
+
+Il y a deux façons d'importer.
 
 ```python exec
 import math
-from random import randint
-
 print(math.sqrt(16), math.floor(2.7))
-print(1 <= randint(1, 6) <= 6)
 ```
 
-- `import math` : on écrit ensuite `math.sqrt(16)`.
-- `from random import randint` : on écrit directement `randint(1, 6)`.
+`import math` rend disponible tout le module. On écrit ensuite le nom du module devant chaque fonction : `math.sqrt(16)` calcule la racine carrée de 16, et `math.floor(2.7)` arrondit à l'entier inférieur.
+
+```python exec
+from random import randint
+de = randint(1, 6)
+print(1 <= de <= 6)
+```
+
+`from random import randint` importe une seule fonction : on l'écrit alors directement, sans `random.` devant. `randint(1, 6)` renvoie un entier au hasard entre 1 et 6.
 
 ## 2. Lire une documentation
 
-Pour savoir ce que fait une fonction, on utilise `help(math.sqrt)` ou la documentation en ligne. On y cherche :
+Comment savoir ce que fait une fonction, et comment l'appeler ? On lit sa **documentation**, avec `help(math.sqrt)` dans Python ou sur le site officiel. On y cherche trois choses :
 
-- ce que fait la fonction ;
-- ses **paramètres** ;
-- ce qu'elle **renvoie**.
+| Question | Exemple pour `randint(a, b)` |
+| --- | --- |
+| Que fait-elle ? | elle renvoie un entier au hasard |
+| Quels **paramètres** ? | a et b, les bornes |
+| Que **renvoie**-t-elle, exactement ? | un entier entre a et b, **bornes comprises** |
+
+Ce dernier détail compte : avec `randint(1, 6)`, on peut obtenir 6. Ce n'est pas le cas de `range(1, 6)`, qui s'arrête à 5. Seule la documentation permet de le savoir sans deviner.
+
+:::methode[Utiliser une fonction inconnue]
+1. Lire sa documentation : rôle, paramètres, valeur renvoyée.
+2. L'essayer sur un exemple simple, dont on connaît le résultat.
+3. Seulement ensuite, l'utiliser dans son programme.
+:::
+
+On n'a pas besoin de connaître le **code** d'une fonction de bibliothèque pour l'utiliser : la documentation suffit.
 
 ## L'essentiel
 
-- `import module` puis `module.fonction()`, ou `from module import fonction`.
-- `help(fonction)` affiche la documentation.
-- Dans une documentation, on cherche le rôle, les paramètres et la valeur renvoyée.
+- `import module`, puis `module.fonction()` ; ou `from module import fonction`, puis `fonction()`.
+- La documentation donne le rôle, les paramètres et la valeur renvoyée : on la lit avec `help(fonction)`.
+- On s'appuie sur la documentation, sans lire le code de la fonction.
 
 ## Exercices
 

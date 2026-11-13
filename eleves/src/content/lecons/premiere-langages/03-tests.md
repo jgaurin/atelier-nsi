@@ -9,9 +9,11 @@ objectifs:
 prerequis: [premiere-langages/specification]
 ---
 
-Un programme qui marche sur un exemple n'est pas forcément correct. On le vérifie avec des **tests**.
+Un programme qui donne le bon résultat sur un exemple n'est pas forcément correct. Pour gagner en confiance, on l'essaie sur de nombreux cas bien choisis : on le **teste**.
 
 ## 1. Un jeu de tests
+
+On écrit chaque test avec `assert` : si le résultat n'est pas celui attendu, le programme s'arrête et indique quel test a échoué.
 
 ```python exec
 def maximum(t):
@@ -27,36 +29,51 @@ assert maximum([-5, -2, -8]) == -2
 print("tests réussis")
 ```
 
-Un bon jeu de tests couvre les **cas limites** :
+Chaque test vise une situation précise : un cas ordinaire, un tableau d'une seule case, des nombres négatifs.
 
-- tableau vide ou à un seul élément ;
-- élément en première ou en dernière position, ou absent ;
-- valeur égale au seuil ;
-- nombres négatifs, zéro.
+## 2. Bien choisir ses tests
 
-:::attention
-Réussir tous les tests **ne prouve pas** que le programme est correct. Cela augmente seulement la confiance.
+Les bugs se cachent surtout dans les **cas limites**, aux frontières. Un bon jeu de tests essaie notamment :
+
+| Cas limite | Pourquoi |
+| --- | --- |
+| tableau vide, ou d'une seule case | la boucle ne fait aucun tour, ou un seul |
+| élément en première ou en dernière position | les erreurs d'indice se produisent aux bords |
+| élément absent | la fonction doit aussi gérer l'échec |
+| valeur égale au seuil | on confond facilement `>` et `>=` |
+| nombres négatifs ou zéro | une initialisation à 0 devient fausse |
+
+:::exemple
+Avec seulement `assert maximum([3, 9, 2]) == 9`, une fonction qui commence par `m = 0` passerait le test. Le test avec `[-5, -2, -8]` révèle l'erreur, car elle renverrait 0.
 :::
 
-## 2. Lire un message d'erreur
+:::attention
+Réussir tous les tests **ne prouve pas** que le programme est correct : un cas non testé peut encore échouer. Les tests augmentent seulement la confiance. Plus ils sont nombreux et variés, plus cette confiance est grande.
+:::
 
-On lit la **dernière ligne** : le type d'erreur. Juste au-dessus : le numéro de ligne.
+## 3. Lire un message d'erreur
+
+Quand Python rencontre une erreur, il affiche un message. On le lit **à partir de la dernière ligne** : elle donne le **type** d'erreur. Juste au-dessus, on trouve le **numéro de ligne** où elle s'est produite.
 
 | Erreur | Cause fréquente |
 | --- | --- |
-| `SyntaxError` | `:` oublié, parenthèse non fermée |
-| `IndentationError` | indentation incohérente |
-| `NameError` | variable mal écrite ou non définie |
-| `TypeError` | opération impossible : `"3" + 4` |
-| `IndexError` | indice en dehors du tableau |
-| `KeyError` | clé absente du dictionnaire |
-| `ZeroDivisionError` | division par zéro |
+| `SyntaxError` | un `:` oublié, une parenthèse non fermée |
+| `IndentationError` | des lignes mal décalées |
+| `NameError` | une variable mal écrite ou jamais définie |
+| `TypeError` | une opération impossible, comme `"3" + 4` |
+| `IndexError` | un indice en dehors du tableau |
+| `KeyError` | une clé absente du dictionnaire |
+| `ZeroDivisionError` | une division par zéro |
+
+:::exemple
+`print(moyene(notes))` provoque une `NameError` : la fonction s'appelle `moyenne`, il manque un n.
+:::
 
 ## L'essentiel
 
-- On teste les cas limites, pas seulement un exemple.
-- Le succès des tests ne garantit pas la correction du programme.
-- Un message d'erreur se lit à partir de la dernière ligne.
+- On teste avec des `assert`, sur des cas ordinaires et surtout sur les cas limites.
+- Réussir tous les tests ne garantit pas que le programme est correct.
+- Un message d'erreur se lit à partir de la dernière ligne : le type d'erreur, puis la ligne concernée.
 
 ## Exercices
 

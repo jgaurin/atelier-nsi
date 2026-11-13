@@ -7,36 +7,48 @@ objectifs:
   - "Associer les grandes idées à leurs auteurs"
 ---
 
-Les concepts de l'informatique ont une histoire, et ont été forgés par des personnes.
+Les ordinateurs n'ont pas été inventés d'un coup. Les idées sur lesquelles ils reposent se sont construites pendant des siècles, grâce à des personnes dont il faut connaître les noms.
 
-## 1. Les grandes dates
+## 1. Les grandes étapes
 
-| Époque | Événement |
-| --- | --- |
-| Antiquité | premiers algorithmes, comme celui d'Euclide |
-| 1642 | Blaise Pascal construit une machine à calculer |
-| 1843 | Ada Lovelace décrit un programme pour la machine de Babbage |
-| 1847 | George Boole formalise la logique |
-| 1936 | Alan Turing décrit la machine universelle |
-| 1945 | John von Neumann décrit l'architecture à programme enregistré |
-| 1948 | premiers ordinateurs à programme enregistré |
-| 1948 | Claude Shannon fonde la théorie de l'information |
-| 1969 | naissance d'Internet (ARPANET) et d'Unix |
-| 1971 | premier microprocesseur commercial |
-| 1989 | Tim Berners-Lee invente le Web |
-| 1991 | Linus Torvalds crée Linux |
+**Les algorithmes, bien avant les machines.** Dès l'Antiquité, Euclide décrit une méthode pour calculer le plus grand diviseur commun de deux nombres. C'est un algorithme : une suite d'instructions précises, qu'on peut suivre sans réfléchir.
 
-## 2. Une idée centrale
+**Les machines à calculer.** En 1642, Blaise Pascal construit une machine qui additionne avec des roues dentées. Au XIXᵉ siècle, Charles Babbage imagine une machine programmable, et **Ada Lovelace** écrit en 1843 le premier programme pour cette machine.
 
-En 1936 apparaît le concept de **machine universelle**, capable d'exécuter tous les algorithmes. Machine, algorithme, langage et information sont alors pensés comme un tout.
+**La logique devient un calcul.** En 1847, George Boole invente un calcul sur le vrai et le faux. En 1948, Claude Shannon fonde la théorie de l'information. Ces idées permettent de calculer avec des circuits électriques.
 
-Depuis, les ordinateurs n'ont cessé de gagner en puissance et de se diversifier : téléphones, montres connectées, serveurs, méga-ordinateurs.
+**L'idée centrale : 1936.** Alan Turing décrit une **machine universelle**, capable d'exécuter n'importe quel algorithme. Machine, algorithme, langage et information sont alors pensés comme un tout : c'est la naissance de l'informatique théorique.
+
+**Les premiers ordinateurs.** En 1945, John von Neumann décrit l'architecture où le programme est rangé en mémoire avec les données. Les premiers ordinateurs de ce type fonctionnent en 1948.
+
+**La miniaturisation et les réseaux.** En 1969 naissent ArpaNet, ancêtre d'Internet, et le système Unix. En 1971 apparaît le premier microprocesseur commercial : tout le processeur tient sur une puce. En 1989, Tim Berners-Lee invente le Web, et en 1991, Linus Torvalds crée Linux.
+
+## 2. La frise
+
+| Date | Événement | Personne |
+| --- | --- | --- |
+| Antiquité | algorithme de calcul du PGCD | Euclide |
+| 1642 | machine à calculer | Blaise Pascal |
+| 1843 | premier programme | Ada Lovelace |
+| 1847 | calcul logique | George Boole |
+| 1936 | machine universelle | Alan Turing |
+| 1945 | architecture à programme enregistré | John von Neumann |
+| 1948 | premiers ordinateurs ; théorie de l'information | Claude Shannon |
+| 1969 | ArpaNet et Unix | |
+| 1971 | premier microprocesseur commercial | |
+| 1989 | le Web | Tim Berners-Lee |
+| 1991 | Linux | Linus Torvalds |
+
+## 3. Une évolution exponentielle
+
+Depuis 1948, la puissance des ordinateurs a augmenté de façon **exponentielle**, en doublant régulièrement. Leurs formes se sont aussi diversifiées : ordinateurs personnels, téléphones, montres connectées, serveurs, fermes de calcul.
 
 ## L'essentiel
 
-- 1936 : la machine universelle de Turing.
-- 1945 : l'architecture de von Neumann. 1948 : les premiers ordinateurs.
-- 1969 : Internet. 1989 : le Web.
+- 1936 : la machine universelle de Turing, idée fondatrice.
+- 1945 : l'architecture de von Neumann ; 1948 : les premiers ordinateurs.
+- 1969 : ArpaNet, ancêtre d'Internet ; 1989 : le Web.
+- Retenir aussi Ada Lovelace (1843), Boole (1847) et Shannon (1948).
 
 ## Exercices
 

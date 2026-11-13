@@ -8,11 +8,11 @@ objectifs:
   - "Utiliser des assertions"
 ---
 
-Avant d'écrire une fonction, on dit **ce qu'elle doit faire** : c'est sa **spécification**.
+Avant de construire une maison, l'architecte dessine un plan : ce que la maison doit contenir. Avant d'écrire une fonction, on dit de même **ce qu'elle doit faire** : c'est sa **spécification**. Elle sert à celui qui écrit la fonction, et à tous ceux qui l'utiliseront.
 
-## 1. La spécification
+## 1. La spécification d'une fonction
 
-On l'écrit dans la **docstring**, juste sous `def`.
+On l'écrit dans la **docstring**, le texte entre triples guillemets juste sous la ligne `def`.
 
 ```python exec
 def moyenne(t):
@@ -26,13 +26,19 @@ def moyenne(t):
 print(moyenne([10, 14]))
 ```
 
-- Le **prototype** : le nom de la fonction, ses paramètres et ce qu'elle renvoie.
-- Une **précondition** : ce qui doit être vrai **à l'appel**.
-- Une **postcondition** : ce qui est garanti **sur le résultat**.
+Une spécification contient trois éléments.
 
-## 2. Les assertions
+| Élément | Question | Ici |
+| --- | --- | --- |
+| le **prototype** | comment s'appelle la fonction, que reçoit-elle, que renvoie-t-elle ? | `moyenne(t)` reçoit un tableau et renvoie un nombre |
+| une **précondition** | que doit-on garantir **avant** d'appeler la fonction ? | le tableau n'est pas vide |
+| une **postcondition** | que garantit la fonction **sur son résultat** ? | la moyenne est entre le minimum et le maximum |
 
-`assert` arrête le programme si une condition est fausse.
+La précondition est la responsabilité de celui qui **appelle** la fonction. La postcondition est la promesse de celui qui l'a **écrite**.
+
+## 2. Vérifier avec des assertions
+
+Une précondition écrite dans un commentaire peut être oubliée. L'instruction `assert` la **vérifie** pendant l'exécution : si la condition est fausse, le programme s'arrête avec le message donné.
 
 ```python exec erreur
 def moyenne(t):
@@ -42,13 +48,17 @@ def moyenne(t):
 moyenne([])
 ```
 
-L'erreur est claire et apparaît là où le problème commence.
+Sans l'assertion, on obtiendrait une `ZeroDivisionError`, peu claire, à la dernière ligne. Avec elle, l'erreur dit exactement ce qui ne va pas, à l'endroit où le problème commence : la fonction a été mal appelée.
+
+:::exemple
+Pour une fonction `reduction(prix, p)`, qui applique une réduction de p %, une précondition raisonnable est que p est compris entre 0 et 100. On l'écrit : `assert 0 <= p <= 100, "pourcentage invalide"`.
+:::
 
 ## L'essentiel
 
-- La docstring dit ce que fait la fonction.
-- Précondition : ce qui est attendu à l'appel. Postcondition : ce qui est garanti sur le résultat.
-- `assert condition, "message"` vérifie une condition.
+- La spécification, dans la docstring, dit ce que fait la fonction.
+- Prototype : nom, paramètres, résultat. Précondition : ce qui doit être vrai à l'appel. Postcondition : ce qui est garanti sur le résultat.
+- `assert condition, "message"` vérifie une condition et arrête le programme si elle est fausse.
 
 ## Exercices
 

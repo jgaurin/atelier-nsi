@@ -7,22 +7,24 @@ objectifs:
   - "Repérer les traits communs et les différences entre deux langages"
 ---
 
-Tous les langages courants reposent sur les mêmes briques, les **constructions élémentaires**.
+Il existe des centaines de langages de programmation : Python, JavaScript, C, Java… Bonne nouvelle : ils reposent presque tous sur les **mêmes briques**. Quand tu les connais en Python, tu sais les reconnaître ailleurs.
 
 ## 1. Les constructions élémentaires
 
-| Construction | En Python |
-| --- | --- |
-| Séquence | les instructions, l'une après l'autre |
-| Affectation | `x = 3` |
-| Conditionnelle | `if`, `elif`, `else` |
-| Boucle bornée | `for i in range(5):` |
-| Boucle non bornée | `while x > 0:` |
-| Appel de fonction | `f(x)` |
+| Construction | Ce qu'elle fait | En Python |
+| --- | --- | --- |
+| **Séquence** | exécuter des instructions l'une après l'autre | une ligne, puis la suivante |
+| **Affectation** | ranger une valeur dans une variable | `x = 3` |
+| **Conditionnelle** | exécuter un bloc seulement si une condition est vraie | `if`, `elif`, `else` |
+| **Boucle bornée** | répéter un nombre de fois connu à l'avance | `for i in range(5):` |
+| **Boucle non bornée** | répéter tant qu'une condition est vraie | `while x > 0:` |
+| **Appel de fonction** | exécuter un bloc de code nommé, avec des paramètres | `f(x)` |
+
+Avec ces six briques, on peut écrire n'importe quel algorithme.
 
 ## 2. Un même programme, deux langages
 
-Python :
+Voici une fonction qui calcule 1 + 2 + … + n, d'abord en Python :
 
 ```python
 def somme(n):
@@ -32,7 +34,7 @@ def somme(n):
     return s
 ```
 
-JavaScript :
+puis en JavaScript :
 
 ```javascript
 function somme(n) {
@@ -44,17 +46,30 @@ function somme(n) {
 }
 ```
 
-- **Mêmes idées** : une fonction, une variable, une boucle bornée, un retour.
-- **Syntaxe différente** : en Python, les blocs sont marqués par l'**indentation** ; en JavaScript, par des **accolades**.
+| | Python | JavaScript |
+| --- | --- | --- |
+| Définir une fonction | `def` | `function` |
+| Créer une variable | `s = 0` | `let s = 0;` |
+| Marquer un bloc | l'**indentation** et `:` | des **accolades** `{ }` |
+| Fin d'instruction | le retour à la ligne | un point-virgule `;` |
+| Boucle de 1 à n | `range(1, n + 1)` | `i = 1; i <= n; i++` |
 
-:::remarque
-Il existe des langages de styles différents (impératif, fonctionnel, objet…), et des langages qui ne servent pas à programmer : HTML décrit une page, SQL interroge une base de données.
+Les **idées** sont les mêmes : une fonction, un accumulateur, une boucle bornée, un retour. Seule la **syntaxe**, c'est-à-dire la façon de l'écrire, change.
+
+:::methode[Lire un langage inconnu]
+Repère les constructions élémentaires : où est la boucle ? la condition ? la fonction ? Comment un bloc commence-t-il et finit-il ? Une fois ces repères trouvés, le programme se lit presque comme du Python.
 :::
+
+## 3. Des styles et des langages différents
+
+Il existe des langages de **styles** différents, qu'on appelle des paradigmes : impératif, fonctionnel, objet… Tu les découvriras en terminale.
+
+Il existe aussi des langages qui **ne sont pas** des langages de programmation : **HTML** décrit le contenu d'une page, **SQL** interroge une base de données. On ne peut pas y écrire de boucle comme en Python.
 
 ## L'essentiel
 
-- Six constructions : séquence, affectation, conditionnelle, boucle bornée, boucle non bornée, appel de fonction.
-- Les langages partagent ces idées et diffèrent par leur syntaxe.
+- Six constructions élémentaires : séquence, affectation, conditionnelle, boucle bornée, boucle non bornée, appel de fonction.
+- Les langages partagent ces idées et diffèrent par leur syntaxe : indentation en Python, accolades en JavaScript.
 - HTML et SQL ne sont pas des langages de programmation.
 
 ## Exercices
