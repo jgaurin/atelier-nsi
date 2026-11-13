@@ -8,28 +8,66 @@ objectifs:
 prerequis: [premiere-construits/tableaux]
 ---
 
-Deux outils très courants : la **compréhension**, pour construire un tableau en une ligne, et le **tableau de tableaux**, pour représenter une grille.
+Deux outils très utiles : la **compréhension**, pour construire un tableau en une seule ligne, et le **tableau de tableaux**, pour représenter une grille comme une image ou un plateau de jeu.
 
-## 1. Construire par compréhension
+## 1. Construire un tableau par compréhension
+
+Pour obtenir les carrés de 0 à 4, on pourrait écrire une boucle :
+
+```python exec
+carres = []
+for i in range(5):
+    carres.append(i * i)
+print(carres)
+```
+
+La **compréhension** fait la même chose en une ligne :
 
 ```python exec
 carres = [i * i for i in range(5)]
+print(carres)
+```
+
+Elle se lit presque comme une phrase : « le tableau des `i * i`, pour `i` allant de 0 à 4 ».
+
+On peut ajouter une condition, pour ne garder que certains éléments :
+
+```python exec
 notes = [12, 8, 15, 6]
 admis = [n for n in notes if n >= 10]
-print(carres, admis)
+print(admis)
 ```
+
+« Le tableau des `n`, pour chaque `n` de `notes`, si `n` est au moins 10. »
 
 La forme générale est `[expression for x in sequence if condition]`. Le `if` est facultatif.
 
 ## 2. Les matrices
 
-Une **matrice** est un tableau de lignes. `m[i][j]` désigne la **ligne i, colonne j**.
+Une **matrice** est un tableau de lignes, chaque ligne étant elle-même un tableau.
 
 ```python exec
 m = [[1, 2, 3],
      [4, 5, 6]]
 print(m[1][2], len(m), len(m[0]))
+```
 
+| | colonne 0 | colonne 1 | colonne 2 |
+| --- | --- | --- | --- |
+| **ligne 0** | 1 | 2 | 3 |
+| **ligne 1** | 4 | 5 | 6 |
+
+- `m[1]` est la ligne 1 : `[4, 5, 6]`.
+- `m[1][2]` est la case de la ligne 1, colonne 2 : **6**. On lit d'abord la ligne, puis la colonne.
+- `len(m)` donne le nombre de lignes, ici 2, et `len(m[0])` le nombre de colonnes, ici 3.
+
+## 3. Parcourir une matrice
+
+On utilise **deux boucles imbriquées** : une sur les lignes, et dans chaque ligne, une sur les colonnes.
+
+```python exec
+m = [[1, 2, 3],
+     [4, 5, 6]]
 total = 0
 for i in range(len(m)):
     for j in range(len(m[0])):
@@ -37,22 +75,28 @@ for i in range(len(m)):
 print(total)
 ```
 
-Pour créer une grille de zéros, on écrit :
+`i` prend les valeurs 0 et 1. Pour chacune, `j` prend 0, 1 et 2 : on visite les 6 cases, ligne par ligne.
+
+## 4. Créer une grille vide
 
 ```python exec
-g = [[0] * 4 for i in range(3)]   # 3 lignes, 4 colonnes
+g = [[0] * 4 for i in range(3)]
+g[0][0] = 9
 print(g)
 ```
 
+On obtient 3 lignes de 4 zéros, et seule la première case est modifiée.
+
 :::attention
-`[[0] * 4] * 3` répète **la même** ligne trois fois : modifier une case modifie toute la colonne.
+`[[0] * 4] * 3` semble faire la même chose, mais il répète **trois fois la même ligne**, comme `b = a` pour un tableau. Modifier `g[0][0]` modifierait alors toute la colonne 0. La compréhension, elle, fabrique une nouvelle ligne à chaque tour.
 :::
 
 ## L'essentiel
 
-- `[f(x) for x in t if condition]` construit un nouveau tableau.
+- `[f(x) for x in t if condition]` construit un nouveau tableau en une ligne.
 - `m[i][j]` : ligne i, colonne j. `len(m)` : nombre de lignes. `len(m[0])` : nombre de colonnes.
 - On parcourt une matrice avec deux boucles imbriquées.
+- On crée une grille avec `[[0] * p for i in range(n)]`, jamais avec `[[0] * p] * n`.
 
 ## Exercices
 

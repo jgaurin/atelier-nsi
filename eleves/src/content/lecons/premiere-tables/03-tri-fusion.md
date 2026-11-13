@@ -8,11 +8,11 @@ objectifs:
 prerequis: [premiere-tables/recherche]
 ---
 
-Deux opérations reviennent sans cesse : classer les lignes, et réunir les informations de deux tables.
+Deux opérations reviennent sans cesse sur les tables : les **trier**, pour les classer, et les **fusionner**, pour réunir des informations venues de deux tables.
 
 ## 1. Trier une table
 
-`sorted` renvoie une **nouvelle** table triée. Le paramètre `key` indique selon quelle valeur trier.
+Trier une table de dictionnaires pose une question : trier selon **quoi** ? Le nom, la note, l'âge ? On le dit à Python avec le paramètre `key`, auquel on donne une fonction qui renvoie la valeur selon laquelle trier.
 
 ```python exec
 table = [{"nom": "Tom", "note": 9}, {"nom": "Léa", "note": 15}, {"nom": "Inès", "note": 18}]
@@ -24,13 +24,35 @@ print([e["nom"] for e in sorted(table, key=note)])
 print([e["nom"] for e in sorted(table, key=note, reverse=True)])
 ```
 
-On passe la fonction `note` sans parenthèses : `key=note`, et non `key=note()`.
+- `sorted` renvoie une **nouvelle** table triée ; la table d'origine ne change pas.
+- `key=note` : pour comparer deux lignes, Python compare leurs notes.
+- `reverse=True` trie dans l'ordre décroissant.
 
-Ce tri est **stable** : deux lignes de même note gardent leur ordre. Pour trier selon deux critères, on trie d'abord selon le critère secondaire, puis selon le principal.
+On passe la fonction `note` **sans parenthèses** : `key=note`. On donne la fonction elle-même, que `sorted` appellera sur chaque ligne. `key=note()` provoquerait une erreur.
 
-## 2. Fusionner deux tables
+## 2. Trier selon deux critères
 
-Deux tables peuvent partager une **colonne commune**. Les valeurs de cette colonne doivent appartenir au même **domaine** : un identifiant d'élève des deux côtés, par exemple.
+Ce tri est **stable** : deux lignes qui ont la même note gardent leur ordre de départ. On s'en sert pour trier selon deux critères.
+
+:::exemple
+On veut classer par note décroissante et, à note égale, par ordre alphabétique. On trie d'abord par nom, le critère **secondaire**, puis par note, le critère **principal**. Grâce à la stabilité, les élèves de même note restent dans l'ordre alphabétique obtenu au premier tri.
+:::
+
+## 3. Fusionner deux tables
+
+Une table donne les noms des élèves, une autre leurs notes. Elles partagent une **colonne commune**, l'identifiant de l'élève.
+
+| id | nom |
+| --- | --- |
+| 1 | Léa |
+| 2 | Tom |
+
+| id | note |
+| --- | --- |
+| 2 | 9 |
+| 1 | 15 |
+
+Fusionner, c'est associer les lignes qui ont **la même valeur** dans la colonne commune : la note 9 va avec Tom, la note 15 avec Léa.
 
 ```python exec
 eleves = [{"id": 1, "nom": "Léa"}, {"id": 2, "nom": "Tom"}]
@@ -44,11 +66,18 @@ for n in notes:
 print(resultat)
 ```
 
+Pour chaque note, on cherche l'élève qui a le même identifiant, et on construit une nouvelle ligne qui réunit les deux informations.
+
+:::attention
+Les valeurs de la colonne commune doivent appartenir au même **domaine de valeurs**. Si un identifiant est écrit `"007"` dans une table et `7` dans l'autre, ils ne seront jamais égaux, et la fusion sera vide. Il faut d'abord les harmoniser.
+:::
+
 ## L'essentiel
 
-- `sorted(table, key=fonction, reverse=True)` renvoie une nouvelle table triée.
-- Fusionner, c'est associer les lignes qui ont la même valeur dans une colonne commune.
-- Les valeurs de cette colonne doivent appartenir au même domaine.
+- `sorted(table, key=fonction, reverse=True)` renvoie une nouvelle table triée ; on passe la fonction sans parenthèses.
+- Le tri est stable : pour deux critères, on trie d'abord selon le critère secondaire.
+- Fusionner : associer les lignes qui ont la même valeur dans une colonne commune.
+- Cette colonne doit avoir le même domaine de valeurs dans les deux tables.
 
 ## Exercices
 

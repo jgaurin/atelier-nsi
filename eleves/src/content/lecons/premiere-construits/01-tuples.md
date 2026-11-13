@@ -8,9 +8,9 @@ objectifs:
   - "Représenter un enregistrement avec un dictionnaire"
 ---
 
-Un **p-uplet** (`tuple` en Python) regroupe plusieurs valeurs dans une seule variable : les coordonnées d'un point, ou une couleur en rouge, vert, bleu.
+Un point du plan a deux coordonnées. Une couleur a trois composantes : rouge, vert, bleu. Plutôt que d'utiliser deux ou trois variables séparées, on regroupe ces valeurs dans un **p-uplet**, appelé `tuple` en Python.
 
-## 1. Créer et lire
+## 1. Créer et lire un p-uplet
 
 ```python exec
 point = (3, 5)
@@ -18,18 +18,28 @@ eleve = ("Léa", 15, True)
 print(point[0], eleve[1], len(eleve))
 ```
 
-Les indices commencent à **0**. Un p-uplet **ne se modifie pas** : `point[0] = 10` provoque une erreur.
+- On écrit les valeurs entre **parenthèses**, séparées par des virgules. Elles peuvent être de types différents.
+- On lit une valeur par sa position, son **indice**, qui commence à **0** : `point[0]` vaut 3, `point[1]` vaut 5.
+- `len` donne le nombre de valeurs.
+
+:::attention
+Un p-uplet **ne se modifie pas**. `point[0] = 10` provoque une erreur. C'est voulu : un point ou une date forme un tout, qu'on remplace en entier plutôt que de le modifier morceau par morceau.
+:::
 
 ## 2. Dépaqueter
+
+On peut ranger les valeurs d'un p-uplet dans plusieurs variables en une seule ligne :
 
 ```python exec
 x, y = (3, 5)
 print(x, y)
 ```
 
+Il faut exactement autant de variables que de valeurs. Cette écriture permet aussi d'échanger deux variables : `a, b = b, a`.
+
 ## 3. Renvoyer plusieurs valeurs
 
-Une fonction peut renvoyer un p-uplet. C'est ce que demande le programme.
+Une fonction ne peut renvoyer qu'une seule chose. Pour renvoyer plusieurs résultats, on renvoie **un p-uplet** qui les regroupe :
 
 ```python exec
 def division(a, b):
@@ -39,21 +49,25 @@ q, r = division(17, 5)
 print(q, r)
 ```
 
+17 = 3 × 5 + 2 : la fonction renvoie le couple `(3, 2)`, qu'on dépaquette aussitôt dans `q` et `r`. C'est une capacité du programme : écrire une fonction qui renvoie un p-uplet.
+
 ## 4. Les p-uplets nommés
 
-Dans `("Léa", 15)`, il faut se souvenir que l'indice 1 est l'âge. Un **p-uplet nommé** donne un **nom** à chaque valeur. En Python, on utilise un dictionnaire :
+Dans `("Léa", 15)`, il faut se souvenir que la position 1 est l'âge : ce n'est pas très lisible. Un **p-uplet nommé** donne un **nom** à chaque valeur. En Python, on l'écrit avec un dictionnaire :
 
 ```python exec
 eleve = {"nom": "Léa", "age": 15}
 print(eleve["age"])
 ```
 
+`eleve["age"]` se comprend tout seul, alors que `eleve[1]` oblige à connaître l'ordre des valeurs.
+
 ## L'essentiel
 
 - Un p-uplet s'écrit entre parenthèses, se lit par indice à partir de 0 et ne se modifie pas.
 - `x, y = point` dépaquette un p-uplet.
-- Une fonction renvoie plusieurs valeurs avec `return (a, b)`.
-- Un p-uplet nommé associe un nom à chaque valeur : en Python, un dictionnaire.
+- Une fonction renvoie plusieurs valeurs en renvoyant un p-uplet : `return (a, b)`.
+- Un p-uplet nommé donne un nom à chaque valeur ; en Python, on utilise un dictionnaire.
 
 ## Exercices
 

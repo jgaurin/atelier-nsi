@@ -9,7 +9,7 @@ objectifs:
 prerequis: [premiere-construits/dictionnaires]
 ---
 
-Beaucoup de données se présentent sous forme de **tables** : une ligne par élément, une colonne par information.
+Les données ouvertes, les résultats d'un club, l'export d'un tableur : beaucoup de données se présentent sous forme de **tables**. Une ligne par élément, une colonne par information.
 
 ## 1. Le format CSV
 
@@ -21,13 +21,15 @@ Léa,1G2,15
 Tom,1G1,9
 ```
 
-- chaque ligne est un **enregistrement** ;
-- les valeurs sont séparées par un **séparateur** (`,` ou `;`) ;
-- la première ligne contient les **descripteurs**, les noms des colonnes.
+- La première ligne contient les **descripteurs** : les noms des colonnes.
+- Chaque ligne suivante est un **enregistrement** : un élément de la table.
+- Les valeurs sont séparées par un **séparateur**, ici la virgule. En France, on trouve souvent le point-virgule, car la virgule sert déjà à écrire les nombres décimaux.
+
+Comme c'est du texte, n'importe quel logiciel peut le lire : un tableur, un éditeur de texte, ou un programme Python.
 
 ## 2. Importer en Python
 
-On obtient un **tableau de dictionnaires** : une ligne = un dictionnaire.
+Le module `csv` lit le fichier et donne un **tableau de dictionnaires** : un dictionnaire par ligne, dont les clés sont les descripteurs.
 
 ```python
 import csv
@@ -36,28 +38,42 @@ with open("eleves.csv", encoding="utf-8") as f:
     table = list(csv.DictReader(f, delimiter=","))
 ```
 
+- `open` ouvre le fichier, en précisant son encodage.
+- `csv.DictReader` lit chaque ligne et en fait un dictionnaire.
+- `delimiter` indique le séparateur.
+
+Voici ce qu'on obtient, avec un texte qui joue le rôle du fichier :
+
 ```python exec
 import csv, io
 contenu = "nom,classe,note\nLéa,1G2,15\nTom,1G1,9\n"
 table = list(csv.DictReader(io.StringIO(contenu)))
+print(table[0])
 print(table[0]["nom"], table[0]["note"])
 print(type(table[0]["note"]))
 ```
 
-:::attention[Tout est lu comme du texte]
-`"15"` est une chaîne. Avant de calculer ou de trier, on convertit :
+`table[0]` est la première ligne : `{"nom": "Léa", "classe": "1G2", "note": "15"}`.
+
+## 3. Tout est lu comme du texte
+
+Remarque le type affiché : `str`. Le fichier ne dit pas que 15 est un nombre : `"15"` est lu comme une chaîne. Cela pose deux problèmes :
+
+- on ne peut pas calculer : `"15" + 1` provoque une erreur ;
+- les comparaisons sont fausses : `"9" > "15"` vaut `True`, car les chaînes se comparent caractère par caractère, et `"9"` vient après `"1"`.
+
+Avant de calculer ou de trier, on **convertit** les colonnes numériques :
 
 ```python
 for ligne in table:
     ligne["note"] = int(ligne["note"])
 ```
-:::
 
 ## L'essentiel
 
-- CSV : un fichier texte, un séparateur, des descripteurs en première ligne.
+- CSV : un fichier texte ; une ligne de descripteurs, puis une ligne par enregistrement, avec un séparateur.
 - `csv.DictReader` donne un tableau de dictionnaires.
-- Les valeurs sont des **chaînes** : il faut les convertir pour calculer.
+- Toutes les valeurs lues sont des **chaînes** : il faut convertir les nombres avant de calculer ou de trier.
 
 ## Exercices
 

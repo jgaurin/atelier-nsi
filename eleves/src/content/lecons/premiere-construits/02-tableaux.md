@@ -8,9 +8,9 @@ objectifs:
 prerequis: [premiere-construits/tuples]
 ---
 
-Un **tableau** est une suite de valeurs rangées dans des cases numérotées. En Python, on utilise le type `list`.
+Pour garder les notes de toute une classe, on ne crée pas trente variables. On utilise un **tableau** : une suite de cases numérotées. En Python, un tableau s'appelle une liste, de type `list`.
 
-## 1. Lire et modifier
+## 1. Lire et modifier une case
 
 ```python exec
 notes = [12, 8, 15, 10]
@@ -19,40 +19,71 @@ notes[1] = 9
 print(notes)
 ```
 
-Les indices vont de `0` à `len(t) - 1`. Lire `t[len(t)]` provoque une `IndexError`.
+| Indice | 0 | 1 | 2 | 3 |
+| --- | --- | --- | --- | --- |
+| Valeur | 12 | 8 | 15 | 10 |
 
-Pour ajouter une case à la fin, on écrit `notes.append(17)`.
+- Les indices commencent à **0** : la première case est `notes[0]`.
+- La dernière case a l'indice `len(notes) - 1`, ici 3.
+- `notes[1] = 9` remplace la valeur de la case 1.
+- `notes.append(17)` ajoute une case à la fin.
 
-## 2. Parcourir
+:::attention
+`notes[4]` n'existe pas : il n'y a que 4 cases, d'indices 0 à 3. Python provoque une `IndexError`.
+:::
+
+## 2. Parcourir un tableau
+
+Il y a deux façons de parcourir un tableau.
+
+**Par les valeurs**, quand seules les valeurs comptent :
 
 ```python exec
-t = [4, 7, 1]
-
-for x in t:               # par valeur
-    print(x)
-
-for i in range(len(t)):   # par indice
-    print(i, t[i])
+notes = [12, 8, 15]
+total = 0
+for n in notes:
+    total = total + n
+print(total)
 ```
 
+À chaque tour, `n` prend la valeur suivante : 12, puis 8, puis 15.
+
+**Par les indices**, quand on a besoin de la position :
+
+```python exec
+notes = [12, 8, 15]
+for i in range(len(notes)):
+    print("case", i, ":", notes[i])
+```
+
+`range(len(notes))` donne 0, 1, 2 : exactement les indices du tableau.
+
 :::methode[Lequel choisir ?]
-- On veut seulement les **valeurs** (somme, comptage) : `for x in t`.
-- On a besoin de la **position**, ou on modifie les cases : `for i in range(len(t))`.
+- On veut seulement les **valeurs** : somme, comptage, maximum. On écrit `for x in t`.
+- On a besoin de la **position**, ou on veut **modifier** les cases. On écrit `for i in range(len(t))`.
 :::
 
 :::attention
-`for x in t: x = 0` ne change pas le tableau : seule la variable `x` change.
+`for x in t: x = 0` ne change pas le tableau. `x` est une simple copie de la valeur : on modifie la variable `x`, pas la case. Pour modifier les cases, il faut écrire `t[i] = 0` avec une boucle sur les indices.
 :::
 
 ## 3. Un tableau n'est pas copié par `=`
 
-Après `b = a`, les deux noms désignent **le même** tableau : modifier `b` modifie aussi `a`.
+```python exec
+a = [1, 2]
+b = a
+b.append(3)
+print(a)
+```
+
+Surprise : `a` a changé ! `b = a` ne fabrique pas un nouveau tableau. `a` et `b` sont deux noms pour **le même** tableau, comme deux étiquettes collées sur la même boîte. Toute modification faite par l'un se voit par l'autre.
 
 ## L'essentiel
 
-- `t[i]` lit une case, `t[i] = v` la modifie, `len(t)` donne la taille.
+- `t[i]` lit une case, `t[i] = v` la modifie, `len(t)` donne la taille, `t.append(v)` ajoute à la fin.
 - Les indices vont de 0 à `len(t) - 1`.
 - `for x in t` parcourt les valeurs ; `for i in range(len(t))` parcourt les indices.
+- `b = a` ne copie pas le tableau : les deux noms désignent le même.
 
 ## Exercices
 

@@ -9,11 +9,11 @@ objectifs:
 prerequis: [premiere-tables/csv]
 ---
 
-Une fois la table chargée, on l'interroge : qui a plus de 10 ? combien de lignes sont incomplètes ?
+Une fois la table chargée, on l'interroge : quels élèves ont plus de 15 ? Y a-t-il des erreurs dans les données ?
 
-## 1. Rechercher des lignes
+## 1. Sélectionner des lignes
 
-On utilise une compréhension avec une condition, éventuellement avec `and`, `or`, `not`.
+On veut les élèves de 1G2 qui ont au moins 16.
 
 ```python exec
 table = [
@@ -21,19 +21,32 @@ table = [
     {"nom": "Tom", "classe": "1G1", "note": 9},
     {"nom": "Inès", "classe": "1G2", "note": 18},
 ]
-print([e["nom"] for e in table if e["classe"] == "1G2" and e["note"] >= 16])
+resultat = [e["nom"] for e in table if e["classe"] == "1G2" and e["note"] >= 16]
+print(resultat)
 ```
 
-- Garder des **lignes** : c'est une **sélection** (le `if`).
-- Garder des **colonnes** : c'est une **projection** (`e["nom"]`).
+Cette compréhension fait deux choses :
 
-## 2. Tester la cohérence
+- le `if` garde certaines **lignes** : c'est une **sélection** ;
+- `e["nom"]` garde seulement une **colonne** : c'est une **projection**.
 
-Des données réelles contiennent souvent des erreurs. On vérifie notamment :
+| Ligne | `classe == "1G2"` | `note >= 16` | Gardée ? |
+| --- | --- | --- | --- |
+| Léa | oui | non | non |
+| Tom | non | non | non |
+| Inès | oui | oui | oui |
 
-- les **doublons** : la même ligne, ou le même identifiant, apparaît deux fois ;
-- les **valeurs manquantes** : une case vide ;
-- les **valeurs impossibles** : une note de 25 sur 20.
+Les critères se combinent avec `and`, `or` et `not`, comme en logique.
+
+## 2. Tester la cohérence d'une table
+
+Des données réelles contiennent souvent des erreurs : une saisie en double, une case oubliée, une faute de frappe. Avant de les exploiter, on vérifie :
+
+| Problème | Exemple | Comment le repérer |
+| --- | --- | --- |
+| **doublon** | le même élève enregistré deux fois | un identifiant qui apparaît plusieurs fois |
+| **valeur manquante** | une note vide | une case vide, ou `None` |
+| **valeur impossible** | une note de 25 sur 20 | une valeur hors de son domaine |
 
 ```python exec
 table = [{"id": 1, "note": 15}, {"id": 2, "note": 25}, {"id": 1, "note": 15}]
@@ -44,14 +57,18 @@ for ligne in table:
         print("doublon :", ligne["id"])
     vus[ligne["id"]] = True
 
-print([l["id"] for l in table if l["note"] > 20])
+print("notes impossibles :", [l["id"] for l in table if l["note"] > 20])
 ```
+
+Pour les doublons, on retient dans un dictionnaire les identifiants déjà vus. Si un identifiant y est déjà, c'est un doublon. Le dictionnaire rend ce test immédiat.
+
+Une seule erreur peut fausser tous les résultats : une note de 25 augmente la moyenne, et un doublon compte un élève deux fois.
 
 ## L'essentiel
 
-- `[e for e in table if critere]` sélectionne des lignes ; `[e["colonne"] for e in table]` projette une colonne.
+- Sélection : `[e for e in table if critere]` garde des lignes. Projection : `[e["colonne"] for e in table]` garde une colonne.
 - Les critères s'écrivent avec `and`, `or`, `not`.
-- Avant d'exploiter une table, on cherche doublons, valeurs manquantes et valeurs impossibles.
+- Avant d'exploiter une table, on cherche les doublons, les valeurs manquantes et les valeurs impossibles.
 
 ## Exercices
 

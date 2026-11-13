@@ -9,7 +9,7 @@ objectifs:
 prerequis: [premiere-construits/tableaux]
 ---
 
-Dans un tableau, on retrouve une valeur par sa position. Dans un **dictionnaire**, on la retrouve par une **clé** : un nom, un mot, un identifiant.
+Dans un tableau, on retrouve une valeur par sa position : la case 0, la case 1… Mais pour retrouver l'âge de Tom, on préférerait écrire « Tom » plutôt que de se souvenir qu'il est en case 7. Un **dictionnaire** permet exactement cela : il associe des **clés** à des **valeurs**, comme un répertoire associe des noms à des numéros.
 
 ## 1. Créer et lire
 
@@ -18,18 +18,24 @@ ages = {"Léa": 15, "Tom": 16}
 print(ages["Tom"], len(ages))
 ```
 
-Une clé absente provoque une `KeyError`. On teste d'abord avec `in` :
+- On écrit des couples `clé: valeur` entre **accolades**.
+- `ages["Tom"]` donne la valeur associée à la clé `"Tom"` : 16.
+- `len` donne le nombre de couples.
+
+Une clé absente provoque une erreur `KeyError`. On teste donc sa présence avec `in` :
 
 ```python exec
 ages = {"Léa": 15, "Tom": 16}
-print("Zoé" in ages)
+print("Zoé" in ages, "Tom" in ages)
 ```
 
-`in` teste les **clés**, pas les valeurs.
+:::attention
+`in` teste les **clés**, pas les valeurs : `15 in ages` vaut `False`.
+:::
 
 ## 2. Ajouter ou modifier
 
-La même instruction ajoute une entrée, ou la remplace si la clé existe :
+La même instruction **ajoute** un couple si la clé n'existe pas, et **remplace** la valeur si elle existe :
 
 ```python exec
 stock = {"pommes": 12}
@@ -38,7 +44,11 @@ stock["pommes"] = 10
 print(stock)
 ```
 
+`"kiwis"` n'existait pas : il est ajouté. `"pommes"` existait : sa valeur passe de 12 à 10. Un dictionnaire ne peut pas contenir deux fois la même clé.
+
 ## 3. Parcourir
+
+Trois méthodes donnent accès au contenu :
 
 ```python exec
 notes = {"maths": 14, "NSI": 17}
@@ -53,9 +63,17 @@ for matiere, n in notes.items():
     print(matiere, n)
 ```
 
-`for k in d` parcourt aussi les clés.
+| Méthode | Ce qu'elle donne | Ici |
+| --- | --- | --- |
+| `keys()` | les clés | maths, NSI |
+| `values()` | les valeurs | 14, 17 |
+| `items()` | les couples (clé, valeur) | (maths, 14), (NSI, 17) |
+
+`for k in d` sans méthode parcourt aussi les clés.
 
 ## 4. Compter des occurrences
+
+C'est l'usage le plus fréquent : compter combien de fois chaque élément apparaît.
 
 ```python exec
 compte = {}
@@ -67,6 +85,14 @@ for lettre in "abracadabra":
 print(compte)
 ```
 
+Pour chaque lettre : si on l'a déjà rencontrée, on ajoute 1 à son compteur ; sinon, on crée son compteur à 1.
+
+| Lettre lue | a | b | r | a | c |
+| --- | --- | --- | --- | --- | --- |
+| Action | crée a : 1 | crée b : 1 | crée r : 1 | a passe à 2 | crée c : 1 |
+
+Ce **schéma de comptage** sert partout : compter des mots, des votes, des notes.
+
 :::exemple
 Les données **EXIF** d'une photo forment un enregistrement : `{"largeur": 4032, "hauteur": 3024, "flash": False}`.
 :::
@@ -75,7 +101,7 @@ Les données **EXIF** d'une photo forment un enregistrement : `{"largeur": 4032,
 
 - `d[cle]` lit, `d[cle] = v` ajoute ou modifie, `cle in d` teste la présence d'une clé.
 - `keys()` donne les clés, `values()` les valeurs, `items()` les couples.
-- Schéma de comptage : si la clé existe, on ajoute 1, sinon on la crée à 1.
+- Schéma de comptage : si la clé existe, on ajoute 1 ; sinon, on la crée à 1.
 
 ## Exercices
 
