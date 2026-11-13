@@ -7,48 +7,82 @@ objectifs:
   - "Analyser le fonctionnement d'un programme récursif"
 ---
 
-Une fonction **récursive** s'appelle elle-même sur un problème **plus petit**.
+Tu fais la queue au cinéma et tu veux savoir à quelle place tu es, sans sortir de la file. Tu demandes à la personne devant toi : « À quelle place es-tu ? » Elle pose la même question à la personne devant elle, et ainsi de suite, jusqu'à la première personne, qui répond « 1 ». Chacun ajoute alors 1 à la réponse reçue et la transmet en arrière.
 
-## 1. Un exemple
+Chacun résout **le même problème**, mais **plus petit**, et une personne sait répondre directement. C'est le principe de la **récursivité** : une fonction qui s'appelle elle-même.
+
+## 1. Un premier exemple : la factorielle
+
+La factorielle de n, notée n!, est le produit 1 × 2 × … × n. Par exemple, 4! = 1 × 2 × 3 × 4 = 24. On remarque que **n! = n × (n − 1)!** : pour calculer 4!, il suffit de connaître 3!.
 
 ```python exec
 def fact(n):
-    if n == 0:                  # cas de base
+    if n == 0:
         return 1
-    return n * fact(n - 1)      # appel récursif
+    return n * fact(n - 1)
 
-print(fact(5))
+print(fact(4))
 ```
 
-Il faut toujours :
+Toute fonction récursive a deux parties :
 
-- un **cas de base**, qui s'arrête sans appel récursif ;
-- un **appel récursif** sur un problème qui **se rapproche** du cas de base.
+- un **cas de base**, qui répond directement, sans appel récursif : ici, `fact(0)` vaut 1 ;
+- un **appel récursif** sur un problème **plus petit**, qui se rapproche du cas de base : ici, `fact(n - 1)`.
 
-## 2. La pile d'appels
+## 2. Ce qui se passe vraiment : la pile d'appels
+
+Quand `fact(3)` appelle `fact(2)`, il ne peut pas finir son calcul : il attend la réponse. Les appels en attente s'empilent, puis se terminent dans l'ordre inverse.
 
 ```
-fact(3) = 3 * fact(2)
-              fact(2) = 2 * fact(1)
-                            fact(1) = 1 * fact(0)
-                                          fact(0) = 1
+fact(3) = 3 * fact(2)                 en attente
+              fact(2) = 2 * fact(1)          en attente
+                            fact(1) = 1 * fact(0)   en attente
+                                          fact(0) = 1   cas de base
+                            fact(1) = 1 * 1 = 1
+              fact(2) = 2 * 1 = 2
+fact(3) = 3 * 2 = 6
 ```
 
-Chaque appel attend le résultat du suivant, dans la **pile d'appels**. Le dernier lancé est le premier terminé.
+Les appels en attente sont rangés dans la **pile d'appels** : le dernier appel lancé est le premier terminé, comme dans une pile.
 
-Sans cas de base atteint, Python s'arrête avec une `RecursionError`. Par défaut, il accepte environ 1 000 appels en attente : même une récursion correcte échoue si elle descend plus loin.
+## 3. Quand ça ne s'arrête pas
 
-## 3. Méthode
+Si le cas de base n'est jamais atteint, les appels s'empilent sans fin. Python s'arrête alors avec une erreur `RecursionError`.
 
-1. Quelle est l'entrée la plus simple, et sa réponse ?
-2. En supposant que la fonction marche sur un problème plus petit, comment obtenir la réponse ?
-3. Le problème se rapproche-t-il bien du cas de base ?
+```python exec erreur
+def fact(n):
+    return n * fact(n - 1)
+
+fact(3)
+```
+
+Il manque le cas de base : `fact(3)` appelle `fact(2)`, puis `fact(1)`, `fact(0)`, `fact(-1)`, et ainsi de suite.
+
+Par défaut, Python accepte environ **1 000** appels en attente. Une fonction récursive correcte échoue donc aussi si elle doit descendre plus profond.
+
+## 4. Une méthode pour écrire une fonction récursive
+
+Exemple : la somme des éléments d'un tableau `t`, à partir de l'indice `i`.
+
+1. **Le cas le plus simple** : si `i` vaut `len(t)`, il ne reste rien à additionner, la somme vaut 0.
+2. **La confiance** : on suppose que l'appel `somme(t, i + 1)` renvoie la bonne somme du reste. Il suffit d'y ajouter `t[i]`.
+3. **La vérification** : `i` augmente à chaque appel, donc on finit par atteindre `len(t)`.
+
+```python exec
+def somme(t, i):
+    if i == len(t):
+        return 0
+    return t[i] + somme(t, i + 1)
+
+print(somme([4, 1, 7], 0))
+```
 
 ## L'essentiel
 
-- Un cas de base et un appel sur un problème plus petit.
-- Les appels en attente sont rangés dans la pile d'appels.
-- Sans cas de base atteint : `RecursionError`.
+- Une fonction récursive s'appelle elle-même sur un problème plus petit.
+- Il faut un **cas de base**, et un appel qui s'en rapproche.
+- Les appels en attente forment la **pile d'appels** : le dernier lancé finit le premier.
+- Sans cas de base atteint, ou au-delà d'environ 1 000 appels : `RecursionError`.
 
 ## Exercices
 

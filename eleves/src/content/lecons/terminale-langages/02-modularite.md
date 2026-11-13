@@ -7,11 +7,11 @@ objectifs:
   - "Utiliser une API ou une bibliothèque grâce à sa documentation"
 ---
 
-Un grand programme se découpe en **modules** : des fichiers qui regroupent des fonctions sur un même thème.
+Un logiciel réel compte des milliers de lignes. Si tout était dans un seul fichier, on s'y perdrait. On le découpe donc en **modules**, comme un livre en chapitres : chaque fichier regroupe les fonctions d'un même thème.
 
 ## 1. Créer un module
 
-Fichier `geometrie.py` :
+On écrit un fichier `geometrie.py` :
 
 ```python
 """Fonctions de géométrie plane."""
@@ -25,26 +25,50 @@ if __name__ == "__main__":
     assert distance((0, 0), (3, 4)) == 5
 ```
 
-Dans un autre fichier :
+Puis, dans un autre fichier du même dossier, on l'utilise :
 
 ```python
 from geometrie import distance
 print(distance((1, 1), (4, 5)))
 ```
 
-Le texte entre triples guillemets est une **docstring** : elle documente le module ou la fonction.
+Trois éléments à comprendre :
 
-Le bloc `if __name__ == "__main__":` ne s'exécute que si on lance le fichier directement, pas lors d'un import. On y place les tests.
+- **La docstring** : le texte entre triples guillemets, au début du fichier ou sous un `def`. Elle explique ce que fait le module ou la fonction. On la lit avec `help(distance)`.
+- **L'import** : `from geometrie import distance` exécute le fichier `geometrie.py` et rend la fonction `distance` disponible.
+- **Le bloc de test** : quand on lance `geometrie.py` directement, la variable spéciale `__name__` vaut `"__main__"`, et les tests s'exécutent. Quand on l'importe, elle vaut `"geometrie"`, et les tests sont ignorés. On peut donc tester un module sans gêner ceux qui l'utilisent.
 
-## 2. Une API
+:::attention
+Ne nomme jamais ton fichier comme un module de Python, par exemple `random.py` : `import random` importerait ton propre fichier à la place du vrai module.
+:::
 
-Une **API** est l'ensemble des fonctions qu'une bibliothèque ou un service met à disposition. Sa **documentation** indique le rôle, les paramètres et la valeur renvoyée de chaque fonction. On peut s'en servir **sans connaître son code**.
+## 2. Pourquoi découper
+
+- **Réutiliser** : la même fonction sert dans plusieurs programmes, sans la recopier.
+- **Comprendre** : chaque module a un rôle clair et se lit seul.
+- **Corriger** : une erreur se corrige à un seul endroit.
+- **Travailler à plusieurs** : chacun développe son module.
+
+## 3. Utiliser une API
+
+Une **API** (*interface de programmation*) est l'ensemble des fonctions qu'une bibliothèque ou un service met à ta disposition. Sa **documentation** indique, pour chaque fonction :
+
+- ce qu'elle fait ;
+- ses **paramètres** ;
+- ce qu'elle **renvoie**, et ce qui se passe en cas de problème.
+
+:::exemple
+La documentation dit : « `randint(a, b)` renvoie un entier au hasard entre a et b, **bornes comprises** ». Sans lire son code, tu sais que `randint(1, 6)` simule un dé.
+:::
+
+C'est l'idée d'interface vue avec les structures de données : on s'appuie sur ce que la documentation promet, pas sur le code. Si la bibliothèque change son code sans changer sa documentation, ton programme continue de fonctionner.
 
 ## L'essentiel
 
-- Un module est un fichier `.py` documenté, qu'on importe.
-- `if __name__ == "__main__":` protège le code de test.
-- Une API s'utilise grâce à sa documentation.
+- Un module est un fichier `.py` qu'on importe ; sa docstring le documente.
+- `if __name__ == "__main__":` contient les tests, ignorés lors d'un import.
+- On découpe pour réutiliser, comprendre, corriger et travailler à plusieurs.
+- Une API s'utilise grâce à sa documentation, sans connaître son code.
 
 ## Exercices
 

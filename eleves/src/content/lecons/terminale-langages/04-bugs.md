@@ -7,42 +7,67 @@ objectifs:
   - "Corriger un programme"
 ---
 
-La plupart des bugs viennent des mêmes causes. Apprends à les repérer.
+Tous les programmeurs écrivent des bugs. Ce qui fait la différence, c'est de savoir **les repérer vite**. Bonne nouvelle : la plupart viennent toujours des mêmes causes.
 
-## Les causes typiques
+## 1. Les causes typiques
 
-| Cause | Exemple | Remède |
-| --- | --- | --- |
-| **Typage** | `input()` renvoie une chaîne | convertir avec `int` |
-| **Effet de bord** | une fonction modifie le tableau reçu | travailler sur une copie |
-| **Débordement** | `t[len(t)]` | vérifier les bornes |
-| **Conditionnelle non exhaustive** | un cas oublié renvoie `None` | prévoir tous les cas |
-| **Choix des inégalités** | `>` au lieu de `>=` | tester la valeur frontière |
-| **Flottants** | `0.1 + 0.2 == 0.3` est faux | comparer avec une tolérance |
-| **Mauvais nommage** | `x`, `tmp2` partout | des noms qui ont un sens |
+**Le typage.** `input()` renvoie toujours une chaîne. `input("Âge ? ") + 1` provoque une `TypeError`, car on ne peut pas ajouter un texte et un nombre. Il faut convertir : `int(input("Âge ? ")) + 1`.
+
+**L'effet de bord.** Une fonction modifie un tableau qu'elle a reçu, sans que l'appelant s'y attende :
 
 ```python exec
-def ajouter_bonus(notes):
-    notes.append(20)       # modifie le tableau de l'appelant
+def moyenne_avec_bonus(notes):
+    notes.append(20)
     return sum(notes) / len(notes)
 
 mes_notes = [12, 14]
-print(ajouter_bonus(mes_notes))
+print(moyenne_avec_bonus(mes_notes))
 print(mes_notes)
 ```
 
-## Une méthode
+On voulait seulement une moyenne, mais `mes_notes` contient maintenant un 20 de trop. Il faut travailler sur une copie : `(sum(notes) + 20) / (len(notes) + 1)`.
 
-1. **Reproduire** le bug avec un exemple précis.
-2. **Isoler** la ligne fautive, avec des tests ou des `print`.
-3. **Corriger**, puis relancer tous les tests.
+**Le débordement.** Les indices vont de 0 à `len(t) - 1`. Avec `for i in range(len(t) + 1)`, le dernier tour lit `t[len(t)]` : `IndexError`.
 
-Tester les cas limites est essentiel : tableau vide, valeur frontière, valeurs négatives.
+**La conditionnelle non exhaustive.** Un cas a été oublié :
+
+```python exec
+def mention(note):
+    if note >= 16:
+        return "TB"
+    elif note >= 14:
+        return "B"
+
+print(mention(10))
+```
+
+Pour 10, aucune condition n'est vraie : la fonction renvoie `None`. Il faut prévoir tous les cas, par exemple avec un `return` final.
+
+**Le choix des inégalités.** Faut-il `>` ou `>=` ? « Admis à partir de 10 » s'écrit `note >= 10`. On vérifie toujours la **valeur frontière** : que se passe-t-il pour exactement 10 ?
+
+**Les flottants.** `0.1 + 0.2 == 0.3` vaut `False`, car les nombres à virgule sont stockés de façon approchée. On compare avec une tolérance : `abs(a - b) < 1e-9`.
+
+**Le mauvais nommage.** Des variables nommées `x`, `tmp2` ou `truc` cachent les erreurs. `prix_total` se lit et se vérifie bien plus facilement.
+
+## 2. Une méthode pour corriger
+
+1. **Reproduire** : trouver un exemple précis qui provoque le bug.
+2. **Isoler** : trouver la ligne fautive, avec des tests ou des `print` qui affichent les valeurs intermédiaires.
+3. **Corriger**, puis relancer **tous** les tests, pour vérifier qu'on n'a rien cassé ailleurs.
+
+## 3. Anticiper
+
+Les outils vus en première aident à éviter les bugs avant qu'ils n'arrivent :
+
+- la **spécification**, dans la docstring, dit ce que la fonction doit faire ;
+- les **assertions** vérifient les préconditions ;
+- les **tests** essaient les cas limites : tableau vide, valeur frontière, valeurs négatives.
 
 ## L'essentiel
 
-- Typage, effets de bord, débordements, cas oubliés, inégalités, flottants, nommage.
-- Les spécifications, assertions et tests aident à anticiper ces erreurs.
+- Causes typiques : typage, effet de bord, débordement, cas oublié, inégalité, flottants, mauvais nommage.
+- Pour corriger : reproduire, isoler, corriger, relancer tous les tests.
+- Pour anticiper : spécification, assertions, tests des cas limites.
 
 ## Exercices
 

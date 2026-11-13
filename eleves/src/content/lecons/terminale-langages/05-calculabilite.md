@@ -8,13 +8,19 @@ objectifs:
   - "Montrer que le problème de l'arrêt est indécidable"
 ---
 
-Il existe des problèmes qu'**aucun programme** ne pourra jamais résoudre. Alan Turing l'a montré en 1936.
+Les ordinateurs deviennent toujours plus puissants. Pourrons-nous un jour tout calculer ? Alan Turing a montré en 1936 que **non** : certains problèmes n'auront **jamais** de programme pour les résoudre, quelle que soit la puissance de la machine.
 
 ## 1. Un programme est une donnée
 
-Un programme est un fichier que d'autres programmes lisent : l'**interpréteur** l'exécute, un **compilateur** le traduit, le **système d'exploitation** le charge, un programme de **téléchargement** le copie.
+Un programme est un fichier, comme une photo ou un texte. D'autres programmes le manipulent sans cesse :
 
-En Python, une fonction peut même être passée en paramètre.
+- l'**interpréteur** Python lit ton programme et l'exécute ;
+- un **compilateur** le traduit en langage machine ;
+- le **système d'exploitation** le charge en mémoire ;
+- un **antivirus** l'analyse ;
+- un programme de **téléchargement** le copie.
+
+En Python, une fonction peut même être passée en paramètre à une autre fonction :
 
 ```python exec
 def appliquer(f, t):
@@ -23,17 +29,25 @@ def appliquer(f, t):
 print(appliquer(len, ["NSI", "bac"]))
 ```
 
-## 2. La calculabilité ne dépend pas du langage
+Ici, la fonction `len` est une donnée transmise à `appliquer`.
 
-Une **machine de Turing** est un modèle théorique d'ordinateur, décrit par Alan Turing. Python, C, Java ou JavaScript calculent exactement les **mêmes** choses que ce modèle. Ils diffèrent par leur confort et leur rapidité, pas par ce qu'ils peuvent calculer.
+## 2. Tous les langages calculent les mêmes choses
+
+Python, C, Java ou JavaScript diffèrent par leur écriture, leur confort et leur vitesse. Mais ce qu'un langage peut calculer, un autre peut le calculer aussi. Turing a décrit un modèle très simple de machine, la **machine de Turing**, qui calcule exactement les mêmes choses que tous ces langages. La **calculabilité** ne dépend donc pas du langage.
 
 ## 3. Le problème de l'arrêt
 
-Un problème est **décidable** s'il existe un algorithme qui répond correctement pour **toute** entrée, en un temps fini.
+Un problème est **décidable** s'il existe un programme qui donne la bonne réponse, oui ou non, pour **toute** entrée, en un temps fini.
 
-**Le problème de l'arrêt** : un programme P s'arrête-t-il sur l'entrée e ?
+:::exemple
+« Ce nombre est-il premier ? » est décidable : on essaie tous les diviseurs possibles, et on finit toujours par répondre.
+:::
 
-Supposons qu'une fonction `arret(P, e)` réponde toujours correctement. On écrit :
+Le **problème de l'arrêt** pose la question : « Le programme P s'arrête-t-il quand on lui donne l'entrée e ? » Ce serait très utile pour détecter les boucles infinies. Turing a prouvé qu'aucun programme ne peut y répondre dans tous les cas.
+
+### La preuve, par l'absurde
+
+On **suppose** qu'il existe une fonction `arret(P, e)` qui répond toujours correctement : `True` si P s'arrête sur e, `False` sinon. On écrit alors un programme qui fait exprès le contraire de ce qu'elle prédit :
 
 ```python
 def paradoxe(P):
@@ -42,17 +56,22 @@ def paradoxe(P):
             pass
 ```
 
+`paradoxe(P)` boucle sans fin si `arret` prédit que P s'arrête sur lui-même, et s'arrête sinon.
+
 Que fait `paradoxe(paradoxe)` ?
 
-- S'il **s'arrête**, c'est que `arret(paradoxe, paradoxe)` vaut faux : la fonction a dit qu'il ne s'arrêtait pas. Contradiction.
-- S'il **ne s'arrête pas**, c'est que `arret(paradoxe, paradoxe)` vaut vrai : elle a dit qu'il s'arrêtait. Contradiction.
+- **S'il s'arrête**, c'est qu'il n'est pas entré dans la boucle, donc `arret(paradoxe, paradoxe)` a répondu `False` : « il ne s'arrête pas ». La fonction s'est trompée.
+- **S'il ne s'arrête pas**, c'est qu'il est entré dans la boucle, donc `arret(paradoxe, paradoxe)` a répondu `True` : « il s'arrête ». La fonction s'est encore trompée.
 
-Donc `arret` **ne peut pas exister** : le problème de l'arrêt est **indécidable**.
+Dans les deux cas, `arret` se trompe : elle ne peut donc pas exister. Le problème de l'arrêt est **indécidable**.
+
+Conséquence concrète : aucun logiciel ne pourra jamais détecter **toutes** les boucles infinies, ni tous les virus. On peut seulement faire des outils qui réussissent souvent.
 
 ## L'essentiel
 
-- Un programme est une donnée pour d'autres programmes.
-- Les langages usuels calculent les mêmes fonctions.
+- Un programme est une donnée pour d'autres programmes : interpréteur, compilateur, système, antivirus.
+- Tous les langages usuels calculent les mêmes choses.
+- Décidable : un programme répond correctement pour toute entrée, en temps fini.
 - Le problème de l'arrêt est indécidable : la preuve est un raisonnement par l'absurde.
 
 ## Exercices

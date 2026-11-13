@@ -7,53 +7,96 @@ objectifs:
   - "Choisir un paradigme selon l'application"
 ---
 
-Un **paradigme** est une façon de programmer. Python permet d'en utiliser plusieurs, même dans un seul programme.
+Pour aller d'une ville à une autre, on peut prendre le train, la voiture ou le vélo. Pour écrire un programme, il existe aussi plusieurs façons de penser : ce sont les **paradigmes**. Python en permet plusieurs, et on peut même les mélanger.
 
 ## 1. Un même calcul, trois styles
 
-La somme des carrés des nombres pairs d'un tableau.
+On veut la somme des carrés des nombres pairs du tableau `[3, 4, 7, 10]`, soit 4² + 10² = 116.
+
+**Style impératif** : on donne des instructions, dans l'ordre, qui modifient des variables.
 
 ```python exec
 t = [3, 4, 7, 10]
-
-# Impératif : des instructions qui modifient des variables
 total = 0
 for x in t:
     if x % 2 == 0:
         total = total + x * x
 print(total)
+```
 
-# Fonctionnel : des fonctions, sans modifier de variable
-print(sum(map(lambda x: x * x, filter(lambda x: x % 2 == 0, t))))
+La variable `total` change à chaque tour : on décrit **comment** calculer, étape par étape.
 
-# Objet : un objet regroupe données et méthodes
+**Style fonctionnel** : on combine des fonctions, sans jamais modifier de variable.
+
+```python exec
+t = [3, 4, 7, 10]
+pairs = filter(lambda x: x % 2 == 0, t)
+carres = map(lambda x: x * x, pairs)
+print(sum(carres))
+```
+
+- `filter(condition, t)` garde les éléments qui vérifient la condition : 4 et 10.
+- `map(f, t)` applique `f` à chaque élément : 16 et 100.
+- `lambda x: x * x` est une petite fonction sans nom, qui renvoie le carré de x.
+
+On décrit **ce qu'on veut obtenir**, comme une chaîne de transformations.
+
+**Style objet** : on regroupe les données et les fonctions qui les concernent dans un objet.
+
+```python exec
 class Serie:
     def __init__(self, valeurs):
         self.valeurs = valeurs
-    def somme_carres_pairs(self):
-        return sum(x * x for x in self.valeurs if x % 2 == 0)
 
-print(Serie(t).somme_carres_pairs())
+    def somme_carres_pairs(self):
+        total = 0
+        for x in self.valeurs:
+            if x % 2 == 0:
+                total = total + x * x
+        return total
+
+print(Serie([3, 4, 7, 10]).somme_carres_pairs())
 ```
 
-## 2. Comparaison
+## 2. Les fonctions pures
 
-| Paradigme | Idée | Convient pour |
+Une fonction est **pure** si :
+
+- elle renvoie toujours le même résultat pour les mêmes entrées ;
+- elle ne modifie rien en dehors d'elle : pas de variable extérieure, pas de tableau reçu, pas d'affichage.
+
+```python exec
+def double_pur(t):
+    return [2 * x for x in t]
+
+def double_impur(t):
+    for i in range(len(t)):
+        t[i] = 2 * t[i]
+
+notes = [5, 8]
+print(double_pur(notes), notes)
+double_impur(notes)
+print(notes)
+```
+
+`double_pur` laisse `notes` intact. `double_impur` le modifie : c'est un **effet de bord**. Une fonction pure est plus facile à tester et à comprendre, car il suffit de regarder ce qu'elle renvoie.
+
+## 3. Choisir un paradigme
+
+| Paradigme | Idée | Convient bien pour |
 | --- | --- | --- |
-| **Impératif** | des instructions qui modifient l'état | algorithmes simples, scripts |
-| **Fonctionnel** | des fonctions pures, sans effet de bord | transformations de données |
-| **Objet** | des objets avec attributs et méthodes | jeux, interfaces, grands logiciels |
+| **Impératif** | des instructions qui modifient des variables | les algorithmes simples, les scripts |
+| **Fonctionnel** | des fonctions pures, combinées | transformer des données, en étapes successives |
+| **Objet** | des objets qui regroupent données et méthodes | les jeux, les interfaces, les grands logiciels |
 
-Une fonction **pure** donne toujours le même résultat pour les mêmes entrées et ne modifie rien autour d'elle. Elle est donc plus facile à tester.
-
-Dans le style fonctionnel, `map(f, t)` applique `f` à chaque élément, `filter(c, t)` garde les éléments qui vérifient `c`, et `lambda x: …` définit une petite fonction sans nom.
+Dans un jeu vidéo, chaque personnage est naturellement un objet. Pour filtrer et convertir un gros fichier de mesures, une chaîne de fonctions est naturelle. Un même programme mélange souvent les trois.
 
 ## L'essentiel
 
-- Impératif : instructions et variables modifiées.
-- Fonctionnel : fonctions pures et composition.
-- Objet : objets qui regroupent données et méthodes.
-- On choisit selon l'application, et on peut les mélanger.
+- Impératif : des instructions qui modifient l'état.
+- Fonctionnel : des fonctions pures combinées ; `map`, `filter`, `lambda`.
+- Objet : des objets avec attributs et méthodes.
+- Une fonction pure ne modifie rien autour d'elle et renvoie toujours le même résultat pour les mêmes entrées.
 
 ## Exercices
 
