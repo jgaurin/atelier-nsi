@@ -8,30 +8,38 @@ objectifs:
 prerequis: [premiere-algo/parcours]
 ---
 
-Chercher un mot dans un texte peut aller bien plus vite qu'on ne le croit.
+Quand tu fais Ctrl + F dans un texte, le logiciel cherche un **motif** dans un **texte**. Comment le faire vite, même dans un livre entier ?
 
 ## 1. La recherche naïve
 
-On place le motif à chaque position, on compare, et on décale d'**un** cran.
+On place le motif au début du texte et on compare lettre à lettre. Si ça ne correspond pas, on décale le motif d'**un seul cran** et on recommence.
+
+Pour un texte de n lettres, il y a jusqu'à n positions à essayer, et à chaque fois jusqu'à m comparaisons pour un motif de m lettres. C'est simple, mais lent sur de grands textes.
 
 ## 2. L'idée de Boyer-Moore
 
-- On compare le motif **de droite à gauche**.
-- En cas d'échec, on regarde le caractère du texte aligné avec la fin du motif, et on **saute** plusieurs positions d'un coup.
+Deux idées permettent d'aller beaucoup plus vite :
 
-Ces décalages sont calculés **une fois pour toutes** à partir du motif : c'est le **prétraitement**.
+1. On compare le motif **de droite à gauche**, en commençant par sa dernière lettre.
+2. En cas d'échec, on regarde la lettre du texte placée sous la **dernière lettre** du motif. Si cette lettre n'apparaît pas du tout dans le motif, aucune position qui la recouvre ne peut convenir : on peut **sauter** toute la longueur du motif d'un coup.
 
 ## 3. La table des décalages
 
-Pour un motif de longueur m, chaque caractère de `motif[0..m-2]` a pour décalage **m − 1 − sa dernière position** (hors dernière case). Un caractère absent donne un décalage **m**.
+Le saut dépend de la lettre lue. On calcule ces sauts **une seule fois**, avant la recherche, à partir du motif seul : c'est le **prétraitement**.
 
-Pour `DABRA` (m = 5) :
+Pour un motif de longueur m, chaque lettre placée avant la dernière case a pour décalage **m − 1 − sa dernière position** dans le motif. Une lettre absente donne un décalage de **m**. Le décalage aligne la dernière apparition de la lettre dans le motif sous la lettre lue dans le texte.
 
-| caractère | D | A | B | R | autre |
-| --- | --- | --- | --- | --- | --- |
-| décalage | 4 | 3 | 2 | 1 | 5 |
+Pour `DABRA`, de longueur 5 :
 
-C'est la version simplifiée, dite de **Horspool**. Un caractère absent du motif ne peut correspondre à aucune case : on saute donc toute la longueur.
+| Lettre | Dernière position, sans compter la dernière case | Décalage |
+| --- | --- | --- |
+| D | 0 | 5 − 1 − 0 = 4 |
+| A | 1 | 5 − 1 − 1 = 3 |
+| B | 2 | 5 − 1 − 2 = 2 |
+| R | 3 | 5 − 1 − 3 = 1 |
+| autre | absente | 5 |
+
+C'est la version simplifiée de l'algorithme, dite de **Horspool**.
 
 ## 4. L'algorithme
 
@@ -44,11 +52,26 @@ tant que i ≤ n − m :
     i = i + décalage de c (m si c n'est pas dans la table)
 ```
 
+## 5. Un exemple complet
+
+On cherche `NSI` dans `CE COURS DE NSI`. Le motif a 3 lettres : décalage 2 pour N, 1 pour S, 3 pour toute autre lettre, espace compris.
+
+| Position i | Fenêtre | Comparaison | Lettre sous la fin du motif | Saut |
+| --- | --- | --- | --- | --- |
+| 0 | `CE ` | espace ≠ I, échec | espace | 3 |
+| 3 | `COU` | U ≠ I, échec | U | 3 |
+| 6 | `RS ` | espace ≠ I, échec | espace | 3 |
+| 9 | `DE ` | espace ≠ I, échec | espace | 3 |
+| 12 | `NSI` | trouvé | | |
+
+On trouve le motif en examinant seulement **5 positions**, au lieu de 13 pour la recherche naïve. Plus le motif est long et le texte varié, plus les sauts sont grands.
+
 ## L'essentiel
 
-- Naïf : décalage d'un cran.
-- Boyer-Moore : comparaison de droite à gauche et sauts grâce à un prétraitement du motif.
-- Un caractère absent du motif permet de sauter toute sa longueur.
+- Naïf : on décale le motif d'un cran à chaque échec.
+- Boyer-Moore : on compare de droite à gauche, et on saute grâce à la lettre sous la fin du motif.
+- Prétraitement : la table des décalages, calculée une fois à partir du motif.
+- Une lettre absente du motif permet de sauter toute sa longueur.
 
 ## Exercices
 

@@ -9,11 +9,44 @@ objectifs:
 prerequis: [terminale-algo/arbres]
 ---
 
-Dans un **arbre binaire de recherche** (ABR), pour **chaque** nœud : les clés de gauche sont **plus petites**, les clés de droite **plus grandes**.
+Dans un dictionnaire papier, tu ne lis pas tous les mots : tu ouvres au hasard, et tu sais immédiatement si ton mot est avant ou après. Un **arbre binaire de recherche** (ABR) permet le même genre de recherche rapide.
 
-## 1. Rechercher
+## 1. La règle
 
-À chaque nœud, la comparaison indique une seule direction : on écarte tout un sous-arbre.
+Un ABR est un arbre binaire où, **pour chaque nœud** :
+
+- toutes les clés du sous-arbre **gauche** sont **plus petites** que la clé du nœud ;
+- toutes les clés du sous-arbre **droit** sont **plus grandes**.
+
+```mermaid
+flowchart TD
+    N15((15)) --> N8((8))
+    N15 --> N22((22))
+    N8 --> N3((3))
+    N8 --> N11((11))
+    N22 --> N18((18))
+    N22 --> N30((30))
+```
+
+Vérifie sur cet exemple : à gauche de 15, on trouve 8, 3 et 11, tous plus petits que 15 ; à droite, 22, 18 et 30, tous plus grands. Et la règle est vraie aussi pour 8 et pour 22.
+
+:::attention
+La règle porte sur **tout** le sous-arbre, pas seulement sur les enfants directs. Si 11 était remplacé par 17, chaque nœud serait bien rangé par rapport à son parent, mais 17 se trouverait à gauche de 15 : ce ne serait plus un ABR.
+:::
+
+## 2. Rechercher une clé
+
+À chaque nœud, une comparaison suffit pour savoir de quel côté continuer. On ne visite donc qu'**une seule branche**.
+
+On cherche 11 :
+
+| Nœud | Comparaison | Décision |
+| --- | --- | --- |
+| 15 | 11 < 15 | on va à gauche |
+| 8 | 11 > 8 | on va à droite |
+| 11 | égalité | trouvé, en 3 comparaisons |
+
+On cherche 20 : 20 > 15, on va à droite ; 20 < 22, on va à gauche ; 20 > 18, on va à droite… et il n'y a rien. 20 n'est pas dans l'arbre.
 
 ```python exec
 class Noeud:
@@ -31,13 +64,13 @@ def rechercher(a, x):
         return rechercher(a.gauche, x)
     return rechercher(a.droit, x)
 
-abr = Noeud(15, Noeud(8), Noeud(22))
-print(rechercher(abr, 22), rechercher(abr, 9))
+abr = Noeud(15, Noeud(8, Noeud(3), Noeud(11)), Noeud(22, Noeud(18), Noeud(30)))
+print(rechercher(abr, 11), rechercher(abr, 20))
 ```
 
-## 2. Insérer
+## 3. Insérer une clé
 
-On descend comme pour une recherche, et on crée une **feuille** à l'emplacement vide.
+On descend exactement comme pour une recherche. Quand on arrive sur une place vide, on y crée une nouvelle **feuille**. Pour insérer 20, on descend jusqu'à la droite de 18 : 20 devient l'enfant droit de 18.
 
 ```python exec
 class Noeud:
@@ -56,23 +89,32 @@ def inserer(a, x):
     return a
 
 abr = None
-for x in [15, 8, 22]:
+for x in [15, 8, 22, 3, 11]:
     abr = inserer(abr, x)
-print(abr.gauche.cle)
+print(abr.cle, abr.gauche.cle, abr.gauche.droit.cle)
 ```
 
-## 3. Le coût
+- Si l'arbre est vide, l'insertion crée un nœud, qu'on renvoie.
+- Sinon, on insère dans le bon sous-arbre, et on **raccroche** le résultat : `a.gauche = inserer(a.gauche, x)`. Sans cette affectation, la nouvelle feuille créée en bas ne serait reliée à rien.
+- Si `x` est déjà présent, on ne fait rien.
 
-Le nombre de comparaisons est au plus la **hauteur** de l'arbre : environ log₂(n) si l'arbre est **équilibré**, jusqu'à n s'il est **filiforme**.
+## 4. Les clés triées
 
-Le parcours **infixe** d'un ABR donne les clés **triées**.
+Le parcours **infixe** visite le sous-arbre gauche, puis la racine, puis le sous-arbre droit. Dans un ABR, cela donne les clés **dans l'ordre croissant** : 3, 8, 11, 15, 18, 22, 30.
+
+## 5. Le coût
+
+Une recherche suit une seule branche : elle fait au plus autant de comparaisons que la **hauteur** de l'arbre.
+
+- Si l'arbre est **équilibré**, bien rempli, sa hauteur est d'environ log₂(n). Pour un million de clés, une vingtaine de comparaisons suffit.
+- Si on insère les clés **dans l'ordre**, par exemple 1, 2, 3, 4, 5, chaque clé part à droite de la précédente. L'arbre devient **filiforme**, une seule branche, et sa hauteur vaut n. La recherche devient aussi lente qu'un parcours de tableau.
 
 ## L'essentiel
 
-- Pour chaque nœud : gauche plus petit, droite plus grand.
-- Recherche et insertion suivent une seule branche.
-- Coût logarithmique si l'arbre est équilibré.
+- ABR : pour chaque nœud, tout le sous-arbre gauche est plus petit, tout le sous-arbre droit plus grand.
+- Rechercher et insérer : une comparaison par nœud, une seule branche suivie.
 - Le parcours infixe donne les clés triées.
+- Coût : la hauteur de l'arbre ; environ log₂(n) si l'arbre est équilibré, jusqu'à n s'il est filiforme.
 
 ## Exercices
 

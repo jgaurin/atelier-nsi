@@ -8,9 +8,11 @@ objectifs:
 prerequis: [terminale-langages/recursivite, premiere-algo/gloutons]
 ---
 
-Quand les mêmes sous-problèmes reviennent plusieurs fois, on garde leurs solutions : c'est la **programmation dynamique**.
+Que vaut 1 + 1 + 1 + 1 + 1 ? Tu comptes : 5. Et si on ajoute + 1 à la fin ? Tu réponds 6 tout de suite, sans tout recompter : tu as **retenu** le résultat précédent. C'est l'idée de la **programmation dynamique** : ne jamais recalculer ce qu'on a déjà calculé.
 
-## 1. Le problème
+## 1. Le problème : des calculs répétés
+
+La suite de Fibonacci commence par 0 et 1, puis chaque terme est la somme des deux précédents : 0, 1, 1, 2, 3, 5, 8, 13…
 
 ```python exec
 def fibo(n):
@@ -21,11 +23,11 @@ def fibo(n):
 print(fibo(20))
 ```
 
-`fibo(n - 1)` et `fibo(n - 2)` recalculent les mêmes valeurs : le nombre d'appels explose. Pour `fibo(5)`, `fibo(3)` est calculé 2 fois et `fibo(2)` 3 fois.
+Ce code est juste, mais très lent. Pour calculer `fibo(5)`, il calcule `fibo(4)` et `fibo(3)`. Mais `fibo(4)` recalcule lui aussi `fibo(3)`, et ainsi de suite. Au total, `fibo(5)` provoque 15 appels, `fibo(20)` en provoque 21 891, et `fibo(30)` plus de 2,6 millions. Le nombre d'appels explose.
 
-## 2. Mémoïser
+## 2. La mémoïsation : retenir les résultats
 
-On garde les résultats dans un dictionnaire.
+On garde chaque résultat dans un dictionnaire. Avant de calculer, on regarde s'il est déjà connu.
 
 ```python exec
 memo = {}
@@ -43,9 +45,37 @@ def fibo(n):
 print(fibo(80))
 ```
 
-## 3. Le rendu de monnaie optimal
+Chaque valeur n'est calculée **qu'une seule fois** : le calcul devient instantané, même pour `fibo(80)`.
 
-nb(s), le nombre minimal de pièces pour rendre s, vérifie : nb(0) = 0 et nb(s) = 1 + le minimum des nb(s − p), pour chaque pièce p ≤ s.
+## 3. Calculer de bas en haut
+
+Autre approche : on remplit un tableau en partant des plus petits cas, sans récursivité. Chaque case utilise des cases déjà calculées.
+
+| n | 0 | 1 | 2 | 3 | 4 | 5 | 6 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| fibo(n) | 0 | 1 | 1 | 2 | 3 | 5 | 8 |
+
+## 4. Le rendu de monnaie optimal
+
+En première, le glouton échouait à rendre 6 avec des pièces de 1, 3 et 4 : il rendait 4 + 1 + 1 au lieu de 3 + 3. La programmation dynamique trouve toujours la meilleure solution.
+
+Note nb(s) le nombre minimal de pièces pour rendre s. Pour rendre s, on choisit une première pièce p, puis il reste s − p à rendre de la meilleure façon. Donc :
+
+**nb(s) = 1 + le plus petit des nb(s − p)**, pour chaque pièce p ≤ s, avec nb(0) = 0.
+
+On remplit le tableau de bas en haut :
+
+| s | Calcul | nb(s) |
+| --- | --- | --- |
+| 0 | rien à rendre | 0 |
+| 1 | 1 + nb(0) | 1 |
+| 2 | 1 + nb(1) | 2 |
+| 3 | 1 + min(nb(2), nb(0)) | 1 |
+| 4 | 1 + min(nb(3), nb(1), nb(0)) | 1 |
+| 5 | 1 + min(nb(4), nb(2), nb(1)) | 2 |
+| 6 | 1 + min(nb(5), nb(3), nb(2)) = 1 + min(2, 1, 2) | 2 |
+
+Pour 6, le meilleur premier choix est la pièce de 3, car il reste 3, qu'on rend en une pièce : **2 pièces**.
 
 ```python exec
 def rendu(somme, pieces):
@@ -59,12 +89,19 @@ def rendu(somme, pieces):
 print(rendu(6, [1, 3, 4]))
 ```
 
-On remplit le tableau **de bas en haut** : chaque case utilise des cases déjà calculées. Le résultat est optimal, même là où le glouton échoue. En échange, on utilise un **tableau en mémoire**.
+`float("inf")` représente l'infini : au départ, aucune solution n'est connue. Le glouton ne regardait qu'un seul choix ; ici, on les compare tous, en réutilisant les résultats déjà calculés.
+
+## 5. Le prix à payer
+
+On gagne énormément de temps, mais on utilise de la **mémoire** : un dictionnaire ou un tableau de toutes les solutions intermédiaires.
+
+Différence avec diviser pour régner : là, les sous-problèmes sont **indépendants**, et ne se répètent pas. Ici, les mêmes sous-problèmes **reviennent** sans cesse : c'est pour cela qu'on les retient.
 
 ## L'essentiel
 
-- Sous-problèmes qui se répètent : on stocke leurs solutions.
-- Mémoïsation : récursion + dictionnaire. Ou tableau rempli de bas en haut.
+- Quand les mêmes sous-problèmes reviennent, on retient leurs solutions pour ne pas les recalculer.
+- Mémoïsation : récursivité et dictionnaire. Ou bien un tableau rempli de bas en haut.
+- Rendu de monnaie : nb(s) = 1 + min des nb(s − p) ; la solution est toujours optimale.
 - On échange de la mémoire contre du temps.
 
 ## Exercices

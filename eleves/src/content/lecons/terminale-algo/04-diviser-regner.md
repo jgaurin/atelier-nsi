@@ -8,19 +8,50 @@ objectifs:
 prerequis: [terminale-langages/recursivite, premiere-algo/tris]
 ---
 
-**Diviser pour régner**, c'est découper un problème, résoudre les morceaux, puis **combiner** les résultats.
+Pour ranger une bibliothèque de 1 000 livres, tu peux la partager avec un ami : chacun range 500 livres, puis vous réunissez vos deux piles rangées. Chacun peut à son tour partager sa moitié… C'est la méthode **diviser pour régner**.
 
-## 1. La méthode
+## 1. La méthode en trois étapes
 
-1. **Diviser** en sous-problèmes indépendants.
-2. **Régner** : les résoudre, souvent récursivement.
-3. **Combiner** leurs solutions.
+1. **Diviser** : découper le problème en sous-problèmes plus petits et indépendants.
+2. **Régner** : résoudre chaque sous-problème, souvent par un appel récursif.
+3. **Combiner** : construire la solution du problème à partir de celles des sous-problèmes.
 
-La recherche dichotomique est un cas particulier : on ne garde qu'une moitié, il n'y a donc rien à combiner.
+La recherche dichotomique en est un cas simple : on divise en deux, on ne garde qu'une moitié, et il n'y a rien à combiner.
 
-## 2. Le tri fusion
+## 2. Fusionner deux tableaux triés
 
-On coupe le tableau en deux, on trie chaque moitié, puis on **fusionne**.
+Le cœur du tri fusion est la **fusion** : réunir deux tableaux **déjà triés** en un seul tableau trié. On compare les premiers éléments restants des deux tableaux, et on prend le plus petit.
+
+Fusion de `[2, 7, 9]` et `[3, 4, 8]` :
+
+| Comparaison | Élément pris | Résultat en cours |
+| --- | --- | --- |
+| 2 et 3 | 2 | 2 |
+| 7 et 3 | 3 | 2 3 |
+| 7 et 4 | 4 | 2 3 4 |
+| 7 et 8 | 7 | 2 3 4 7 |
+| 9 et 8 | 8 | 2 3 4 7 8 |
+| le second tableau est vide | 9 | 2 3 4 7 8 9 |
+
+Chaque élément est pris une seule fois : fusionner n éléments demande environ n opérations.
+
+## 3. Le tri fusion
+
+1. **Diviser** : couper le tableau en deux moitiés.
+2. **Régner** : trier chaque moitié, par le même algorithme.
+3. **Combiner** : fusionner les deux moitiés triées.
+
+Un tableau de 0 ou 1 élément est déjà trié : c'est le cas de base.
+
+```
+[38, 27, 43, 3, 9]
+[38, 27]          [43, 3, 9]
+[38] [27]         [43]   [3, 9]
+                          [3] [9]
+[27, 38]          [43]   [3, 9]
+                  [3, 9, 43]
+[3, 9, 27, 38, 43]
+```
 
 ```python exec
 def fusion(a, b):
@@ -41,17 +72,36 @@ def tri_fusion(t):
 print(tri_fusion([38, 27, 43, 3, 9]))
 ```
 
-Il y a environ log₂(n) niveaux de découpage, et à chaque niveau les fusions traitent n éléments. Le coût est en **n log₂ n**, bien meilleur que n².
+- Dans `fusion`, `i` et `j` avancent dans chacun des deux tableaux. Quand l'un est épuisé, `a[i:] + b[j:]` ajoute ce qui reste de l'autre, déjà trié.
+- Dans `tri_fusion`, `t[:m]` et `t[m:]` sont les deux moitiés.
 
-## 3. La rotation d'une image
+## 4. Pourquoi c'est rapide
 
-Pour faire tourner d'un quart de tour une image carrée de côté 2ᵏ : on la coupe en **quatre**, on tourne chaque quart récursivement, puis on **permute** les quatre quarts. En échangeant les pixels sur place, le coût en mémoire reste **constant**.
+On coupe en deux jusqu'à obtenir des tableaux d'un élément : il y a environ **log₂(n)** niveaux de découpage. À chaque niveau, les fusions traitent en tout les n éléments. Le coût total est donc d'environ **n × log₂(n)**.
+
+| n | Tri par sélection : n² | Tri fusion : n log₂ n |
+| --- | --- | --- |
+| 1 000 | 1 000 000 | 10 000 |
+| 1 000 000 | 10¹² | 20 000 000 |
+
+Pour un million de valeurs, le tri fusion est environ 50 000 fois plus rapide. En contrepartie, il crée de nouveaux tableaux : il utilise de la **mémoire** supplémentaire.
+
+## 5. Faire tourner une image
+
+Pour faire tourner d'un quart de tour une image carrée de côté 2ᵏ :
+
+1. **Diviser** : on la coupe en quatre carrés.
+2. **Régner** : on fait tourner chaque carré d'un quart de tour, par le même algorithme.
+3. **Combiner** : on déplace les quatre carrés en tournant : haut-gauche vers haut-droit, haut-droit vers bas-droit, bas-droit vers bas-gauche, bas-gauche vers haut-gauche.
+
+Les pixels sont **échangés sur place**, sans créer de copie de l'image : la mémoire utilisée reste constante.
 
 ## L'essentiel
 
 - Diviser, régner, combiner.
-- Tri fusion : couper en deux, trier, fusionner. Coût : n log₂ n.
-- Rotation d'image : quatre quarts tournés récursivement, puis permutés.
+- Fusion de deux tableaux triés : on prend à chaque fois le plus petit des deux premiers éléments.
+- Tri fusion : couper en deux, trier chaque moitié, fusionner ; coût en n log₂ n.
+- Rotation d'image : quatre carrés tournés récursivement, puis déplacés.
 
 ## Exercices
 

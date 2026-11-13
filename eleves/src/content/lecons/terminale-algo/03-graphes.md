@@ -9,11 +9,37 @@ objectifs:
 prerequis: [terminale-structures/graphes, terminale-structures/lineaires]
 ---
 
-Parcourir un graphe permet de répondre à : peut-on aller de A à B ? en combien d'étapes ?
+Peut-on aller de A à D en suivant les routes ? Combien de routes faut-il emprunter au minimum ? Pour répondre, on **parcourt** le graphe. Il existe deux grandes façons de le faire.
 
-## 1. Largeur : avec une file
+Dans toute la leçon, on utilise ce graphe, représenté par ses listes de voisins :
 
-On visite les voisins du départ, puis leurs voisins, etc. On **marque** les sommets déjà découverts.
+```python
+g = {"A": ["B", "C"], "B": ["A", "D"], "C": ["A", "D"], "D": ["B", "C"]}
+```
+
+```mermaid
+flowchart LR
+    A((A)) --- B((B))
+    A --- C((C))
+    B --- D((D))
+    C --- D
+```
+
+## 1. Marquer les sommets visités
+
+Contrairement à un arbre, un graphe peut contenir des **cycles** : A, B, D, C, puis de nouveau A. Si on ne retenait pas les sommets déjà vus, on tournerait en rond sans fin. Tout parcours **marque** donc les sommets visités.
+
+## 2. Le parcours en largeur
+
+L'idée : on visite d'abord les voisins du départ, puis les voisins de ces voisins, et ainsi de suite, comme une onde qui s'élargit. On utilise une **file**.
+
+| Étape | On retire de la file | Nouveaux voisins découverts | File après | Visités |
+| --- | --- | --- | --- | --- |
+| départ | | | A | A |
+| 1 | A | B, C | B C | A B C |
+| 2 | B | D (A est déjà vu) | C D | A B C D |
+| 3 | C | aucun (A et D déjà vus) | D | A B C D |
+| 4 | D | aucun | vide | A B C D |
 
 ```python exec
 def largeur(g, depart):
@@ -31,11 +57,11 @@ g = {"A": ["B", "C"], "B": ["A", "D"], "C": ["A", "D"], "D": ["B", "C"]}
 print(largeur(g, "A"))
 ```
 
-Le parcours en largeur trouve les sommets par **distance croissante**.
+Le parcours en largeur découvre les sommets **par distance croissante** au départ : d'abord ceux à 1 arête, puis ceux à 2 arêtes. Il donne donc le **plus court chemin en nombre d'arêtes**.
 
-## 2. Profondeur : en récursif
+## 3. Le parcours en profondeur
 
-On va le plus loin possible, puis on revient en arrière. Une version sans récursion utilise une **pile** à la place de la file.
+L'idée : on avance le plus loin possible, et quand on est bloqué, on revient en arrière au dernier embranchement, comme dans un labyrinthe. La version récursive est très courte :
 
 ```python exec
 def profondeur(g, s, visites):
@@ -49,16 +75,36 @@ g = {"A": ["B", "C"], "B": ["A", "D"], "C": ["A", "D"], "D": ["B", "C"]}
 print(profondeur(g, "A", []))
 ```
 
-## 3. Chemin et cycle
+Déroulé : on part de A, on va vers son premier voisin B ; de B, A est déjà vu, on va vers D ; de D, B est déjà vu, on va vers C ; de C, tout est vu. On revient en arrière jusqu'à A. Ordre : **A, B, D, C**.
 
-- **Chemin** : on lance un parcours depuis a et on retient d'où vient chaque sommet.
-- **Cycle** (graphe non orienté) : pendant un parcours en profondeur, un voisin déjà visité qui n'est pas celui dont on vient révèle un cycle.
+Une version sans récursion utilise une **pile** à la place de la file.
+
+## 4. Chercher un chemin
+
+Pour retrouver le chemin, et pas seulement savoir qu'il existe, on retient pendant un parcours en largeur **d'où vient** chaque sommet découvert : son **prédécesseur**.
+
+| Sommet | Découvert depuis |
+| --- | --- |
+| B | A |
+| C | A |
+| D | B |
+
+Pour le chemin de A à D, on remonte à l'envers : D vient de B, B vient de A. Le chemin est **A, B, D**.
+
+## 5. Repérer un cycle
+
+Dans un graphe **non orienté**, on fait un parcours en profondeur en retenant le sommet d'où l'on arrive. Si l'on rencontre un voisin **déjà visité** qui n'est **pas** celui d'où l'on vient, on a trouvé un autre chemin vers lui : il y a un cycle.
+
+:::exemple
+Dans notre graphe, en profondeur depuis A : A, B, D, puis C. Depuis C, le voisin A est déjà visité, et on vient de D, pas de A : il y a un cycle, A, B, D, C, A.
+:::
 
 ## L'essentiel
 
-- Largeur : une file. Profondeur : la récursivité ou une pile.
-- Toujours marquer les sommets visités.
-- La largeur donne le plus court chemin en nombre d'arêtes.
+- On marque toujours les sommets visités, pour ne pas tourner en rond.
+- Largeur : avec une file ; donne le plus court chemin en nombre d'arêtes.
+- Profondeur : récursive, ou avec une pile ; on va le plus loin possible, puis on revient en arrière.
+- Chemin : on retient le prédécesseur de chaque sommet. Cycle : un voisin déjà visité qui n'est pas le parent.
 
 ## Exercices
 

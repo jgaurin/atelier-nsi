@@ -8,9 +8,32 @@ objectifs:
 prerequis: [terminale-structures/arbres, terminale-langages/recursivite]
 ---
 
-Un arbre binaire est défini de façon récursive : c'est pourquoi les algorithmes sur les arbres sont naturellement **récursifs**.
+Un arbre binaire se définit lui-même de façon récursive : c'est soit un arbre vide, soit un nœud qui a un sous-arbre gauche et un sous-arbre droit, qui sont eux-mêmes des arbres. C'est pourquoi les algorithmes sur les arbres sont naturellement **récursifs** : on traite le nœud, et on confie les sous-arbres au même algorithme.
 
-## 1. Taille et hauteur
+Dans toute la leçon, on utilise cet arbre :
+
+```mermaid
+flowchart TD
+    A((A)) --> B((B))
+    A --> C((C))
+    B --> D((D))
+    B --> E((E))
+    C --> F((F))
+```
+
+A a pour enfants B et C, B a pour enfants D et E, et C a un seul enfant, F, à droite.
+
+## 1. La taille
+
+Comment compter les nœuds d'un arbre ? On raisonne ainsi : **la taille d'un arbre, c'est 1 pour la racine, plus la taille du sous-arbre gauche, plus la taille du sous-arbre droit**. Un arbre vide a une taille 0 : c'est le cas de base.
+
+Pour notre arbre : le sous-arbre de B a 3 nœuds, celui de C en a 2, donc la taille vaut 1 + 3 + 2 = **6**.
+
+## 2. La hauteur
+
+Même raisonnement : **la hauteur, c'est 1 pour la racine, plus la plus grande des hauteurs des deux sous-arbres**. Un arbre vide a une hauteur 0.
+
+Le sous-arbre de B a une hauteur 2, celui de C aussi : la hauteur vaut 1 + 2 = **3**.
 
 ```python exec
 class Noeud:
@@ -33,22 +56,88 @@ arbre = Noeud("A", Noeud("B", Noeud("D"), Noeud("E")), Noeud("C", None, Noeud("F
 print(taille(arbre), hauteur(arbre))
 ```
 
-## 2. Les parcours en profondeur
+Le cas de base `if a is None` est indispensable : c'est lui qui arrête la récursion en bas de l'arbre.
 
-| Parcours | Ordre | Sur l'arbre ci-dessus |
+## 3. Les parcours en profondeur
+
+**Parcourir** un arbre, c'est visiter tous ses nœuds dans un certain ordre. Les trois parcours en profondeur se distinguent par le moment où l'on visite la racine.
+
+| Parcours | Ordre | Sur notre arbre |
 | --- | --- | --- |
-| **préfixe** | racine, gauche, droit | A B D E C F |
-| **infixe** | gauche, racine, droit | D B E A C F |
-| **suffixe** | gauche, droit, racine | D E B F C A |
+| **préfixe** | racine, puis gauche, puis droit | A B D E C F |
+| **infixe** | gauche, puis racine, puis droit | D B E A C F |
+| **suffixe** | gauche, puis droit, puis racine | D E B F C A |
 
-## 3. Le parcours en largeur
+Le nom indique la place de la racine : **pré**fixe, **avant** ; **in**fixe, **au milieu** ; **suf**fixe, **après**.
 
-On visite **niveau par niveau** : A B C D E F. On utilise une **file** : on y place la racine, puis, tant que la file n'est pas vide, on défile un nœud, on le visite et on enfile ses enfants.
+:::methode[Trouver un parcours à la main]
+Fais le tour de l'arbre avec ton crayon, en partant à gauche de la racine et en longeant chaque nœud. En **préfixe**, note un nœud la première fois que tu passes à côté de lui. En **infixe**, note-le quand tu passes en dessous. En **suffixe**, note-le quand tu le quittes pour la dernière fois.
+:::
+
+Le code suit exactement la définition :
+
+```python exec
+class Noeud:
+    def __init__(self, valeur, gauche=None, droit=None):
+        self.valeur = valeur
+        self.gauche = gauche
+        self.droit = droit
+
+def prefixe(a):
+    if a is None:
+        return []
+    return [a.valeur] + prefixe(a.gauche) + prefixe(a.droit)
+
+arbre = Noeud("A", Noeud("B", Noeud("D"), Noeud("E")), Noeud("C", None, Noeud("F")))
+print(prefixe(arbre))
+```
+
+Pour l'infixe ou le suffixe, il suffit de déplacer `[a.valeur]` au milieu ou à la fin.
+
+## 4. Le parcours en largeur
+
+On visite l'arbre **niveau par niveau**, de gauche à droite : A, puis B et C, puis D, E et F.
+
+Pour cela, on utilise une **file** : premier entré, premier sorti. On y met la racine. Puis, tant que la file n'est pas vide, on retire le premier nœud, on le visite, et on ajoute ses enfants à la fin.
+
+| Étape | On visite | On ajoute | File après |
+| --- | --- | --- | --- |
+| départ | | A | A |
+| 1 | A | B, C | B C |
+| 2 | B | D, E | C D E |
+| 3 | C | F | D E F |
+| 4 | D | | E F |
+| 5 | E | | F |
+| 6 | F | | vide |
+
+```python exec
+class Noeud:
+    def __init__(self, valeur, gauche=None, droit=None):
+        self.valeur = valeur
+        self.gauche = gauche
+        self.droit = droit
+
+def largeur(a):
+    resultat = []
+    file = [a]
+    while file != []:
+        n = file.pop(0)
+        if n is not None:
+            resultat.append(n.valeur)
+            file.append(n.gauche)
+            file.append(n.droit)
+    return resultat
+
+arbre = Noeud("A", Noeud("B", Noeud("D"), Noeud("E")), Noeud("C", None, Noeud("F")))
+print(largeur(arbre))
+```
+
+La file garantit que tous les nœuds d'un niveau sortent avant ceux du niveau suivant, puisqu'ils y sont entrés avant.
 
 ## L'essentiel
 
-- Taille : 1 + taille(gauche) + taille(droit). Hauteur : 1 + max des hauteurs.
-- Préfixe : R G D. Infixe : G R D. Suffixe : G D R.
+- Taille : 1 + taille(gauche) + taille(droit). Hauteur : 1 + le maximum des hauteurs. Arbre vide : 0.
+- Préfixe : racine, gauche, droit. Infixe : gauche, racine, droit. Suffixe : gauche, droit, racine.
 - Largeur : niveau par niveau, avec une file.
 
 ## Exercices
