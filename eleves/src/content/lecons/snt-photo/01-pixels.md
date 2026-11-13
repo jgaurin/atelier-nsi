@@ -20,7 +20,7 @@ Le **capteur** de l'appareil est une grille de minuscules cellules sensibles à 
 
 L'**image** finale est faite de **pixels**. Chaque pixel a **trois** valeurs : rouge, vert, bleu, notées **RVB**. Un calcul reconstruit ces trois valeurs à partir des photosites voisins.
 
-Photosites et pixels ne sont donc pas la même chose, et leur nombre peut être différent : un appareil de 24 millions de photosites peut produire des images de 6 millions de pixels si on le règle ainsi.
+Photosites et pixels ne sont donc pas la même chose, et leur nombre peut être différent : un appareil de 20 millions de photosites peut produire des images de 5 millions de pixels si on le règle ainsi.
 
 ## 2. La définition d'une image
 
